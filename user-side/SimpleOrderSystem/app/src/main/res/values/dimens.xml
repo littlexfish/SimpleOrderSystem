@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+
+
+
+    <dimen name="menu_classic_category">50dp</dimen>
+    <dimen name="classic_category_card_corner">100dp</dimen>
+    <dimen name="classic_category_text_size">20dp</dimen>
+
+</resources>

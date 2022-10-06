@@ -11,8 +11,15 @@ fun main() {
 class TestClient {
 	
 	fun runTcpClient() {
-		val socket = Socket("127.0.0.1", 25000)
+		val socket = Socket("192.168.0.235", 25000)
 		val sc = Scanner(System.`in`)
+		Thread {
+			val buffer = ByteArray(Int.MAX_VALUE shr 2)
+			while(true) {
+				val size = socket.getInputStream().read(buffer)
+				println("From server: ${String(buffer, 0, size, Charsets.UTF_8)}")
+			}
+		}.start()
 		while(true) {
 			val line = sc.nextLine()
 			socket.getOutputStream().write(line.toByteArray(Charsets.UTF_8))

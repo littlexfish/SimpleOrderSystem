@@ -14,6 +14,9 @@
         android:theme="@style/Theme.SimpleOrderSystem"
         tools:targetApi="31">
         <activity
+            android:name=".MenuActivity"
+            android:exported="false" />
+        <activity
             android:name=".test.TestActivity"
             android:exported="false" />
         <activity
