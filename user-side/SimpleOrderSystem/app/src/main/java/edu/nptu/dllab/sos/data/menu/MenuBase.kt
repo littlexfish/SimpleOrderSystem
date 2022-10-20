@@ -2,6 +2,7 @@ package edu.nptu.dllab.sos.data.menu
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import edu.nptu.dllab.sos.data.EventMenu
 import edu.nptu.dllab.sos.fragment.MenuFragment
 import edu.nptu.dllab.sos.util.SOSVersion
 import org.msgpack.value.ArrayValue
@@ -37,25 +38,31 @@ abstract class MenuBase(private val type: MenuType, private val shopId: Int, pri
 	@SOSVersion(since = "0.0")
 	abstract fun buildMenu(data: MapValue)
 	
-	/**
-	 * Insert event menu by json array
-	 * @param data - [JsonArray]
-	 */
-	@SOSVersion(since = "0.0")
-	abstract fun insertEvent(data: JsonArray)
+	abstract fun getMenuData(): MapValue
 	
 	/**
 	 * Insert event menu by array value
 	 * @param data - [ArrayValue]
 	 */
 	@SOSVersion(since = "0.0")
-	abstract fun insertEvent(data: ArrayValue)
+	abstract fun insertEvent(item: EventMenu.EventItem)
+	
+	fun insertAllEvent(items: Iterable<EventMenu.EventItem>) {
+		for(i in items) {
+			insertEvent(i)
+		}
+	}
+	
+	abstract fun getEventData(): ArrayValue
 	
 	/**
 	 * Get menu type fragment
 	 */
 	@SOSVersion(since = "0.0")
 	abstract fun getMenuFragment(): MenuFragment
+	
+	@SOSVersion(since = "0.0")
+	abstract fun getMenuFragmentClass(): Class<out MenuFragment>
 	
 	/**
 	 * Get shop id
@@ -116,7 +123,7 @@ abstract class MenuBase(private val type: MenuType, private val shopId: Int, pri
 		fun buildByType(type: MenuType, shopId: Int, version: Int, data: JsonObject): MenuBase {
 			val menu = when(type) {
 				MenuType.CLASSIC -> ClassicMenu(shopId, version)
-				MenuType.CUSTOM -> ClassicMenu(shopId, version)
+				MenuType.CUSTOM -> throw UnsupportedOperationException()
 			}
 			menu.buildMenu(data)
 			return menu

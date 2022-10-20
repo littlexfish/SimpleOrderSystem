@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import edu.nptu.dllab.sos.R
-
+import edu.nptu.dllab.sos.data.menu.MenuBase
 
 
 class ClassicMenuFragment : MenuFragment() {
@@ -28,6 +28,10 @@ class ClassicMenuFragment : MenuFragment() {
 		
 		
 		
+	}
+	
+	override fun buildMenu(menu: MenuBase) {
+		TODO("Not yet implemented")
 	}
 	
 	companion object {

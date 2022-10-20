@@ -9,7 +9,7 @@ import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
 
-class OpenMenuEvent : EventPusher {
+class OpenMenuEvent : Event(EVENT_KEY), EventPusher {
 	
 	var shopId: Int = -1
 	var menuVersion: Int = -1
@@ -28,6 +28,10 @@ class OpenMenuEvent : EventPusher {
 		map[SHOP_ID.key.toStringValue()] = shopId.toIntegerValue()
 		map[MENU_VERSION.key.toStringValue()] = menuVersion.toIntegerValue()
 		return ValueFactory.newMap(map)
+	}
+	
+	override fun toString(): String {
+		return toValue().toString()
 	}
 	
 	companion object {

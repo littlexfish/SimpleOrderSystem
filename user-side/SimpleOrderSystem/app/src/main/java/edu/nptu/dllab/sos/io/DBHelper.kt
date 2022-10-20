@@ -84,7 +84,7 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 	 * @param autoId - the auto id that point to specific row
 	 */
 	@SOSVersion(since = "0.0")
-	fun update(table: String, value: ContentValues, resId: Int, shopId: Int) {
+	fun updateRes(table: String, value: ContentValues, resId: Int, shopId: Int) {
 		writableDatabase.update(table, value, "${DBColumn.RES_ID.columnName}=$resId AND ${DBColumn.RES_SHOP_ID.columnName}=$shopId", null)
 	}
 	

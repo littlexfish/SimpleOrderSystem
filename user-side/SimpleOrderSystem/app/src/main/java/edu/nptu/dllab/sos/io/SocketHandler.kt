@@ -1,5 +1,6 @@
 package edu.nptu.dllab.sos.io
 
+import android.util.Log
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import edu.nptu.dllab.sos.data.*
@@ -7,6 +8,7 @@ import edu.nptu.dllab.sos.util.Exceptions
 import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util.asMap
 import edu.nptu.dllab.sos.util.Util.asString
+import edu.nptu.dllab.sos.util.Util.toByteArray
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.core.MessagePack
 import org.msgpack.value.Value
@@ -54,6 +56,10 @@ class SocketHandler {
 	 */
 	var charset = Charsets.UTF_8
 	
+	private val tmpBuffer = ByteArrayOutputStream()
+	
+	private var holdEvent: EventPuller? = null
+	
 	/**
 	 * Link to server
 	 */
@@ -79,14 +85,22 @@ class SocketHandler {
 		checkConnectedState()
 		val bs = when(useFormat) {
 			Format.JSON -> {
-				event.toJson().toString()
+				event.toJson().toString().toByteArray(charset)
 			}
 			Format.MSG_PACK -> {
-				event.toValue().toJson()
+				tmpBuffer.reset()
+				val v = event.toValue()
+				val packer = MessagePack.newDefaultPacker(tmpBuffer)
+				packer.packValue(v)
+				packer.flush()
+				tmpBuffer.toByteArray()
 			}
-		}.toByteArray(charset)
+		}
 		if(socket != null) {
 			val os = socket!!.getOutputStream()
+			if(useFormat == Format.MSG_PACK) {
+				os.write(bs.size.toByteArray())
+			}
 			os.write(bs)
 		}
 	}
@@ -100,6 +114,11 @@ class SocketHandler {
 	fun waitEvent(): EventPuller {
 		checkConnectedState()
 		if(socket != null) {
+			if(holdEvent != null) {
+				val tmp = holdEvent
+				holdEvent = null
+				return tmp!!
+			}
 			val ins = socket!!.getInputStream()
 			when(useFormat) {
 				Format.JSON -> {
@@ -134,16 +153,16 @@ class SocketHandler {
 					}
 					// unpack from byte array
 					val unpacker = MessagePack.newDefaultUnpacker(ByteArrayInputStream(bos.toByteArray()))
-					val e = getEventValue(unpacker.unpackValue())
-					if(e is ResourceDownload) {
-						TODO("Read extra bytes that contains resource data")
-					}
-					return e
+					return getEventValue(unpacker.unpackValue())
 				}
 			}
 		}
 		// may not reach here
 		throw RuntimeException()
+	}
+	
+	fun holdEvent(event: EventPuller) {
+		holdEvent = event
 	}
 	
 	/**

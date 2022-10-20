@@ -10,9 +10,11 @@ import edu.nptu.dllab.sos.util.Util.UpdateKey.*
 import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.asMap
 import edu.nptu.dllab.sos.util.Util.asString
+import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.core.MessageTypeCastException
 import org.msgpack.value.Value
+import org.msgpack.value.ValueFactory
 import java.lang.ClassCastException
 import kotlin.collections.ArrayList
 
@@ -23,23 +25,23 @@ import kotlin.collections.ArrayList
  * @since 22/10/03
  */
 @SOSVersion(since = "0.0")
-class UpdateMenu : EventPuller {
+class UpdateMenu : Event(EVENT_KEY), EventPuller {
 	
 	/**
 	 * The shop id
 	 */
-	private var shopId: Int = -1
+	var shopId: Int = -1
 	
 	/**
 	 * The menu version
 	 */
-	private var version: Int = -1
+	var version: Int = -1
 	
 	/**
 	 * The menu object
 	 * @see MenuBase
 	 */
-	private var menu: MenuBase = ClassicMenu(shopId, version)
+	var menu: MenuBase = ClassicMenu(shopId, version)
 	
 	/**
 	 * The resources menu needed
@@ -106,6 +108,20 @@ class UpdateMenu : EventPuller {
 		catch(e: MessageTypeCastException) {
 			throw Exceptions.DataFormatException(e, "data format error")
 		}
+	}
+	
+	override fun toString(): String {
+		val map = ValueFactory.newMapBuilder()
+		map.put(Util.NET_KEY_EVENT.toStringValue(), event.toStringValue())
+		map.put(SHOP_ID.key.toStringValue(), shopId.toIntegerValue())
+		map.put(MENU_VERSION.key.toStringValue(), version.toIntegerValue())
+		map.put(MENU.key.toStringValue(), menu.getMenuData())
+		map.put(RESOURCE.key.toStringValue(), ValueFactory.newArray(res.map { it.getValue() }))
+		return map.build().toString()
+	}
+	
+	companion object {
+		const val EVENT_KEY = "update"
 	}
 	
 }

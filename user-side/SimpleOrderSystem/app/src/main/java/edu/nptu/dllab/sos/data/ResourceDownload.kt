@@ -6,8 +6,10 @@ import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.ResourceKey.*
 import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.asString
+import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
+import org.msgpack.value.ValueFactory
 import java.security.MessageDigest
 
 /**
@@ -17,7 +19,7 @@ import java.security.MessageDigest
  * @since 20/10/03
  */
 @SOSVersion(since = "0.0")
-class ResourceDownload : EventPuller {
+class ResourceDownload : Event(EVENT_KEY), EventPuller {
 	
 	var fileIndex = -1
 	var fileTotal = -1
@@ -67,7 +69,8 @@ class ResourceDownload : EventPuller {
 		fileTotal = data[FILE_TOTAL.key.toStringValue()]!!.asInt()
 		path = data[PATH.key.toStringValue()]!!.asString()
 		sha256 = data[SHA256.key.toStringValue()]!!.asString()
-		size = data[SIZE.key.toStringValue()]!!.asInt()
+		resData = data[DATA.key.toStringValue()]!!.asBinaryValue().asByteArray()
+		size = resData.size
 	}
 	
 	/**
@@ -81,6 +84,21 @@ class ResourceDownload : EventPuller {
 			sb.append(hex.substring(hex.length - 2))
 		}
 		return sb.toString()
+	}
+	
+	override fun toString(): String {
+		val map = ValueFactory.newMapBuilder()
+		map.put(Util.NET_KEY_EVENT.toStringValue(), event.toStringValue())
+		map.put(FILE_INDEX.key.toStringValue(), fileIndex.toIntegerValue())
+		map.put(FILE_TOTAL.key.toStringValue(), fileTotal.toIntegerValue())
+		map.put(PATH.key.toStringValue(), path.toStringValue())
+		map.put(SHA256.key.toStringValue(), sha256.toStringValue())
+		map.put(DATA.key.toStringValue(), ValueFactory.newBinary(resData))
+		return map.build().toString()
+	}
+	
+	companion object {
+		const val EVENT_KEY = "resource"
 	}
 	
 }

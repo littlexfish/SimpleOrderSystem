@@ -1,0 +1,7 @@
+{
+  "qrcode.permission": "掃描QRCode需要相機權限，請至設定開啟再進入此功能",
+  "qrcode.back": "返回",
+  "qrcode.redirect": "(長按跳轉)",
+
+  "menu.error.shopId": "店家id出錯，請重新整理"
+}

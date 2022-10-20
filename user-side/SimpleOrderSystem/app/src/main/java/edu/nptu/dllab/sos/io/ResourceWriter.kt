@@ -31,7 +31,7 @@ object ResourceWriter {
 	@SOSVersion(since = "0.0")
 	fun saveResource(context: Context, shopId: Int, resId: Int, path: String, data: ByteArray, sha256: String? = null): Boolean {
 		if(!checkSha256(data, sha256)) return false
-		// save path "file/<shopId>/path"
+		// save path "file/res/<shopId>/path"
 		val df = getDirFile(shopId, path)
 		val fileDir = context.filesDir
 		val dir = File("$fileDir/${df.first}")
@@ -48,7 +48,7 @@ object ResourceWriter {
 		cur.close()
 		
 		val res = DBRes(resId, shopId, path, sha256 ?: "", data.size)
-		if(hasOld) db.update(DBHelper.TABLE_RES, res.toContentValues(), resId, shopId)
+		if(hasOld) db.updateRes(DBHelper.TABLE_RES, res.toContentValues(), resId, shopId)
 		else db.insert(DBHelper.TABLE_RES, res.toContentValues())
 		db.close()
 		return true
@@ -78,7 +78,7 @@ object ResourceWriter {
 	@SOSVersion(since = "0.0")
 	private fun getDirFile(shopId: Int, path: String): Pair<String, String> {
 		val spl = path.split("/")
-		val p = "$shopId/${spl.subList(0, spl.lastIndex).joinToString("/")}/"
+		val p = "res/$shopId/${spl.subList(0, spl.lastIndex).joinToString("/")}/"
 		val f = spl.last()
 		return Pair(p, f)
 	}

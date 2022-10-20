@@ -17,7 +17,7 @@ import org.msgpack.value.ValueFactory
  * @since 22/10/03
  */
 @SOSVersion(since = "0.0")
-class LinkEvent : EventPusher {
+class LinkEvent : Event(EVENT_KEY), EventPusher {
 	
 	/**
 	 * The position
@@ -36,6 +36,10 @@ class LinkEvent : EventPusher {
 		map[NET_KEY_EVENT.toStringValue()] = EVENT_KEY.toStringValue()
 		map[POSITION.key.toStringValue()] = position.toValue()
 		return ValueFactory.newMap(map)
+	}
+	
+	override fun toString(): String {
+		return toValue().toString()
 	}
 	
 	companion object {

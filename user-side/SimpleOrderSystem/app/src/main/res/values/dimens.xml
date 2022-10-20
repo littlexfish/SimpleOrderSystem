@@ -3,7 +3,7 @@
 
 
 
-
+    <dimen name="main_toolbar">48dp</dimen>
 
     <dimen name="menu_classic_category">50dp</dimen>
     <dimen name="classic_category_card_corner">100dp</dimen>

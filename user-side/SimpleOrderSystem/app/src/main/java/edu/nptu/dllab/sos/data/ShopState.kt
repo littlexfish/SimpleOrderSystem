@@ -9,18 +9,18 @@ import edu.nptu.dllab.sos.util.SOSVersion
  * @since 22/10/03
  */
 @SOSVersion(since = "0.0")
-enum class ShopState {
+enum class ShopState(val key: String) {
 	/**
 	 * The shop is open
 	 */
 	@SOSVersion(since = "0.0")
-	OPEN,
+	OPEN("open"),
 	
 	/**
 	 * The shop is not open
 	 */
 	@SOSVersion(since = "0.0")
-	CLOSE
+	CLOSE("open")
 	;
 	companion object {
 		/**

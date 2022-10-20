@@ -17,7 +17,7 @@ import org.msgpack.value.ValueFactory
  * @since 22/10/04
  */
 @SOSVersion(since = "0.0")
-class DownloadRequestEvent : EventPusher {
+class DownloadRequestEvent : Event(EVENT_KEY), EventPusher {
 	
 	private val downloadRes = ArrayList<String>()
 	
@@ -27,6 +27,10 @@ class DownloadRequestEvent : EventPusher {
 	@SOSVersion(since = "0.0")
 	fun addPath(path: String) {
 		downloadRes.add(path)
+	}
+	
+	fun addAllPath(paths: Iterable<String>) {
+		downloadRes.addAll(paths)
 	}
 	
 	override fun toJson(): JsonElement {
@@ -45,6 +49,10 @@ class DownloadRequestEvent : EventPusher {
 		for(p in downloadRes) paths.add(p.toStringValue())
 		map[PATH.key.toStringValue()] = ValueFactory.newArray(paths)
 		return ValueFactory.newMap(map)
+	}
+	
+	override fun toString(): String {
+		return toValue().toString()
 	}
 	
 	companion object {

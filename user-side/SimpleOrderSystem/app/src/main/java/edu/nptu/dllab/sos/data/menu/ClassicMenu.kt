@@ -1,7 +1,7 @@
 package edu.nptu.dllab.sos.data.menu
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import edu.nptu.dllab.sos.data.EventMenu
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 import edu.nptu.dllab.sos.fragment.MenuFragment
 import edu.nptu.dllab.sos.util.SOSVersion
@@ -32,18 +32,24 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 		TODO("Not yet implemented")
 	}
 	
-	@SOSVersion(since = "0.0")
-	override fun insertEvent(data: JsonArray) {
+	override fun getMenuData(): MapValue {
 		TODO("Not yet implemented")
 	}
 	
-	@SOSVersion(since = "0.0")
-	override fun insertEvent(data: ArrayValue) {
+	override fun insertEvent(item: EventMenu.EventItem) {
+		TODO("Not yet implemented")
+	}
+	
+	override fun getEventData(): ArrayValue {
 		TODO("Not yet implemented")
 	}
 	
 	override fun getMenuFragment(): MenuFragment {
 		return ClassicMenuFragment.newInstance(getShopId())
+	}
+	
+	override fun getMenuFragmentClass(): Class<out MenuFragment> {
+		return ClassicMenuFragment::class.java
 	}
 	
 	
