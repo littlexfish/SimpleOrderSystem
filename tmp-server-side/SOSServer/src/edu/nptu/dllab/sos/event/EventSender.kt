@@ -1,4 +1,9 @@
 package edu.nptu.dllab.sos.event
 
-class EventSender {
+import org.msgpack.value.Value
+
+interface EventSender {
+	
+	fun toMsgPack(): Value
+	
 }
