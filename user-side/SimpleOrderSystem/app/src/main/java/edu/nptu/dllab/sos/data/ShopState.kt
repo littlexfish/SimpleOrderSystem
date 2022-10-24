@@ -10,6 +10,7 @@ import edu.nptu.dllab.sos.util.SOSVersion
  */
 @SOSVersion(since = "0.0")
 enum class ShopState(val key: String) {
+	
 	/**
 	 * The shop is open
 	 */

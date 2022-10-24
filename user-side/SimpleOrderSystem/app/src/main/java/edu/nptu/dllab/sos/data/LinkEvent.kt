@@ -22,8 +22,10 @@ class LinkEvent : Event(EVENT_KEY), EventPusher {
 	/**
 	 * The position
 	 */
+	@SOSVersion(since = "0.0")
 	var position = Position()
 	
+	@Deprecated("use toValue(): Value")
 	override fun toJson(): JsonElement {
 		val obj = JsonObject()
 		obj.addProperty(NET_KEY_EVENT, EVENT_KEY)

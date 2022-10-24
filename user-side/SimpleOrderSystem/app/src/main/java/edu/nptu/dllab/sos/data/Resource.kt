@@ -16,6 +16,10 @@ import org.msgpack.value.ValueFactory
 @SOSVersion(since = "0.0")
 data class Resource(val path: String, val id: Int, val position: String, val sha256: String) {
 	
+	/**
+	 * Get msgpack of this resource
+	 */
+	@SOSVersion(since = "0.0")
 	fun getValue(): Value {
 		val map = ValueFactory.newMapBuilder()
 		map.put(PATH.key.toStringValue(), path.toStringValue())
@@ -25,6 +29,10 @@ data class Resource(val path: String, val id: Int, val position: String, val sha
 		return map.build()
 	}
 	
+	/**
+	 * Check the path is same
+	 */
+	@SOSVersion(since = "0.0")
 	fun pathEquals(res: Resource): Boolean {
 		return path == res.path
 	}

@@ -6,17 +6,39 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import edu.nptu.dllab.sos.R
+import edu.nptu.dllab.sos.util.SOSVersion
 
+/**
+ * The classic menu type category
+ */
+@SOSVersion(since = "0.0")
 class CategoryView : FrameLayout {
 	
+	/**
+	 * The category name
+	 */
+	@SOSVersion(since = "0.0")
 	private lateinit var textView: TextView
+	
+	/**
+	 * The category img
+	 */
+	@SOSVersion(since = "0.0")
 	private lateinit var imageView: ImageView
 	
+	/**
+	 * Set get of category name
+	 */
+	@SOSVersion(since = "0.0")
 	var string
 		get() = textView.text
 		set(value) {
 			textView.text = value
 		}
+	/**
+	 * Set get of category img
+	 */
+	@SOSVersion(since = "0.0")
 	var image
 		get() = imageView.drawable
 		set(value) {
@@ -24,24 +46,18 @@ class CategoryView : FrameLayout {
 		}
 	
 	constructor(context: Context) : super(context) {
-		init(null, 0)
+		init()
 	}
 	
 	constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-		init(attrs, 0)
+		init()
 	}
 	
 	constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-		init(attrs, defStyle)
+		init()
 	}
 	
-	private fun init(attrs: AttributeSet?, defStyle: Int) { // Load attributes
-		val a = context.obtainStyledAttributes(attrs, R.styleable.CategoryView, defStyle, 0)
-		
-		if(a.hasValue(R.styleable.CategoryView_exampleDrawable)) {
-		}
-		a.recycle()
-		
+	private fun init() { // Load attributes
 		inflate(context, R.layout.view_classic_category, this)
 		
 		textView = findViewById(R.id.classic_cate_text)

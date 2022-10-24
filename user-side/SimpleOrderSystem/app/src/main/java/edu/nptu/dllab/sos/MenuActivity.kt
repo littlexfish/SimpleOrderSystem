@@ -8,6 +8,7 @@ import android.os.HandlerThread
 import android.util.Log
 import android.widget.Toast
 import edu.nptu.dllab.sos.data.*
+import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.databinding.ActivityMenuBinding
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 import edu.nptu.dllab.sos.fragment.MenuFragment
@@ -17,21 +18,52 @@ import edu.nptu.dllab.sos.io.ResourceWriter
 import edu.nptu.dllab.sos.io.Translator
 import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.io.db.DBMenu
+import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.StaticData
 import edu.nptu.dllab.sos.util.Util
+import edu.nptu.dllab.sos.util.Util.asString
+import edu.nptu.dllab.sos.util.Util.toStringValue
+import org.msgpack.core.MessagePack
 
+/**
+ * The activity show the menu
+ */
+@SOSVersion(since = "0.0")
 class MenuActivity : AppCompatActivity() {
 	
 	private val TAG = "MenuActivity"
 	
 	private lateinit var binding: ActivityMenuBinding
 	
+	/**
+	 * The dialog to avoid user active when loading
+	 */
+	@SOSVersion(since = "0.0")
 	private lateinit var loadingDialog: ProgressDialog
+	
+	/**
+	 * The shop id
+	 */
+	@SOSVersion(since = "0.0")
 	private var shopId = -1
 	
+	/**
+	 * The thread to process network
+	 */
+	@SOSVersion(since = "0.0")
 	private val handlerThread = HandlerThread("menu-net").also { it.start() }
+	
+	/**
+	 * The handler to process network
+	 */
+	@SOSVersion(since = "0.0")
 	private val handler = Handler(handlerThread.looper)
 	
+	
+	/**
+	 * The menu fragment now on
+	 */
+	@SOSVersion(since = "0.0")
 	private var nowFragment: MenuFragment = ClassicMenuFragment.newInstance(-1)
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +86,10 @@ class MenuActivity : AppCompatActivity() {
 		
 	}
 	
+	/**
+	 * Load menu from server
+	 */
+	@SOSVersion(since = "0.0")
 	private fun loadFromServer() {
 		handler.post {
 			runOnUiThread { startLoading() }
@@ -73,20 +109,13 @@ class MenuActivity : AppCompatActivity() {
 			var get = handler.waitEvent()
 			val resMap = HashMap<String, Resource>()
 			run {
-				if(get is UpdateMenu) {
+				if(get is UpdateMenu) { // need update
 					val um = get as UpdateMenu
 					needUpdate = true
 					val getShopId = um.shopId
 					if(getShopId == shopId) { // check id is same
 						val newVersion = um.version
-						if(nowFragment.javaClass != um.menu.getMenuFragmentClass()) { // change fragment
-							val frag = um.menu.getMenuFragment()
-							runOnUiThread {
-								val tra = supportFragmentManager.beginTransaction()
-								tra.replace(binding.menuFragment.id, frag)
-								nowFragment = frag
-							}
-						}
+						checkAndChangeFrag(um.menu)
 						// get resource
 						putAllResource(resMap, um.getNeedDownloadResources())
 						// save menu
@@ -97,12 +126,23 @@ class MenuActivity : AppCompatActivity() {
 						nowFragment.buildMenu(um.menu)
 						// update database
 						val newDbMenu = DBMenu(shopId, newVersion)
-						db.writableDatabase.update(DBHelper.TABLE_MENU, newDbMenu.toContentValues(), "${DBColumn.RES_SHOP_ID.columnName}=$shopId", null);
+						db.writableDatabase.update(DBHelper.TABLE_MENU, newDbMenu.toContentValues(), "${DBColumn.RES_SHOP_ID.columnName}=$shopId", null)
 					}
 					else {
 						Toast.makeText(applicationContext, Translator.getString("menu.error.shopId"), Toast.LENGTH_SHORT).show()
 					}
 				}
+				else if(get is EventMenu) { // read old menu
+					val menuFile = FileIO.getMenuFile(applicationContext, shopId)
+					val inS = menuFile.inputStream()
+					val value = MessagePack.newDefaultUnpacker(inS).unpackValue().asMapValue()
+					inS.close()
+					val type = value.map()[Util.UpdateKey.MENU_TYPE.key.toStringValue()]!!.asString()
+					val menuBase = MenuBase.buildByType(MenuBase.MenuType.getTypeByString(type), shopId, menu.version, value)
+					checkAndChangeFrag(menuBase)
+					nowFragment.buildMenu(menuBase)
+				}
+				Unit
 			}
 			
 			// insert event item
@@ -149,20 +189,51 @@ class MenuActivity : AppCompatActivity() {
 		}
 	}
 	
+	/**
+	 * Check the fragment is now on
+	 */
+	@SOSVersion(since = "0.0")
+	private fun checkAndChangeFrag(menu: MenuBase) {
+		if(nowFragment.javaClass != menu.getMenuFragmentClass()) { // change fragment
+			val frag = menu.getMenuFragment()
+			runOnUiThread {
+				val tra = supportFragmentManager.beginTransaction()
+				tra.replace(binding.menuFragment.id, frag)
+				nowFragment = frag
+			}
+		}
+	}
+	
+	/**
+	 * Put the resource in map
+	 */
+	@SOSVersion(since = "0.0")
 	private fun putInResource(resMap: HashMap<String, Resource>, res: Resource) {
 		resMap[res.path] = res
 	}
 	
+	/**
+	 * Put all resource in map
+	 */
+	@SOSVersion(since = "0.0")
 	private fun putAllResource(resMap: HashMap<String, Resource>, res: Iterable<Resource>) {
 		for(r in res) {
 			putInResource(resMap, r)
 		}
 	}
 	
+	/**
+	 * Request on loading
+	 */
+	@SOSVersion(since = "0.0")
 	private fun startLoading() {
 		loadingDialog.show()
 	}
 	
+	/**
+	 * Request on not loading
+	 */
+	@SOSVersion(since = "0.0")
 	private fun stopLoading() {
 		loadingDialog.dismiss()
 	}

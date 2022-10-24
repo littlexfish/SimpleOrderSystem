@@ -21,11 +21,40 @@ import java.security.MessageDigest
 @SOSVersion(since = "0.0")
 class ResourceDownload : Event(EVENT_KEY), EventPuller {
 	
+	/**
+	 * The file index of this download request
+	 */
+	@SOSVersion(since = "0.0")
 	var fileIndex = -1
+	
+	/**
+	 * The total file count of this download request
+	 */
+	@SOSVersion(since = "0.0")
 	var fileTotal = -1
-	var path = "" // server path
+	
+	/**
+	 * The server path of this resource
+	 */
+	@SOSVersion(since = "0.0")
+	var path = ""
+	
+	/**
+	 * The sha256 of this resource data
+	 */
+	@SOSVersion(since = "0.0")
 	var sha256 = ""
+	
+	/**
+	 * The resource data length of bytes
+	 */
+	@SOSVersion(since = "0.0")
 	var size = 0
+	
+	/**
+	 * The resource data
+	 */
+	@SOSVersion(since = "0.0")
 	var resData = ByteArray(0)
 	
 	/**
@@ -52,7 +81,7 @@ class ResourceDownload : Event(EVENT_KEY), EventPuller {
 	@SOSVersion(since = "0.0")
 	fun getCurSha256() = sha256
 	
-	@SOSVersion(since = "0.0")
+	@Deprecated("use fromValue(Value)")
 	override fun fromJson(json: JsonElement) {
 		val data = Util.checkJsonObject(json)
 		fileIndex = data[FILE_INDEX.key].asInt
@@ -62,7 +91,6 @@ class ResourceDownload : Event(EVENT_KEY), EventPuller {
 		size = data[SIZE.key].asInt
 	}
 	
-	@SOSVersion(since = "0.0")
 	override fun fromValue(value: Value) {
 		val data = Util.checkMapValue(value).map()
 		fileIndex = data[FILE_INDEX.key.toStringValue()]!!.asInt()

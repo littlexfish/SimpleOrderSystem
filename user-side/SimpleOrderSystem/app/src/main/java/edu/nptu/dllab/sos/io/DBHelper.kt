@@ -110,10 +110,29 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 	}
 	
 	companion object {
+		/**
+		 * The name of this database
+		 */
+		@SOSVersion(since = "0.0")
 		const val DATABASE_NAME = "edu.nptu.dllab.sos.RES_DB"
+		
+		/**
+		 * The version of this database
+		 */
+		@SOSVersion(since = "0.0")
 		const val DATABASE_VERSION = 1
 		
+		
+		/**
+		 * The name of resource table
+		 */
+		@SOSVersion(since = "0.0")
 		const val TABLE_RES = "res"
+		
+		/**
+		 * The name of menu table
+		 */
+		@SOSVersion(since = "0.0")
 		const val TABLE_MENU = "menu"
 	}
 	

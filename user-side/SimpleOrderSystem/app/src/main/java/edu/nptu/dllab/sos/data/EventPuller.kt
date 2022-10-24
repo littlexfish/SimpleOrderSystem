@@ -16,6 +16,7 @@ interface EventPuller {
 	/**
 	 * Get event with json
 	 */
+	@Deprecated("use fromValue(Value)")
 	@SOSVersion(since = "0.0")
 	fun fromJson(json: JsonElement)
 	

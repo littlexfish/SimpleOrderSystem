@@ -20,20 +20,52 @@ import java.nio.ByteBuffer
 @SOSVersion(since = "0.0")
 object Util {
 	
+	/**
+	 * The transfer protocol of event key
+	 */
+	@SOSVersion(since = "0.0")
 	const val NET_KEY_EVENT = "event"
 	
+	/**
+	 * This app uses scheme
+	 */
+	@SOSVersion(since = "0.0")
 	const val PREFIX_SOS_URL = "sos://"
 	
+	/**
+	 * The activity request code that is ok
+	 */
+	@SOSVersion(since = "0.0")
 	const val REQUEST_OK = 0
+	
+	/**
+	 * The activity request code that is error
+	 */
+	@SOSVersion(since = "0.0")
 	const val REQUEST_ERROR = 1
+	
+	/**
+	 * The activity request code that is error on extra
+	 */
+	@SOSVersion(since = "0.0")
 	const val REQUEST_ERROR_EXTRA = 2
+	
+	/**
+	 * The activity request code that is error on permission
+	 */
+	@SOSVersion(since = "0.0")
 	const val REQUEST_ERROR_PERMISSION = 3
 	
+	/**
+	 * The global charset
+	 */
+	@SOSVersion(since = "0.0")
 	val CHARSET_GLOBAL = Charsets.UTF_8
 	
 	/**
 	 * Get custom string from sos url
 	 */
+	@SOSVersion(since = "0.0")
 	fun getSOSTypeUrlString(url: String): String {
 		return url
 	}
@@ -41,6 +73,7 @@ object Util {
 	/**
 	 * Gen a qrcode
 	 */
+	@SOSVersion(since = "0.0")
 	fun genQrCode(content: String, width: Int, height: Int): Bitmap {
 		if(content.isEmpty()) {
 			return Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888)
@@ -88,6 +121,10 @@ object Util {
 	@SOSVersion(since = "0.0")
 	fun Int.toIntegerValue() = ValueFactory.newInteger(this)!!
 	
+	/**
+	 * long change to [org.msgpack.value.IntegerValue]
+	 */
+	@SOSVersion(since = "0.0")
 	fun Long.toIntegerValue() = ValueFactory.newInteger(this)!!
 	
 	/**
@@ -102,6 +139,10 @@ object Util {
 	@SOSVersion(since = "0.0")
 	fun Value.asInt() = this.asIntegerValue().toInt()
 	
+	/**
+	 * [org.msgpack.value.Value] change to long
+	 */
+	@SOSVersion(since = "0.0")
 	fun Value.asLong() = this.asIntegerValue().toLong()
 	
 	/**
@@ -161,6 +202,11 @@ object Util {
 		FILE_INDEX("file"), FILE_TOTAL("total"),
 		PATH("path"), SHA256("sha256"), SIZE("size"),
 		DATA("data"), POSITION("position"), ID("id")
+	}
+	enum class OrderKey(val key: String) {
+		ITEM("item"), ITEM_SHOP_ID("shopId"), ITEM_ITEM_ID("itemId"),
+		ITEM_ADDITION("addition"), ITEM_ADDITION_ID("id"), ITEM_ADDITION_TYPE("type"),
+		ITEM_ADDITION_VALUE("value"), ITEM_NOTE("note")
 	}
 	
 }

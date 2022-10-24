@@ -39,7 +39,7 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 		TODO("Not yet implemented")
 	}
 	
-	@SOSVersion(since = "0.0")
+	@Deprecated("use fromValue(Value)")
 	override fun fromJson(json: JsonElement) {
 		Util.checkJsonObject(json)
 		val data = json.asJsonObject
@@ -70,7 +70,6 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 		}
 	}
 	
-	@SOSVersion(since = "0.0")
 	override fun fromValue(value: Value) {
 		Util.checkMapValue(value)
 		val map = value.asMap()
@@ -109,14 +108,26 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 		return map.build().toJson()
 	}
 	
+	/**
+	 * The event item
+	 */
+	@SOSVersion(since = "0.0")
 	class EventItem(val category: String, val type: String, val popup: Boolean, val itemId: String, val id: Int) {
 		
 		private val conditions = ArrayList<ItemCondition>()
 		
+		/**
+		 * Add condition
+		 */
+		@SOSVersion(since = "0.0")
 		fun addCondition(con: ItemCondition) {
 			conditions.add(con)
 		}
 		
+		/**
+		 * Get msgpack of this item
+		 */
+		@SOSVersion(since = "0.0")
 		fun toValue(): MapValue {
 			val map = ValueFactory.newMapBuilder()
 			map.put(MENU_CATE.key.toStringValue(), category.toStringValue())

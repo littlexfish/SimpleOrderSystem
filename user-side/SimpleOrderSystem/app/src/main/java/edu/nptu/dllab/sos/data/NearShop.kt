@@ -30,6 +30,7 @@ class NearShop : Event(EVENT_KEY), EventPuller {
 	/**
 	 * The [Shop]s that is near shop receive from server
 	 */
+	@SOSVersion(since = "0.0")
 	private val shops = HashMap<Int, Shop>()
 	
 	/**
@@ -46,6 +47,7 @@ class NearShop : Event(EVENT_KEY), EventPuller {
 	@SOSVersion(since = "0.0")
 	fun getShopCount() = shops.size
 	
+	@Deprecated("use fromValue(Value)")
 	override fun fromJson(json: JsonElement) {
 		Util.checkJsonObject(json)
 		val data = json.asJsonObject[SHOP.key].asJsonArray

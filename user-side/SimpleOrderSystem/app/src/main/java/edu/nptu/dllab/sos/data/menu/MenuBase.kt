@@ -1,8 +1,8 @@
 package edu.nptu.dllab.sos.data.menu
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import edu.nptu.dllab.sos.data.EventMenu
+import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.fragment.MenuFragment
 import edu.nptu.dllab.sos.util.SOSVersion
 import org.msgpack.value.ArrayValue
@@ -15,14 +15,14 @@ import org.msgpack.value.MapValue
  * @since 22/10/03
  */
 @SOSVersion(since = "0.0")
-abstract class MenuBase(private val type: MenuType, private val shopId: Int, private val version: Int) {
+abstract class MenuBase(protected val type: MenuType, private val shopId: Int, private val version: Int) {
 	
 	/**
-	 * Get [Item] by item id
+	 * Get [OrderItem] by item id
 	 * @param itemId - the item id
 	 */
 	@SOSVersion(since = "0.0")
-	abstract fun getShopItem(itemId: String): Item
+	abstract fun getShopItem(itemId: String): OrderItem
 	
 	/**
 	 * Build menu by json object
@@ -38,21 +38,31 @@ abstract class MenuBase(private val type: MenuType, private val shopId: Int, pri
 	@SOSVersion(since = "0.0")
 	abstract fun buildMenu(data: MapValue)
 	
+	/**
+	 * Get full msgpack of this menu
+	 */
 	abstract fun getMenuData(): MapValue
 	
 	/**
-	 * Insert event menu by array value
-	 * @param data - [ArrayValue]
+	 * Insert event menu by [EventMenu.EventItem]
 	 */
 	@SOSVersion(since = "0.0")
 	abstract fun insertEvent(item: EventMenu.EventItem)
 	
+	/**
+	 * Insert all event
+	 */
+	@SOSVersion(since = "0.0")
 	fun insertAllEvent(items: Iterable<EventMenu.EventItem>) {
 		for(i in items) {
 			insertEvent(i)
 		}
 	}
 	
+	/**
+	 * Get full msgpack of event menu
+	 */
+	@SOSVersion(since = "0.0")
 	abstract fun getEventData(): ArrayValue
 	
 	/**
@@ -82,12 +92,6 @@ abstract class MenuBase(private val type: MenuType, private val shopId: Int, pri
 	 */
 	@SOSVersion(since = "0.0")
 	fun getMenuType() = type
-	
-	/**
-	 * Item class
-	 */
-	@SOSVersion(since = "0.0")
-	data class Item(val shopId: Int, val menuVersion: Int, val itemId: String)
 	
 	/**
 	 * Menu type
@@ -120,6 +124,7 @@ abstract class MenuBase(private val type: MenuType, private val shopId: Int, pri
 		 * @param data - menu data as [JsonObject]
 		 */
 		@SOSVersion(since = "0.0")
+		@Deprecated("use buildByType(MenuType, Int, Int, MapValue): MenuBase")
 		fun buildByType(type: MenuType, shopId: Int, version: Int, data: JsonObject): MenuBase {
 			val menu = when(type) {
 				MenuType.CLASSIC -> ClassicMenu(shopId, version)

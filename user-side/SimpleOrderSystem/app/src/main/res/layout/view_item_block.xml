@@ -1,0 +1,35 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/classic_item_img"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/classic_item_img_pad"
+        android:layout_marginTop="@dimen/classic_item_img_pad"
+        android:minHeight="@dimen/classic_item_img_size"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/error" />
+
+    <TextView
+        android:id="@+id/classic_item_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/classic_item_img_pad"
+        android:layout_marginTop="@dimen/classic_item_img_pad"
+        android:layout_marginEnd="@dimen/classic_item_img_pad"
+        android:layout_marginBottom="@dimen/classic_item_img_pad"
+        android:gravity="center_horizontal|top"
+        android:text="TextView"
+        android:textSize="@dimen/classic_item_txt_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/classic_item_img" />
+</androidx.constraintlayout.widget.ConstraintLayout>

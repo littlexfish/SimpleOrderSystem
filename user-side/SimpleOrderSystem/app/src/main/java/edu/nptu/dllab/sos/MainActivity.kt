@@ -66,6 +66,10 @@ class MainActivity : AppCompatActivity() {
 		
 	}
 	
+	/**
+	 * Process the new data from intent
+	 */
+	@SOSVersion(since = "0.0")
 	private fun parseNewData(uri: Uri) {
 		if(uri.path != null) {
 			val ps = pathSplit(uri.path!!)
@@ -80,6 +84,10 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 	
+	/**
+	 * Split the uri path
+	 */
+	@SOSVersion(since = "0.0")
 	private fun pathSplit(path: String) = path.split("/")
 	
 }

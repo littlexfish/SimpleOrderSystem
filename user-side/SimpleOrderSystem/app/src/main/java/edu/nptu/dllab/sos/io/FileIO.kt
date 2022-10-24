@@ -1,6 +1,7 @@
 package edu.nptu.dllab.sos.io
 
 import android.content.Context
+import edu.nptu.dllab.sos.util.SOSVersion
 import org.msgpack.core.MessagePack
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
@@ -11,36 +12,88 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * A class to process file of this app
+ */
+@SOSVersion(since = "0.0")
 object FileIO {
 	
+	/**
+	 * The directory of crash file
+	 */
+	@SOSVersion(since = "0.0")
 	private const val CRASH_DIR_STRING = "crash/"
+	
+	/**
+	 * The directory of menu file
+	 */
+	@SOSVersion(since = "0.0")
 	private const val MENU_DIR_STRING = "menu/"
 	
+	/**
+	 * List crash files
+	 */
+	@SOSVersion(since = "0.0")
 	fun listCrashFiles(context: Context): Array<out File> {
 		return File("${context.dataDir}/$CRASH_DIR_STRING").listFiles() ?: emptyArray()
 	}
 	
+	/**
+	 * Check the menu is exists
+	 */
+	@SOSVersion(since = "0.0")
 	fun hasMenu(context: Context, shopId: Int): Boolean {
 		val file = File("${context.dataDir}/$MENU_DIR_STRING")
 		return file.list()?.contains("$shopId.json") ?: false
 	}
 	
+	/**
+	 * Get menu file
+	 */
+	@SOSVersion(since = "0.0")
 	fun getMenuFile(context: Context, shopId: Int): File {
 		return File("${context.dataDir}/$MENU_DIR_STRING/$shopId.json")
 	}
 	
+	/**
+	 * New a menu file
+	 */
+	@SOSVersion(since = "0.0")
 	fun newMenuFile() = MenuFile()
 	
+	/**
+	 * New a crash file
+	 */
 	fun newCrashFile() = CrashFile()
 	
+	/**
+	 * A base class of file in this app
+	 */
+	@SOSVersion(since = "0.0")
 	abstract class SOSFile {
 		
+		/**
+		 * Call before write
+		 */
+		@SOSVersion(since = "0.0")
 		protected open fun preWrite(context: Context) {}
 		
+		/**
+		 * Call on write
+		 */
+		@SOSVersion(since = "0.0")
 		protected abstract fun onWrite(context: Context, fileName: String?): Boolean
 		
+		/**
+		 * Call on finished write
+		 */
+		@SOSVersion(since = "0.0")
 		protected open fun postWrite(context: Context) {}
 		
+		/**
+		 * Call write the file
+		 */
+		@SOSVersion(since = "0.0")
 		fun write(context: Context, fileName: String) {
 			postWrite(context)
 			write(context, fileName)
@@ -49,10 +102,22 @@ object FileIO {
 		
 	}
 	
+	/**
+	 * The menu file
+	 */
+	@SOSVersion(since = "0.0")
 	class MenuFile : SOSFile() {
 		
+		/**
+		 * The menu data
+		 */
+		@SOSVersion(since = "0.0")
 		private var data: Value = ValueFactory.newNil()
 		
+		/**
+		 * Set menu data
+		 */
+		@SOSVersion(since = "0.0")
 		fun setMenuData(value: Value) {
 			data = value
 		}
@@ -80,6 +145,9 @@ object FileIO {
 			}
 		}
 		
+		/**
+		 * Check directory is exists and auto create if not exists
+		 */
 		private fun checkDir(context: Context) {
 			val d = File("${context.dataDir}/$CRASH_DIR_STRING")
 			d.mkdirs()
@@ -87,20 +155,49 @@ object FileIO {
 		
 	}
 	
+	/**
+	 * The crash file
+	 */
 	class CrashFile : SOSFile() {
 		
+		/**
+		 * The crash message
+		 */
+		@SOSVersion(since = "0.0")
 		private var crashMessage = ""
+		
+		/**
+		 * The crash line
+		 */
+		@SOSVersion(since = "0.0")
 		private var crashLine: String? = null
+		
+		/**
+		 * The list of throwable
+		 */
+		@SOSVersion(since = "0.0")
 		private val throwable = ArrayList<Throwable>()
 		
+		/**
+		 * Add throwable data
+		 */
+		@SOSVersion(since = "0.0")
 		fun addThrowable(thr: Throwable) {
 			throwable.add(thr)
 		}
 		
+		/**
+		 * Set crash line
+		 */
+		@SOSVersion(since = "0.0")
 		fun setCrashLine(line: String) {
 			crashLine = line
 		}
 		
+		/**
+		 * Set crash line
+		 */
+		@SOSVersion(since = "0.0")
 		fun setCrashMessage(message: String) {
 			crashMessage = message
 		}

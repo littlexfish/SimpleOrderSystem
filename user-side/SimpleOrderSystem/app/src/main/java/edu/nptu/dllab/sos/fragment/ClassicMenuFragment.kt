@@ -7,8 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.data.menu.MenuBase
+import edu.nptu.dllab.sos.util.SOSVersion
 
-
+/**
+ * A fragment class of classic type menu
+ */
+@SOSVersion(since = "0.0")
 class ClassicMenuFragment : MenuFragment() {
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +35,7 @@ class ClassicMenuFragment : MenuFragment() {
 	}
 	
 	override fun buildMenu(menu: MenuBase) {
+		super.buildMenu(menu)
 		TODO("Not yet implemented")
 	}
 	

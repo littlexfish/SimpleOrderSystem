@@ -29,10 +29,15 @@ class DownloadRequestEvent : Event(EVENT_KEY), EventPusher {
 		downloadRes.add(path)
 	}
 	
+	/**
+	 * Add multi-path
+	 */
+	@SOSVersion(since = "0.0")
 	fun addAllPath(paths: Iterable<String>) {
 		downloadRes.addAll(paths)
 	}
 	
+	@Deprecated("use toValue(): Value")
 	override fun toJson(): JsonElement {
 		val json = JsonObject()
 		json.addProperty(NET_KEY_EVENT, EVENT_KEY)

@@ -1,7 +1,7 @@
 package edu.nptu.dllab.sos.data
 
 import com.google.gson.JsonElement
-import edu.nptu.dllab.sos.data.menu.ClassicMenu
+import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.util.Exceptions
 import edu.nptu.dllab.sos.util.SOSVersion
@@ -29,23 +29,27 @@ class UpdateMenu : Event(EVENT_KEY), EventPuller {
 	
 	/**
 	 * The shop id
+	@SOSVersion(since = "0.0")
 	 */
 	var shopId: Int = -1
 	
 	/**
 	 * The menu version
 	 */
+	@SOSVersion(since = "0.0")
 	var version: Int = -1
 	
 	/**
 	 * The menu object
 	 * @see MenuBase
 	 */
+	@SOSVersion(since = "0.0")
 	var menu: MenuBase = ClassicMenu(shopId, version)
 	
 	/**
 	 * The resources menu needed
 	 */
+	@SOSVersion(since = "0.0")
 	private val res = ArrayList<Resource>()
 	
 	/**
@@ -56,7 +60,7 @@ class UpdateMenu : Event(EVENT_KEY), EventPuller {
 		TODO("Not yet implemented")
 	}
 	
-	@SOSVersion(since = "0.0")
+	@Deprecated("use fromValue(Value)")
 	override fun fromJson(json: JsonElement) {
 		if(!json.isJsonObject) throw Exceptions.DataFormatException("data format not object type")
 		val data = json.asJsonObject
@@ -83,7 +87,6 @@ class UpdateMenu : Event(EVENT_KEY), EventPuller {
 		}
 	}
 	
-	@SOSVersion(since = "0.0")
 	override fun fromValue(value: Value) {
 		if(!value.isMapValue) throw Exceptions.DataFormatException("data format not map type")
 		try {

@@ -14,11 +14,20 @@ import edu.nptu.dllab.sos.util.SOSVersion
 @SOSVersion(since = "0.0")
 class DBMenu {
 	
+	/**
+	 * The shop id
+	 */
+	@SOSVersion(since = "0.0")
 	var shopId = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.MENU_SHOP_ID.columnName)
 			return field
 		}
+	
+	/**
+	 * The menu version
+	 */
+	@SOSVersion(since = "0.0")
 	var version = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.MENU_VERSION.columnName)

@@ -16,6 +16,7 @@ interface EventPusher {
 	/**
 	 * Push event with json
 	 */
+	@Deprecated("use toValue(): Value")
 	@SOSVersion(since = "0.0")
 	fun toJson(): JsonElement
 	

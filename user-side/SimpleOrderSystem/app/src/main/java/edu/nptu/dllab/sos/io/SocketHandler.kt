@@ -1,6 +1,5 @@
 package edu.nptu.dllab.sos.io
 
-import android.util.Log
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import edu.nptu.dllab.sos.data.*
@@ -39,25 +38,37 @@ class SocketHandler {
 	/**
 	 * Check the connect state
 	 */
+	@SOSVersion(since = "0.0")
 	private var connected = false
 	
 	/**
 	 * The network socket
 	 */
+	@SOSVersion(since = "0.0")
 	private var socket: Socket? = null
 	
 	/**
 	 * Uses format, json or msgpack
 	 */
+	@SOSVersion(since = "0.0")
 	var useFormat = Format.JSON
 	
 	/**
 	 * Uses charset, default UTF-8
 	 */
+	@SOSVersion(since = "0.0")
 	var charset = Charsets.UTF_8
 	
+	/**
+	 * The buffer of value send
+	 */
+	@SOSVersion(since = "0.0")
 	private val tmpBuffer = ByteArrayOutputStream()
 	
+	/**
+	 * The last event which not process
+	 */
+	@SOSVersion(since = "0.0")
 	private var holdEvent: EventPuller? = null
 	
 	/**
@@ -161,6 +172,10 @@ class SocketHandler {
 		throw RuntimeException()
 	}
 	
+	/**
+	 * Hold the event
+	 */
+	@SOSVersion(since = "0.0")
 	fun holdEvent(event: EventPuller) {
 		holdEvent = event
 	}

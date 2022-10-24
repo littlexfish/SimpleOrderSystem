@@ -15,26 +15,50 @@ import edu.nptu.dllab.sos.util.SOSVersion
 @SOSVersion(since = "0.0")
 class DBRes {
 	
+	/**
+	 * Resource id
+	 */
+	@SOSVersion(since = "0.0")
 	var id = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.RES_ID.columnName)
 			return field
 		}
+	
+	/**
+	 * The shop id
+	 */
+	@SOSVersion(since = "0.0")
 	var shopId = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.RES_SHOP_ID.columnName)
 			return field
 		}
+	
+	/**
+	 * The resource path of this resource
+	 */
+	@SOSVersion(since = "0.0")
 	var path = ""
 		get() {
 			if(field.isBlank()) throw Exceptions.DBDataNotGetException(DBColumn.RES_PATH.columnName)
 			return field
 		}
+	
+	/**
+	 * The sha256 of this resource data
+	 */
+	@SOSVersion(since = "0.0")
 	var sha256 = ""
 		get() {
 			if(field.isBlank()) throw Exceptions.DBDataNotGetException(DBColumn.RES_SHA256.columnName)
 			return field
 		}
+	
+	/**
+	 * The size of this resource data
+	 */
+	@SOSVersion(since = "0.0")
 	var size = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.RES_SIZE.columnName)
