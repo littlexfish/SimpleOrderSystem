@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import edu.nptu.dllab.sos.data.*
 import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.databinding.ActivityMenuBinding
@@ -83,6 +84,12 @@ class MenuActivity : AppCompatActivity() {
 		
 		// auto load on first time
 		loadFromServer()
+		
+		onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+			override fun handleOnBackPressed() {
+				if(!nowFragment.onBackPressed()) finishActivity(Util.REQUEST_BACK)
+			}
+		})
 		
 	}
 	

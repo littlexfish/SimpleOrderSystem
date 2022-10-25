@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.util.SOSVersion
 
@@ -12,7 +13,7 @@ import edu.nptu.dllab.sos.util.SOSVersion
  * The classic menu type category
  */
 @SOSVersion(since = "0.0")
-class CategoryView : FrameLayout {
+class CategoryView : ConstraintLayout {
 	
 	/**
 	 * The category name

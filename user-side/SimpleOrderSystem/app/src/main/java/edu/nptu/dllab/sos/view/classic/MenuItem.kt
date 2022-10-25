@@ -9,6 +9,7 @@ import androidx.core.graphics.drawable.toBitmap
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.databinding.ViewItemBlockBinding
+import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 import edu.nptu.dllab.sos.util.SOSVersion
 
 /**
@@ -20,16 +21,10 @@ abstract class MenuItem : ConstraintLayout {
 	private lateinit var binding: ViewItemBlockBinding
 	
 	/**
-	 * The category path
+	 * The fragment attach to
 	 */
 	@SOSVersion(since = "0.0")
-	private val catePath: String
-	
-	/**
-	 * The menu
-	 */
-	@SOSVersion(since = "0.0")
-	private val menu: ClassicMenu
+	protected val fragment: ClassicMenuFragment
 	
 	/**
 	 * The item bitmap
@@ -62,20 +57,20 @@ abstract class MenuItem : ConstraintLayout {
 		}
 	
 	
-	constructor(context: Context, m: ClassicMenu, path: String) : super(context) {
+	constructor(context: Context, frag: ClassicMenuFragment, n: String) : super(context) {
 		init()
-		menu = m
-		catePath = path
+		fragment = frag
+		setString(n)
 	}
-	constructor(context: Context, attr: AttributeSet?, m: ClassicMenu, path: String) : super(context, attr) {
+	constructor(context: Context, attr: AttributeSet?, frag: ClassicMenuFragment, n: String) : super(context, attr) {
 		init()
-		menu = m
-		catePath = path
+		fragment = frag
+		setString(n)
 	}
-	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int, m: ClassicMenu, path: String) : super(context, attr, defStyleAttr) {
+	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int, frag: ClassicMenuFragment, n: String) : super(context, attr, defStyleAttr) {
 		init()
-		menu = m
-		catePath = path
+		fragment = frag
+		setString(n)
 	}
 	
 	private fun init() {
@@ -94,14 +89,26 @@ abstract class MenuItem : ConstraintLayout {
 	@SOSVersion(since = "0.0")
 	protected abstract fun onItemClick()
 	
+	/**
+	 * Set image with bitmap
+	 */
+	@SOSVersion(since = "0.0")
 	protected fun setImage(bitmap: Bitmap) {
 		binding.classicItemImg.setImageBitmap(bitmap)
 	}
 	
+	/**
+	 * Set image with drawable
+	 */
+	@SOSVersion(since = "0.0")
 	protected fun setImage(drawable: Drawable?) {
 		binding.classicItemImg.setImageDrawable(drawable)
 	}
 	
+	/**
+	 * Set string of this
+	 */
+	@SOSVersion(since = "0.0")
 	protected fun setString(t: String) {
 		binding.classicItemText.text = t
 	}

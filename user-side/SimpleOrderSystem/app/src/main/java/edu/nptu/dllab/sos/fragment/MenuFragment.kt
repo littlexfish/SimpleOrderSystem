@@ -83,6 +83,13 @@ abstract class MenuFragment : Fragment() {
 	}
 	
 	/**
+	 * Call on back pressed
+	 * @return `false` if not consume
+	 */
+	@SOSVersion(since = "0.0")
+	open fun onBackPressed(): Boolean { return false }
+	
+	/**
 	 * Get menu
 	 */
 	@SOSVersion(since = "0.0")

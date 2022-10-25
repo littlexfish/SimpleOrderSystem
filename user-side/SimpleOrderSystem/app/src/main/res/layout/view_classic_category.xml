@@ -1,34 +1,53 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/classic_category_back" />
 
     <ImageView
         android:id="@+id/classic_cate_img"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="10dp"
-        android:scaleType="fitStart"
-        tools:srcCompat="@drawable/classic_category_back" />
-
-    <TextView
-        android:id="@+id/classic_cate_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="70dp"
-        android:gravity="center"
+        android:layout_marginStart="@dimen/classic_category_margin"
+        android:layout_marginTop="@dimen/classic_category_margin"
+        android:layout_marginBottom="@dimen/classic_category_margin"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_max="@dimen/classic_category_img_max"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="@dimen/classic_category_img_max" />
+
+    <TextView
+        android:id="@+id/classic_cate_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/classic_category_margin"
+        android:layout_marginTop="@dimen/classic_category_margin"
+        android:layout_marginEnd="@dimen/classic_category_margin"
+        android:layout_marginBottom="@dimen/classic_category_margin"
+        android:gravity="start|center_vertical"
         android:text="TextView"
         android:textColor="@color/text_black"
         android:textSize="@dimen/classic_category_text_size"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_min="@dimen/classic_category_text_min_height"
+        app:layout_constraintStart_toEndOf="@+id/classic_cate_img"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_min="@dimen/classic_category_text_min_width" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

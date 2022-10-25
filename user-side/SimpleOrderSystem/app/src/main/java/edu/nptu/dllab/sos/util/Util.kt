@@ -39,6 +39,12 @@ object Util {
 	const val REQUEST_OK = 0
 	
 	/**
+	 * The activity request code that is back
+	 */
+	@SOSVersion(since = "0.0")
+	const val REQUEST_BACK = -1
+	
+	/**
 	 * The activity request code that is error
 	 */
 	@SOSVersion(since = "0.0")

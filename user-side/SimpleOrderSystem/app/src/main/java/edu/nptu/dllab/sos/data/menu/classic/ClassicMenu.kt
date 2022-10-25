@@ -107,15 +107,21 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	 */
 	@SOSVersion(since = "0.0")
 	fun getListFromCategory(cate: String): ArrayList<Pair<String, Boolean>> {
-		val spl = cate.split("/")
 		val ret = ArrayList<Pair<String, Boolean>>()
-		var lastNode = root
-		for(i in spl) {
-			val next = lastNode.findPost(i)
-			if(next != null) lastNode = next
-			else return ret
+		val node = if(cate.isEmpty()) {
+			root
 		}
-		ret.addAll(lastNode.getPosts().map { Pair(it, true) })
+		else {
+			val spl = if(cate.startsWith("/")) cate.substring(1).split("/") else cate.split("/")
+			var lastNode = root
+			for(i in spl) {
+				val next = lastNode.findPost(i)
+				if(next != null) lastNode = next
+				else return ret
+			}
+			lastNode
+		}
+		ret.addAll(node.getPosts().map { Pair(it, true) })
 		ret.addAll(items.filterValues { it.cate == cate }.map { Pair(it.value.itemId, false) })
 		return ret
 	}
