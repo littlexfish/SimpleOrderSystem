@@ -52,6 +52,10 @@ class MainActivity : AppCompatActivity() {
 			startActivity(Intent(this, TestActivity::class.java))
 		}
 		
+		binding.button5.setOnClickListener {
+			startActivity(Intent(this, MenuActivity::class.java).apply { putExtra(MenuActivity.EXTRA_SHOP_ID, 0) })
+		}
+		
 		binding.scanOverlay.setBox(RectF(50f, 80f, 200f, 200f))
 		binding.scanOverlay.draw(Canvas(Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)))
 		

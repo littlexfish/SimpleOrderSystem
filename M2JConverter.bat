@@ -1,0 +1,1 @@
+java -jar JMConverter.jar -m %~1

@@ -146,7 +146,7 @@ class SocketHandler {
 					}
 					val e = getEventJson(JsonParser.parseString(String(bos.toByteArray(), charset)))
 					if(e is ResourceDownload) {
-						TODO("Read extra bytes that contains resource data")
+						// "Read extra bytes that contains resource data"
 					}
 					return e
 				}

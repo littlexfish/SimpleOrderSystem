@@ -152,6 +152,10 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 		return ClassicMenuFragment::class.java
 	}
 	
+	override fun toString(): String {
+		return "ClassicMenu { node=$root, items=${items.keys.toTypedArray().contentToString()} }"
+	}
+	
 	/**
 	 * A node class use for build item folder
 	 */
@@ -196,6 +200,19 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 		
 		override fun hashCode(): Int {
 			return name.hashCode()
+		}
+		
+		override fun toString(): String {
+			if(post.isEmpty()) return name
+			val sb = StringBuilder(name)
+			sb.append("{")
+			val postA = post.toList()
+			for(i in postA.indices) {
+				sb.append(postA[i].toString())
+				if(i < postA.size - 1) sb.append(", ")
+			}
+			sb.append("}")
+			return sb.toString()
 		}
 		
 	}

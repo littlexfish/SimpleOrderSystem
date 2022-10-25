@@ -1,7 +1,9 @@
 package edu.nptu.dllab.sos.fragment
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,9 @@ import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.view.classic.CategoryView
 import edu.nptu.dllab.sos.view.classic.ItemBlock
 import edu.nptu.dllab.sos.view.classic.ItemFolder
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * A fragment class of classic type menu
@@ -41,6 +46,8 @@ class ClassicMenuFragment : MenuFragment() {
 	 */
 	private val resData = HashMap<Int, Bitmap?>()
 	
+	private var refresh = false
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		arguments?.let {
@@ -49,15 +56,21 @@ class ClassicMenuFragment : MenuFragment() {
 	}
 	
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-	                          savedInstanceState: Bundle?): View? { // Inflate the layout for this fragment
+	                          savedInstanceState: Bundle?): View { // Inflate the layout for this fragment
+//		binding = FragmentClassicMenuBinding.inflate(inflater)
 		return inflater.inflate(R.layout.fragment_classic_menu, container, false)
 	}
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		
+//		if(!::binding.isInitialized)
 		binding = FragmentClassicMenuBinding.bind(view)
 		
+		if(refresh) {
+			refreshScreen()
+			refresh = false
+		}
 	}
 	
 	override fun buildMenu(menu: MenuBase) {
@@ -72,8 +85,15 @@ class ClassicMenuFragment : MenuFragment() {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun refreshScreen() {
-		if(classic == null) return
+		// FIXME: cannot refresh screen normally
+		//  it should print 2 times but only 1
+		Log.e("TAG", Objects.toString(classic))
+		Log.e("TAG", ::binding.isInitialized.toString())
 		// refresh main category
+		if(!::binding.isInitialized || classic == null) {
+			refresh = true
+			return
+		}
 		binding.menuClassicCate.removeAllViews()
 		val mc = classic!!.getListFromCategory("")
 		for(cate in mc) {
@@ -121,7 +141,7 @@ class ClassicMenuFragment : MenuFragment() {
 			binding.menuClassicItems.addView(hLayout)
 			
 		}
-		
+		refresh = false
 	}
 	
 	/**
@@ -142,7 +162,7 @@ class ClassicMenuFragment : MenuFragment() {
 	}
 	
 	override fun onBackPressed(): Boolean {
-		if(nowCate.size > 0) {
+		if(nowCate.isNotEmpty()) {
 			nowCate.removeAt(nowCate.lastIndex)
 			refreshScreen()
 			return true

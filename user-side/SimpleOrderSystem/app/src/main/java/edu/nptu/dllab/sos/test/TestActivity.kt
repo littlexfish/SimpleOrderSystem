@@ -29,7 +29,9 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.net.Socket
+import java.net.SocketException
 import java.nio.ByteBuffer
+import java.util.*
 
 
 private const val EVENT_PULL_NEAR_SHOP = "near_shop"
@@ -71,7 +73,13 @@ class TestActivity : AppCompatActivity() {
 					while(socket.isConnected) {
 						val e = getEvent()
 						runOnUiThread {
-							binding.textView.text = e.toString()
+							binding.textView.text = Objects.toString(e)
+						}
+						if(e == null) {
+							runOnUiThread {
+								finish()
+							}
+							break
 						}
 					}
 				}.start()
@@ -99,37 +107,48 @@ class TestActivity : AppCompatActivity() {
 		
 	}
 	
-	private fun getEvent(): EventPuller {
-		val ins = socket.getInputStream()
-		// get the pack size, use 4 bytes
-		val intBs = ByteBuffer.allocate(4)
-		for(i in 0 until 4) {
-			intBs.put(ins.read().toByte())
+	private fun getEvent(): EventPuller? {
+		try {
+			val ins = socket.getInputStream()
+			// get the pack size, use 4 bytes
+			val intBs = ByteBuffer.allocate(4)
+			for(i in 0 until 4) {
+				intBs.put(ins.read().toByte())
+			}
+			val size = intBs.int
+			// force read to size of pack
+			val bos = ByteArrayOutputStream()
+			for(i in 0 until size) {
+				bos.write(ins.read())
+			}
+			// unpack from byte array
+			val unpacker = MessagePack.newDefaultUnpacker(ByteArrayInputStream(bos.toByteArray()))
+			return getEventValue(unpacker.unpackValue())
 		}
-		val size = intBs.int
-		// force read to size of pack
-		val bos = ByteArrayOutputStream()
-		for(i in 0 until size) {
-			bos.write(ins.read())
+		catch(e: SocketException) {
+			Log.e("Test", "", e)
 		}
-		// unpack from byte array
-		val unpacker = MessagePack.newDefaultUnpacker(ByteArrayInputStream(bos.toByteArray()))
-		return getEventValue(unpacker.unpackValue())
+		return null
 	}
 	
 	fun sendEvent(event: EventPusher) {
 		if(!::socket.isInitialized) return
 		handler.post {
-			val value = event.toValue()
-			val bos = ByteArrayOutputStream()
-			val packer = MessagePack.newDefaultPacker(bos)
-			packer.packValue(value)
-			packer.flush()
-			val array = bos.toByteArray()
-			val size = array.size.toByteArray()
-			
-			socket.getOutputStream().write(size)
-			socket.getOutputStream().write(array)
+			try {
+				val value = event.toValue()
+				val bos = ByteArrayOutputStream()
+				val packer = MessagePack.newDefaultPacker(bos)
+				packer.packValue(value)
+				packer.flush()
+				val array = bos.toByteArray()
+				val size = array.size.toByteArray()
+				
+				socket.getOutputStream().write(size)
+				socket.getOutputStream().write(array)
+			}
+			catch(e: SocketException) {
+				Log.e("Test", "", e)
+			}
 		}
 	}
 	
