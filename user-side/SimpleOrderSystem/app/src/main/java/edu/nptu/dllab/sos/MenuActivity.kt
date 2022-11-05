@@ -25,8 +25,6 @@ import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.asString
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.core.MessagePack
-import java.io.ByteArrayOutputStream
-import java.io.File
 
 /**
  * The activity show the menu
@@ -62,7 +60,6 @@ class MenuActivity : AppCompatActivity() {
 	@SOSVersion(since = "0.0")
 	private val handler = Handler(handlerThread.looper)
 	
-	
 	/**
 	 * The menu fragment now on
 	 */
@@ -86,8 +83,12 @@ class MenuActivity : AppCompatActivity() {
 		
 		// auto load on first time
 		binding.menuFragment.post {
-//			loadFromServer()
-			testLoadMenu() // FIXME: use for test
+			if(shopId < 0) {
+				testLoadMenu()
+			}
+			else {
+				loadFromServer()
+			}
 		}
 		
 		onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
@@ -99,6 +100,8 @@ class MenuActivity : AppCompatActivity() {
 	}
 	
 	private fun testLoadMenu() {
+		startLoading()
+		// Force load menu from assets/testMenu.menu
 		val inS = resources.assets.open("testMenu.menu")
 		
 		val value = MessagePack.newDefaultUnpacker(inS).unpackValue().asMapValue()
@@ -106,9 +109,9 @@ class MenuActivity : AppCompatActivity() {
 		
 		val type = value.map()[Util.UpdateKey.MENU_TYPE.key.toStringValue()]!!.asString()
 		val menuBase = MenuBase.buildByType(MenuBase.MenuType.getTypeByString(type), shopId, 0, value)
-		checkAndChangeFrag(menuBase)
 		runOnUiThread {
-			nowFragment.buildMenu(menuBase)
+			checkAndChangeFrag(menuBase)
+//			stopLoading()
 		}
 	}
 	
@@ -141,7 +144,6 @@ class MenuActivity : AppCompatActivity() {
 					val getShopId = um.shopId
 					if(getShopId == shopId) { // check id is same
 						val newVersion = um.version
-						checkAndChangeFrag(um.menu)
 						// get resource
 						putAllResource(resMap, um.getNeedDownloadResources())
 						// save menu
@@ -150,7 +152,7 @@ class MenuActivity : AppCompatActivity() {
 						menuFile.write(applicationContext, shopId.toString())
 						// build menu
 						runOnUiThread {
-							nowFragment.buildMenu(um.menu)
+							checkAndChangeFrag(um.menu)
 						}
 						// update database
 						val newDbMenu = DBMenu(shopId, newVersion)
@@ -226,14 +228,13 @@ class MenuActivity : AppCompatActivity() {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun checkAndChangeFrag(menu: MenuBase) {
-		if(nowFragment.javaClass != menu.getMenuFragmentClass()) { // change fragment
-			runOnUiThread {
-				Log.e("TAG", "+")
-				val frag = menu.getMenuFragment()
-				val tra = supportFragmentManager.beginTransaction()
-				tra.replace(binding.menuFragment.id, frag)
-				nowFragment = frag
-			}
+		runOnUiThread {
+			val frag = menu.getMenuFragment()
+			val tra = supportFragmentManager.beginTransaction()
+			tra.replace(binding.menuFragment.id, frag)
+			tra.commit()
+			nowFragment = frag
+			nowFragment.buildMenu(menu)
 		}
 	}
 	
@@ -269,6 +270,12 @@ class MenuActivity : AppCompatActivity() {
 	@SOSVersion(since = "0.0")
 	private fun stopLoading() {
 		loadingDialog.dismiss()
+	}
+	
+	override fun onDestroy() {
+		super.onDestroy()
+		loadingDialog.dismiss()
+		handlerThread.quitSafely()
 	}
 	
 	companion object {

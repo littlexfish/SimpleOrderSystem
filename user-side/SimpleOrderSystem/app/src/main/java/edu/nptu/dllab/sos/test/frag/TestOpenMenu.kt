@@ -8,11 +8,9 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import edu.nptu.dllab.sos.R
-import edu.nptu.dllab.sos.data.LinkEvent
 import edu.nptu.dllab.sos.data.OpenMenuEvent
 import edu.nptu.dllab.sos.databinding.FragmentTestLinkBinding
 import edu.nptu.dllab.sos.test.TestActivity
-import edu.nptu.dllab.sos.util.Position
 
 class TestOpenMenu : Fragment() {
 	
@@ -55,6 +53,6 @@ class TestOpenMenu : Fragment() {
 	
 	companion object {
 		@JvmStatic
-		fun newInstance() = TestLink()
+		fun newInstance() = TestOpenMenu()
 	}
 }

@@ -12,10 +12,9 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/main_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_min="@dimen/main_toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@color/theme_main" />
+        app:srcCompat="@color/theme_main" />
 
     <ImageView
         android:id="@+id/mainQrScanner"

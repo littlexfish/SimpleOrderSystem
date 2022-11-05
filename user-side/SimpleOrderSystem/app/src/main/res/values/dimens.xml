@@ -9,7 +9,7 @@
     <dimen name="classic_category_card_corner">100dp</dimen>
     <dimen name="classic_category_margin">10dp</dimen>
     <dimen name="classic_category_text_size">20dp</dimen>
-    <dimen name="classic_category_text_min_width">100dp</dimen>
+    <dimen name="classic_category_text_min_width">50dp</dimen>
     <dimen name="classic_category_text_min_height">30dp</dimen>
     <dimen name="classic_category_img_max">50dp</dimen>
     <dimen name="classic_item_img_pad">10dp</dimen>

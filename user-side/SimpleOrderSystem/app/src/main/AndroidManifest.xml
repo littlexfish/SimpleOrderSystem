@@ -16,15 +16,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/Theme.SimpleOrderSystem"
         tools:targetApi="31">
+
         <activity
             android:name=".QrCodeScanner"
             android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
         <activity
             android:name=".MenuActivity"
@@ -42,6 +40,10 @@
 
                 <data android:scheme="sos" />
             </intent-filter>
+
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/qr_shortcuts" />
+
         </activity>
     </application>
 

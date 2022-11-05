@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SOS</string>
+
+    <string name="shortcuts_short_label">QR Code Scanner</string>
+    <string name="shortcuts_long_label">QR Code Scanner</string>
+    <string name="shortcuts_disable_msg">Disabled</string>
 </resources>

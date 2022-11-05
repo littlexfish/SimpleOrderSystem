@@ -3,25 +3,14 @@ package edu.nptu.dllab.sos
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import edu.nptu.dllab.sos.android.DownloadBitmap
-import edu.nptu.dllab.sos.data.LinkEvent
-import edu.nptu.dllab.sos.data.OpenMenuEvent
 import edu.nptu.dllab.sos.databinding.ActivityMainBinding
 import edu.nptu.dllab.sos.io.Translator
 import edu.nptu.dllab.sos.test.TestActivity
-import edu.nptu.dllab.sos.util.Position
 import edu.nptu.dllab.sos.util.SOSVersion
-import org.msgpack.core.MessagePack
-import java.io.IOException
-import java.net.Socket
 
 /**
  * The main activity of this app
@@ -76,22 +65,23 @@ class MainActivity : AppCompatActivity() {
 	@SOSVersion(since = "0.0")
 	private fun parseNewData(uri: Uri) {
 		if(uri.path != null) {
-			val ps = pathSplit(uri.path!!)
+			val ps = uri.pathSegments
+			if(ps.isEmpty()) return
 			when(ps[0]) {
 				"test" -> {
 					startActivity(Intent(applicationContext, TestActivity::class.java).setData(intent.data))
 				}
 				"menu" -> {
-					// TODO: open menu
+					if(ps.size <= 1) return
+					val num = if(ps[1] == "test") -1 else ps[1].toIntOrNull()
+					if(num != null) {
+						val menuActI = Intent(applicationContext, MenuActivity::class.java)
+						menuActI.putExtra(MenuActivity.EXTRA_SHOP_ID, num)
+						startActivity(menuActI)
+					}
 				}
 			}
 		}
 	}
-	
-	/**
-	 * Split the uri path
-	 */
-	@SOSVersion(since = "0.0")
-	private fun pathSplit(path: String) = path.split("/")
 	
 }

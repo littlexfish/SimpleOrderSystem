@@ -156,7 +156,7 @@ class SocketHandler {
 					for(i in 0 until 4) {
 						intBs.put(ins.read().toByte())
 					}
-					val size = intBs.int
+					val size = intBs.getInt(0)
 					// force read to size of pack
 					val bos = ByteArrayOutputStream()
 					for(i in 0 until size) {

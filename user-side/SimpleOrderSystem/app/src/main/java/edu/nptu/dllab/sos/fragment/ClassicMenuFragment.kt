@@ -57,15 +57,17 @@ class ClassicMenuFragment : MenuFragment() {
 	
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
 	                          savedInstanceState: Bundle?): View { // Inflate the layout for this fragment
-//		binding = FragmentClassicMenuBinding.inflate(inflater)
 		return inflater.inflate(R.layout.fragment_classic_menu, container, false)
 	}
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		
-//		if(!::binding.isInitialized)
 		binding = FragmentClassicMenuBinding.bind(view)
+		
+		binding.classicFilter.setOnClickListener {
+			// TODO: open filter
+		}
 		
 		if(refresh) {
 			refreshScreen()
@@ -85,10 +87,6 @@ class ClassicMenuFragment : MenuFragment() {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun refreshScreen() {
-		// FIXME: cannot refresh screen normally
-		//  it should print 2 times but only 1
-		Log.e("TAG", Objects.toString(classic))
-		Log.e("TAG", ::binding.isInitialized.toString())
 		// refresh main category
 		if(!::binding.isInitialized || classic == null) {
 			refresh = true
@@ -100,9 +98,18 @@ class ClassicMenuFragment : MenuFragment() {
 			if(cate.second) {
 				val cv = CategoryView(requireContext())
 				cv.string = cate.first
+				cv.setOnClickListener {
+					nowCate = arrayListOf(cate.first)
+					refreshScreen()
+				}
 				binding.menuClassicCate.addView(cv)
 			}
 		}
+		val place = TextView(context)
+		place.text = ""
+		val dimen = resources.getDimensionPixelSize(R.dimen.menu_classic_category)
+		place.layoutParams = LinearLayout.LayoutParams(dimen, dimen)
+		binding.menuClassicCate.addView(place)
 		
 		// refresh items
 		val cate = nowCate.joinToString("/")

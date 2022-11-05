@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,8 +7,13 @@
     tools:context=".fragment.ClassicMenuFragment">
 
     <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/menu_classic_category">
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/menu_classic_category"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/menuClassicCate"
@@ -17,11 +22,35 @@
             android:orientation="horizontal" />
     </HorizontalScrollView>
 
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="70dp"
+        android:layout_height="0dp"
+        android:src="@drawable/fade_back"
+        app:layout_constraintBottom_toBottomOf="@+id/classicFilter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/classicFilter" />
+
+    <ImageView
+        android:id="@+id/classicFilter"
+        android:layout_width="@dimen/menu_classic_category"
+        android:layout_height="@dimen/menu_classic_category"
+        android:layout_gravity="end"
+        android:src="@drawable/classic_filter"
+        app:layout_constraintBottom_toBottomOf="@+id/horizontalScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/horizontalScrollView"
+        app:srcCompat="@drawable/classic_filter" />
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/menu_classic_category"
-        app:cardElevation="5dp">
+        android:layout_height="0dp"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -31,8 +60,8 @@
                 android:id="@+id/menuClassicItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:orientation="vertical" />
         </ScrollView>
 
     </androidx.cardview.widget.CardView>
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

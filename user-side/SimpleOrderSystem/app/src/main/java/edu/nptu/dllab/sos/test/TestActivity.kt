@@ -19,6 +19,7 @@ import edu.nptu.dllab.sos.test.frag.TestLink
 import edu.nptu.dllab.sos.test.frag.TestOpenMenu
 import edu.nptu.dllab.sos.util.Exceptions
 import edu.nptu.dllab.sos.util.Position
+import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.asMap
 import edu.nptu.dllab.sos.util.Util.asString
 import edu.nptu.dllab.sos.util.Util.toByteArray
@@ -115,7 +116,7 @@ class TestActivity : AppCompatActivity() {
 			for(i in 0 until 4) {
 				intBs.put(ins.read().toByte())
 			}
-			val size = intBs.int
+			val size = intBs.getInt(0)
 			// force read to size of pack
 			val bos = ByteArrayOutputStream()
 			for(i in 0 until size) {
@@ -153,7 +154,7 @@ class TestActivity : AppCompatActivity() {
 	}
 	
 	private fun getEventValue(value: Value): EventPuller {
-		if(!value.isMapValue) throw Exceptions.DataFormatException("event not map type")
+		Util.checkMapValue(value)
 		val map = value.asMap()
 		val e = when(map["event".toStringValue()]?.asString()) {
 			EVENT_PULL_NEAR_SHOP -> NearShop()
