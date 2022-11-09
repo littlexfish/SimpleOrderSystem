@@ -85,23 +85,23 @@ class DBRes {
 		if(cursor.isAfterLast) return
 		run {
 			val idI = cursor.getColumnIndex(DBColumn.RES_ID.columnName)
-			if(idI > 0) id = cursor.getInt(idI)
+			if(idI >= 0) id = cursor.getInt(idI)
 		}
 		run {
 			val shopI = cursor.getColumnIndex(DBColumn.RES_SHOP_ID.columnName)
-			if(shopI > 0) shopId = cursor.getInt(shopI)
+			if(shopI >= 0) shopId = cursor.getInt(shopI)
 		}
 		run {
 			val pathI = cursor.getColumnIndex(DBColumn.RES_PATH.columnName)
-			if(pathI > 0) path = cursor.getStringOrNull(pathI) ?: ""
+			if(pathI >= 0) path = cursor.getStringOrNull(pathI) ?: ""
 		}
 		run {
 			val shaI = cursor.getColumnIndex(DBColumn.RES_SHA256.columnName)
-			if(shaI > 0) sha256 = cursor.getStringOrNull(shaI) ?: ""
+			if(shaI >= 0) sha256 = cursor.getStringOrNull(shaI) ?: ""
 		}
 		run {
 			val sizeI = cursor.getColumnIndex(DBColumn.RES_SIZE.columnName)
-			if(sizeI > 0) size = cursor.getInt(sizeI)
+			if(sizeI >= 0) size = cursor.getInt(sizeI)
 		}
 	}
 	

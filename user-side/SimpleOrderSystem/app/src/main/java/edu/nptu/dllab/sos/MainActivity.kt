@@ -37,16 +37,18 @@ class MainActivity : AppCompatActivity() {
 			startActivity(Intent(applicationContext, QrCodeScanner::class.java))
 		}
 		
+		// For test
 		binding.button4.setOnClickListener {
 			startActivity(Intent(this, TestActivity::class.java))
 		}
 		
 		binding.button5.setOnClickListener {
-			startActivity(Intent(this, MenuActivity::class.java).apply { putExtra(MenuActivity.EXTRA_SHOP_ID, 0) })
+			startActivity(Intent(this, MenuActivity::class.java).apply { putExtra(MenuActivity.EXTRA_SHOP_ID, -1) })
 		}
 		
 		binding.scanOverlay.setBox(RectF(50f, 80f, 200f, 200f))
 		binding.scanOverlay.draw(Canvas(Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)))
+		// Test end
 		
 	}
 	
@@ -64,21 +66,23 @@ class MainActivity : AppCompatActivity() {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun parseNewData(uri: Uri) {
-		if(uri.path != null) {
-			val ps = uri.pathSegments
-			if(ps.isEmpty()) return
-			when(ps[0]) {
-				"test" -> {
-					startActivity(Intent(applicationContext, TestActivity::class.java).setData(intent.data))
-				}
-				"menu" -> {
-					if(ps.size <= 1) return
-					val num = if(ps[1] == "test") -1 else ps[1].toIntOrNull()
-					if(num != null) {
-						val menuActI = Intent(applicationContext, MenuActivity::class.java)
-						menuActI.putExtra(MenuActivity.EXTRA_SHOP_ID, num)
-						startActivity(menuActI)
-					}
+		/*
+		 * FISH NOTE:
+		 *   Parse the uri that open from any app.
+		 *   We process the uri path to open specific activity,
+		 *    that the app want to open
+		 */
+		when(uri.host) {
+			"dllab.test" -> {
+				startActivity(Intent(applicationContext, TestActivity::class.java).setData(intent.data))
+			}
+			"dllab.menu" -> {
+				val shopIdStr = uri.getQueryParameter("shopId") ?: return
+				val num = if(shopIdStr == "test") -1 else shopIdStr.toIntOrNull()
+				if(num != null) {
+					val menuActI = Intent(applicationContext, MenuActivity::class.java)
+					menuActI.putExtra(MenuActivity.EXTRA_SHOP_ID, num)
+					startActivity(menuActI)
 				}
 			}
 		}

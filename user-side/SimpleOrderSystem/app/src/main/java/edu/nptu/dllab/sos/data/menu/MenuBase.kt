@@ -1,7 +1,7 @@
 package edu.nptu.dllab.sos.data.menu
 
 import com.google.gson.JsonObject
-import edu.nptu.dllab.sos.data.EventMenu
+import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.fragment.MenuFragment
 import edu.nptu.dllab.sos.util.SOSVersion

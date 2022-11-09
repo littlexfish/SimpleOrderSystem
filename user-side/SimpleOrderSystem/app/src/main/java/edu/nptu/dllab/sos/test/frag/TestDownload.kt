@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import edu.nptu.dllab.sos.R
-import edu.nptu.dllab.sos.data.DownloadRequestEvent
+import edu.nptu.dllab.sos.data.push.DownloadRequestEvent
 import edu.nptu.dllab.sos.databinding.FragmentTestDownloadBinding
 import edu.nptu.dllab.sos.test.TestActivity
 

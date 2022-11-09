@@ -3,5 +3,13 @@
   "qrcode.back": "返回",
   "qrcode.redirect": "(長按跳轉)",
 
-  "menu.error.shopId": "店家id出錯，請重新整理"
+  "net.connect.timeout": "無法連接伺服器: 連線逾時",
+  "net.connect.unreachable": "無法連接伺服器",
+
+  "menu.error.shopId": "店家id出錯，請重新整理",
+  "menu.loading.back": "再按一次返回建返回",
+  "menu.download.message": "是否下載檔案",
+  "menu.download.progress": "正在下載檔案 (%1$d/%2$d)",
+  "menu.download.confirm": "確認",
+  "menu.download.cancel": "取消"
 }

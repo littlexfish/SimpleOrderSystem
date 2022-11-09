@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import edu.nptu.dllab.sos.R
-import edu.nptu.dllab.sos.data.OpenMenuEvent
+import edu.nptu.dllab.sos.data.push.OpenMenuEvent
 import edu.nptu.dllab.sos.databinding.FragmentTestLinkBinding
 import edu.nptu.dllab.sos.test.TestActivity
 

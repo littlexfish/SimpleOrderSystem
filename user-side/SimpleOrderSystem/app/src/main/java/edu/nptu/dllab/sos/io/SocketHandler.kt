@@ -3,8 +3,13 @@ package edu.nptu.dllab.sos.io
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import edu.nptu.dllab.sos.data.*
+import edu.nptu.dllab.sos.data.pull.EventMenu
+import edu.nptu.dllab.sos.data.pull.NearShop
+import edu.nptu.dllab.sos.data.pull.ResourceDownload
+import edu.nptu.dllab.sos.data.pull.UpdateMenu
 import edu.nptu.dllab.sos.util.Exceptions
 import edu.nptu.dllab.sos.util.SOSVersion
+import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.asMap
 import edu.nptu.dllab.sos.util.Util.asString
 import edu.nptu.dllab.sos.util.Util.toByteArray
@@ -48,22 +53,10 @@ class SocketHandler {
 	private var socket: Socket? = null
 	
 	/**
-	 * Uses format, json or msgpack
-	 */
-	@SOSVersion(since = "0.0")
-	var useFormat = Format.JSON
-	
-	/**
 	 * Uses charset, default UTF-8
 	 */
 	@SOSVersion(since = "0.0")
 	var charset = Charsets.UTF_8
-	
-	/**
-	 * The buffer of value send
-	 */
-	@SOSVersion(since = "0.0")
-	private val tmpBuffer = ByteArrayOutputStream()
 	
 	/**
 	 * The last event which not process
@@ -93,25 +86,24 @@ class SocketHandler {
 	@SOSVersion(since = "0.0")
 	@Synchronized
 	fun pushEvent(event: EventPusher) {
+		/*
+		 * FISH NOTE:
+		 *   To parse data easily,
+		 *    we write data size first,
+		 *    than write data.
+		 */
 		checkConnectedState()
-		val bs = when(useFormat) {
-			Format.JSON -> {
-				event.toJson().toString().toByteArray(charset)
-			}
-			Format.MSG_PACK -> {
-				tmpBuffer.reset()
-				val v = event.toValue()
-				val packer = MessagePack.newDefaultPacker(tmpBuffer)
-				packer.packValue(v)
-				packer.flush()
-				tmpBuffer.toByteArray()
-			}
-		}
+		val buffer = ByteArrayOutputStream()
+		val v = event.toValue()
+		val packer = MessagePack.newDefaultPacker(buffer)
+		packer.packValue(v)
+		packer.flush()
+		val bs = buffer.toByteArray()
 		if(socket != null) {
 			val os = socket!!.getOutputStream()
-			if(useFormat == Format.MSG_PACK) {
-				os.write(bs.size.toByteArray())
-			}
+			// write byte size first
+			os.write(bs.size.toByteArray())
+			// than write data
 			os.write(bs)
 		}
 	}
@@ -123,50 +115,37 @@ class SocketHandler {
 	@SOSVersion(since = "0.0")
 	@Synchronized
 	fun waitEvent(): EventPuller {
+		/*
+		 * FISH NOTE:
+		 *   Because write data size first,
+		 *    we read 4 bytes and change to int type,
+		 *    than read the "int" size of data
+		 */
 		checkConnectedState()
-		if(socket != null) {
-			if(holdEvent != null) {
+		if(socket != null) { // not null when check connect state
+			if(holdEvent != null) { // check hold event and return first
 				val tmp = holdEvent
 				holdEvent = null
 				return tmp!!
 			}
 			val ins = socket!!.getInputStream()
-			when(useFormat) {
-				Format.JSON -> {
-					val bos = ByteArrayOutputStream()
-					var br = 0
-					while(true) {
-						val c = ins.read()
-						// use '{' and '}' to quick check json format
-						if(c == '{'.code) br++
-						if(c == '}'.code) br--
-						bos.write(c)
-						// a whole json, so return
-						if(br == 0) break
-					}
-					val e = getEventJson(JsonParser.parseString(String(bos.toByteArray(), charset)))
-					if(e is ResourceDownload) {
-						// "Read extra bytes that contains resource data"
-					}
-					return e
-				}
-				Format.MSG_PACK -> {
-					// get the pack size, use 4 bytes
-					val intBs = ByteBuffer.allocate(4)
-					for(i in 0 until 4) {
-						intBs.put(ins.read().toByte())
-					}
-					val size = intBs.getInt(0)
-					// force read to size of pack
-					val bos = ByteArrayOutputStream()
-					for(i in 0 until size) {
-						bos.write(ins.read())
-					}
-					// unpack from byte array
-					val unpacker = MessagePack.newDefaultUnpacker(ByteArrayInputStream(bos.toByteArray()))
-					return getEventValue(unpacker.unpackValue())
-				}
+			
+			// get the pack size, use 4 bytes
+			val intBs = ByteBuffer.allocate(4)
+			for(i in 0 until 4) {
+				intBs.put(ins.read().toByte())
 			}
+			val size = intBs.getInt(0)
+			
+			// force read to size of pack
+			val bos = ByteArrayOutputStream()
+			for(i in 0 until size) {
+				bos.write(ins.read())
+			}
+			
+			// unpack from byte array
+			val unpacker = MessagePack.newDefaultUnpacker(ByteArrayInputStream(bos.toByteArray()))
+			return getEventValue(unpacker.unpackValue())
 		}
 		// may not reach here
 		throw RuntimeException()
@@ -185,27 +164,7 @@ class SocketHandler {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun checkConnectedState() {
-		if(connected || socket == null) throw RuntimeException("socket not connect.")
-	}
-	
-	/**
-	 * Get event object from json
-	 * @param json - [JsonElement]
-	 * @return [EventPuller]
-	 */
-	@SOSVersion(since = "0.0")
-	private fun getEventJson(json: JsonElement): EventPuller {
-		if(!json.isJsonObject) throw Exceptions.DataFormatException("event not object type")
-		val obj = json.asJsonObject
-		val e = when(obj[KEY_EVENT].asString) {
-			EVENT_PULL_NEAR_SHOP -> NearShop()
-			EVENT_PULL_UPDATE -> UpdateMenu()
-			EVENT_PULL_EVENT_MENU -> EventMenu()
-			EVENT_PULL_RESOURCE -> ResourceDownload()
-			else -> throw Exceptions.EventNotFoundException(obj[KEY_EVENT].asString)
-		}
-		e.fromJson(json)
-		return e
+		if(connected || socket == null) throw IllegalStateException("socket not connect.")
 	}
 	
 	/**
@@ -215,8 +174,7 @@ class SocketHandler {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun getEventValue(value: Value): EventPuller {
-		if(!value.isMapValue) throw Exceptions.DataFormatException("event not map type")
-		val map = value.asMap()
+		val map = Util.checkMapValue(value).map()
 		val e = when(map[KEY_EVENT.toStringValue()]?.asString()) {
 			EVENT_PULL_NEAR_SHOP -> NearShop()
 			EVENT_PULL_UPDATE -> UpdateMenu()
@@ -228,12 +186,8 @@ class SocketHandler {
 		return e
 	}
 	
-	/**
-	 * The transfer format
-	 */
-	@SOSVersion(since = "0.0")
-	enum class Format {
-		JSON, MSG_PACK
+	fun close() {
+		socket?.close()
 	}
 	
 }

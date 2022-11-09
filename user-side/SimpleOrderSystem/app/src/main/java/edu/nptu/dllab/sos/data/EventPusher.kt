@@ -14,13 +14,6 @@ import org.msgpack.value.Value
 interface EventPusher {
 	
 	/**
-	 * Push event with json
-	 */
-	@Deprecated("use toValue(): Value")
-	@SOSVersion(since = "0.0")
-	fun toJson(): JsonElement
-	
-	/**
 	 * Push event with msgpack
 	 */
 	@SOSVersion(since = "0.0")

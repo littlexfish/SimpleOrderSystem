@@ -1,6 +1,5 @@
 package edu.nptu.dllab.sos.data
 
-import com.google.gson.JsonElement
 import edu.nptu.dllab.sos.util.SOSVersion
 import org.msgpack.value.Value
 
@@ -12,13 +11,6 @@ import org.msgpack.value.Value
  */
 @SOSVersion(since = "0.0")
 interface EventPuller {
-	
-	/**
-	 * Get event with json
-	 */
-	@Deprecated("use fromValue(Value)")
-	@SOSVersion(since = "0.0")
-	fun fromJson(json: JsonElement)
 	
 	/**
 	 * Get event with msgpack

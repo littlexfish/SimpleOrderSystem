@@ -97,15 +97,6 @@ object Util {
 	}
 	
 	/**
-	 * Check the json element is json object
-	 */
-	@SOSVersion(since = "0.0")
-	fun checkJsonObject(json: JsonElement): JsonObject {
-		if(!json.isJsonObject) throw Exceptions.DataFormatException("data format not object type")
-		return json.asJsonObject
-	}
-	
-	/**
 	 * Check the value is map value
 	 */
 	@SOSVersion(since = "0.0")
@@ -176,43 +167,72 @@ object Util {
 	}
 	
 	// keys
-	enum class LinkKey(val key: String) {
-		POSITION("position")
+	object LinkKey {
+		const val POSITION = "position"
 	}
-	enum class NearShopKey(val key: String) {
-		SHOP("shop"), SHOP_SHOP_ID("shopId"),
-		SHOP_POSITION("position"), SHOP_STATE("state"),
-		SHOP_TAGS("tags")
+	object NearShopKey {
+		const val SHOP = "shop"
+		const val SHOP_SHOP_ID = "shopId"
+		const val SHOP_POSITION = "position"
+		const val SHOP_STATE = "state"
+		const val SHOP_TAGS = "tags"
 	}
-	enum class OpenMenuKey(val key: String) {
-		SHOP_ID("shopId"), MENU_VERSION("menuVersion")
+	object OpenMenuKey {
+		const val SHOP_ID = "shopId"
+		const val MENU_VERSION = "menuVersion"
 	}
-	enum class UpdateKey(val key: String) {
-		SHOP_ID("shopId"), MENU_VERSION("menuVersion"),
-		MENU("menu"), MENU_TYPE("type"),
-		RESOURCE("resource"), RES_PATH("path"),
-		RES_ID("id"), RES_POS("position"),
-		RES_SHA256("sha256")
+	object UpdateKey {
+		const val SHOP_ID = "shopId"
+		const val MENU_VERSION = "menuVersion"
+		const val MENU = "menu"
+		const val MENU_TYPE = "type"
+		const val RESOURCE = "resource"
+		const val RES_PATH = "path"
+		const val RES_ID = "id"
+		const val RES_POS = "position"
+		const val RES_SHA256 = "sha256"
 	}
-	enum class EventMenuKey(val key: String) {
-		MENU("menu"), MENU_CATE("category"), MENU_TYPE("type"),
-		MENU_POPUP("popup"), MENU_ITEM("itemId"), MENU_ID("id"),
-		MENU_CONDITION("condition"), MENU_CONDITION_TYPE("type"), RESOURCE("resource"),
-		RES_PATH("path"), RES_ID("id"), RES_POS("position"),
-		RES_SHA256("sha256")
+	object EventMenuKey {
+		const val MENU = "menu"
+		const val MENU_CATE = "category"
+		const val MENU_TYPE = "type"
+		const val MENU_POPUP = "popup"
+		const val MENU_ITEM = "itemId"
+		const val MENU_ID = "id"
+		const val MENU_CONDITION = "condition"
+		const val MENU_CONDITION_TYPE = "type"
+		const val RESOURCE = "resource"
+		const val RES_PATH = "path"
+		const val RES_ID = "id"
+		const val RES_POS = "position"
+		const val RES_SHA256 = "sha256"
 	}
-	enum class DownloadKey(val key: String) {
-		PATH("path")
+	object DownloadKey {
+		const val PATH = "path"
 	}
-	enum class ResourceKey(val key: String) {
-		FILE_INDEX("file"), FILE_TOTAL("total"),
-		PATH("path"), SHA256("sha256"), SIZE("size"),
-		DATA("data"), POSITION("position"), ID("id")
+	object ResourceKey {
+		const val FILE_INDEX = "file"
+		const val FILE_TOTAL = "total"
+		const val PATH = "path"
+		const val SHA256 = "sha256"
+		const val SIZE = "size"
+		const val DATA = "data"
+		const val POSITION = "position"
+		const val ID = "id"
 	}
-	enum class OrderKey(val key: String) {
-		ITEM("item"), ITEM_SHOP_ID("shopId"), ITEM_ITEM_ID("itemId"),
-		ITEM_ADDITION("addition"), ITEM_ADDITION_ID("id"), ITEM_ADDITION_TYPE("type"),
-		ITEM_ADDITION_VALUE("value"), ITEM_NOTE("note")
+	object OrderKey {
+		const val ITEM = "item"
+		const val ITEM_SHOP_ID = "shopId"
+		const val ITEM_ITEM_ID = "itemId"
+		const val ITEM_ADDITION = "addition"
+		const val ITEM_ADDITION_ID = "id"
+		const val ITEM_ADDITION_TYPE = "type"
+		const val ITEM_ADDITION_VALUE = "value"
+		const val ITEM_NOTE = "note"
+	}
+	object OrderRequestKey {
+		const val STATUS = "status"
+		const val ORDER_ID = "orderId"
 	}
 	
 }

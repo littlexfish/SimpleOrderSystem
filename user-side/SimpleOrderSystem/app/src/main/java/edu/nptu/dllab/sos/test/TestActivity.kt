@@ -9,16 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import edu.nptu.dllab.sos.R
-import edu.nptu.dllab.sos.android.DownloadBitmap
 import edu.nptu.dllab.sos.data.*
+import edu.nptu.dllab.sos.data.pull.EventMenu
+import edu.nptu.dllab.sos.data.pull.NearShop
+import edu.nptu.dllab.sos.data.pull.ResourceDownload
+import edu.nptu.dllab.sos.data.pull.UpdateMenu
 import edu.nptu.dllab.sos.databinding.ActivityTestBinding
-import edu.nptu.dllab.sos.io.*
 import edu.nptu.dllab.sos.test.frag.TestDownload
 import edu.nptu.dllab.sos.test.frag.TestLink
 import edu.nptu.dllab.sos.test.frag.TestOpenMenu
 import edu.nptu.dllab.sos.util.Exceptions
-import edu.nptu.dllab.sos.util.Position
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.asMap
 import edu.nptu.dllab.sos.util.Util.asString
@@ -28,7 +28,6 @@ import org.msgpack.core.MessagePack
 import org.msgpack.value.Value
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.net.Socket
 import java.net.SocketException
 import java.nio.ByteBuffer
@@ -63,7 +62,10 @@ class TestActivity : AppCompatActivity() {
 			override fun getCount() = ips.size
 			override fun getItem(position: Int) = ips[position]
 			override fun getItemId(position: Int) = position.toLong()
-			override fun getView(position: Int, convertView: View?, parent: ViewGroup?) = TextView(this@TestActivity).also { it.text = names[position] }
+			override fun getView(position: Int, convertView: View?, parent: ViewGroup?) = TextView(this@TestActivity).also {
+				it.text = names[position]
+				it.textSize = 20f
+			}
 		}
 		
 		binding.button.setOnClickListener {
@@ -93,6 +95,7 @@ class TestActivity : AppCompatActivity() {
 			override fun getItemId(position: Int) = position.toLong()
 			override fun getView(position: Int, convertView: View?, parent: ViewGroup?) = TextView(this@TestActivity).also {
 				it.text = frags[position]::class.simpleName
+				it.textSize = 20f
 			}
 		}
 		
@@ -156,7 +159,9 @@ class TestActivity : AppCompatActivity() {
 	private fun getEventValue(value: Value): EventPuller {
 		Util.checkMapValue(value)
 		val map = value.asMap()
-		val e = when(map["event".toStringValue()]?.asString()) {
+		val evt = map["event".toStringValue()]
+		if(evt?.isStringValue != true) throw IllegalStateException("no event or event not string")
+		val e = when(evt.asString()) {
 			EVENT_PULL_NEAR_SHOP -> NearShop()
 			EVENT_PULL_UPDATE -> UpdateMenu()
 			EVENT_PULL_EVENT_MENU -> EventMenu()

@@ -2,10 +2,9 @@ package edu.nptu.dllab.sos.fragment
 
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
-import edu.nptu.dllab.sos.data.EventMenu
+import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.util.SOSVersion
-import org.msgpack.value.ArrayValue
 
 /**
  * The base class of menu fragment

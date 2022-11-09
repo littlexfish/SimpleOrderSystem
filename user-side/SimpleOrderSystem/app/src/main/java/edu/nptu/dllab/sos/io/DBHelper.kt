@@ -100,7 +100,7 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 	 * @return [Cursor] point to first value
 	 */
 	@SOSVersion(since = "0.0")
-	fun select(table: String, filter: String = "*", where: String? = null, limit: Int = -1, orderBy: String? = "", asc: Boolean = true): Cursor {
+	fun select(table: String, filter: String = "*", where: String? = null, limit: Int = -1, orderBy: String? = null, asc: Boolean = true): Cursor {
 		@Language("SQL")
 		var sql = "SELECT $filter FROM $table"
 		if(where != null) sql += " WHERE $where"
@@ -114,7 +114,7 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 		 * The name of this database
 		 */
 		@SOSVersion(since = "0.0")
-		const val DATABASE_NAME = "edu.nptu.dllab.sos.RES_DB"
+		const val DATABASE_NAME = "edu.nptu.dllab.sos.db"
 		
 		/**
 		 * The version of this database

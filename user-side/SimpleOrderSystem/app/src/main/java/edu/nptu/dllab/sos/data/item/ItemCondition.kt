@@ -40,7 +40,7 @@ abstract class ItemCondition(val type: String) {
 	@CallSuper
 	open fun toValue(): MapValue {
 		val map = ValueFactory.newMapBuilder()
-		map.put(Util.EventMenuKey.MENU_CONDITION_TYPE.key.toStringValue(), type.toStringValue())
+		map.put(Util.EventMenuKey.MENU_CONDITION_TYPE.toStringValue(), type.toStringValue())
 		return map.build()
 	}
 	

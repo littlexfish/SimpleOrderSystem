@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import edu.nptu.dllab.sos.R
-import edu.nptu.dllab.sos.data.LinkEvent
+import edu.nptu.dllab.sos.data.push.LinkEvent
 import edu.nptu.dllab.sos.databinding.FragmentTestLinkBinding
 import edu.nptu.dllab.sos.test.TestActivity
 import edu.nptu.dllab.sos.util.Position

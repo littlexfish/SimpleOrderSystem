@@ -6,7 +6,7 @@ import edu.nptu.dllab.sos.util.Util
 import org.msgpack.value.MapValue
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
-import edu.nptu.dllab.sos.util.Util.OrderKey.*
+import edu.nptu.dllab.sos.util.Util.OrderKey
 import edu.nptu.dllab.sos.util.Util.asDouble
 import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.asMap
@@ -69,9 +69,9 @@ abstract class ClassicAddition(var id: String = "", var name: String = "", var d
 	@SOSVersion(since = "0.0")
 	fun toValue(): MapValue {
 		val map = ValueFactory.newMapBuilder()
-		map.put(ITEM_ADDITION_ID.key.toStringValue(), id.toStringValue())
-		map.put(ITEM_ADDITION_TYPE.key.toStringValue(), type.toStringValue()) // TODO: check is needed
-		map.put(ITEM_ADDITION_VALUE.key.toStringValue(), getValue())
+		map.put(OrderKey.ITEM_ADDITION_ID.toStringValue(), id.toStringValue())
+		map.put(OrderKey.ITEM_ADDITION_TYPE.toStringValue(), type.toStringValue()) // TODO: check is needed
+		map.put(OrderKey.ITEM_ADDITION_VALUE.toStringValue(), getValue())
 		return map.build()
 	}
 	

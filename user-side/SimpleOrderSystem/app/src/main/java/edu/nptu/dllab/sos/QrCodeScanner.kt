@@ -1,5 +1,6 @@
 package edu.nptu.dllab.sos
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
@@ -7,6 +8,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.SurfaceHolder
 import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.vision.CameraSource
@@ -24,6 +26,7 @@ import edu.nptu.dllab.sos.util.Util
 @SOSVersion(since = "0.0")
 class QrCodeScanner : AppCompatActivity() {
 	
+	private val tag = "QrCodeScanner"
 	private val boxNone = RectF(0f, 0f, 0f, 0f)
 	private lateinit var binding: ActivityQrCodeScannerBinding
 	
@@ -128,11 +131,20 @@ class QrCodeScanner : AppCompatActivity() {
 		
 		binding.qrControlOverlay.setOnLongClickListener {
 			if(qrScanValue != null) {
-				val intent = Intent().setData(Uri.parse(qrScanValue))
+				val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(qrScanValue))
 				intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-				startActivity(intent)
+				try {
+					startActivity(intent)
+				}
+				catch(e: ActivityNotFoundException) {
+					Log.e(tag, "activity not found with uri: $qrScanValue", e)
+				}
 			}
 			true
+		}
+		
+		binding.qrBack.setOnClickListener {
+			finish()
 		}
 		
 	}

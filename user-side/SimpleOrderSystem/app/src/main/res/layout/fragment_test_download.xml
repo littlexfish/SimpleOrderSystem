@@ -17,7 +17,7 @@
     <EditText
         android:id="@+id/testText"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:ems="10"
         android:gravity="start"
         android:inputType="textMultiLine|text"

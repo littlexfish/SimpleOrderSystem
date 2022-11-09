@@ -51,11 +51,11 @@ class DBMenu {
 		if(cursor.isAfterLast) return
 		run {
 			val shopI = cursor.getColumnIndex(DBColumn.RES_SHOP_ID.columnName)
-			if(shopI > 0) shopId = cursor.getInt(shopI)
+			if(shopI >= 0) shopId = cursor.getInt(shopI)
 		}
 		run {
 			val vI = cursor.getColumnIndex(DBColumn.RES_PATH.columnName)
-			if(vI > 0) version = cursor.getInt(vI)
+			if(vI >= 0) version = cursor.getInt(vI)
 		}
 	}
 	

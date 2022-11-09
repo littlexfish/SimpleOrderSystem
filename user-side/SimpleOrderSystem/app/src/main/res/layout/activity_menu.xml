@@ -28,4 +28,16 @@
         app:layout_constraintVertical_bias="0.0"
         tools:layout="@layout/fragment_classic_menu" />
 
+    <ImageView
+        android:id="@+id/menuBack"
+        android:layout_width="@dimen/main_toolbar"
+        android:layout_height="@dimen/main_toolbar"
+        android:scaleType="center"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrow_back" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

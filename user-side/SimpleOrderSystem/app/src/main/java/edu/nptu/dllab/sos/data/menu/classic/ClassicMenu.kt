@@ -1,7 +1,7 @@
 package edu.nptu.dllab.sos.data.menu.classic
 
 import com.google.gson.JsonObject
-import edu.nptu.dllab.sos.data.EventMenu
+import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 import edu.nptu.dllab.sos.fragment.MenuFragment
@@ -128,7 +128,7 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	
 	override fun getMenuData(): MapValue {
 		val map = ValueFactory.newMapBuilder()
-		map.put(Util.UpdateKey.MENU_TYPE.key.toStringValue(), type.name.lowercase().toStringValue())
+		map.put(Util.UpdateKey.MENU_TYPE.toStringValue(), type.name.lowercase().toStringValue())
 		map.put(ITEM.toStringValue(), ValueFactory.newArray(items.values.map { it.toMapData() }))
 		return map.build()
 	}

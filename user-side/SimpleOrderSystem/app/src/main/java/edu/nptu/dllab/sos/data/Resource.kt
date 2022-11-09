@@ -1,7 +1,7 @@
 package edu.nptu.dllab.sos.data
 
 import edu.nptu.dllab.sos.util.SOSVersion
-import edu.nptu.dllab.sos.util.Util.ResourceKey.*
+import edu.nptu.dllab.sos.util.Util.ResourceKey
 import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
@@ -22,10 +22,10 @@ data class Resource(val path: String, val id: Int, val position: String, val sha
 	@SOSVersion(since = "0.0")
 	fun getValue(): Value {
 		val map = ValueFactory.newMapBuilder()
-		map.put(PATH.key.toStringValue(), path.toStringValue())
-		map.put(ID.key.toStringValue(), id.toIntegerValue())
-		map.put(POSITION.key.toStringValue(), position.toStringValue())
-		map.put(SHA256.key.toStringValue(), sha256.toStringValue())
+		map.put(ResourceKey.PATH.toStringValue(), path.toStringValue())
+		map.put(ResourceKey.ID.toStringValue(), id.toIntegerValue())
+		map.put(ResourceKey.POSITION.toStringValue(), position.toStringValue())
+		map.put(ResourceKey.SHA256.toStringValue(), sha256.toStringValue())
 		return map.build()
 	}
 	

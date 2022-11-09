@@ -4,10 +4,6 @@ import edu.nptu.dllab.sos.data.menu.OrderItem
 import edu.nptu.dllab.sos.util.SOSVersion
 import org.msgpack.value.MapValue
 import org.msgpack.value.ValueFactory
-import edu.nptu.dllab.sos.util.Util.OrderKey.*
-import edu.nptu.dllab.sos.util.Util.asDouble
-import edu.nptu.dllab.sos.util.Util.asInt
-import edu.nptu.dllab.sos.util.Util.asString
 import edu.nptu.dllab.sos.util.Util.toFloatValue
 import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
