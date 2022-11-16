@@ -4,6 +4,16 @@
 
 
     <dimen name="main_toolbar">48dp</dimen>
+    <dimen name="main_menu_root">400dp</dimen>
+    <dimen name="main_menu">300dp</dimen>
+    <dimen name="main_menu_item_padding">10dp</dimen>
+
+    <dimen name="settings_label_size">20dp</dimen>
+
+    <dimen name="shop_string_size">20dp</dimen>
+    <dimen name="shop_name_margin">10dp</dimen>
+    <dimen name="shop_dist_margin">10dp</dimen>
+    <dimen name="shop_reload_size">30dp</dimen>
 
     <dimen name="menu_classic_category">50dp</dimen>
     <dimen name="classic_category_card_corner">100dp</dimen>
@@ -14,7 +24,20 @@
     <dimen name="classic_category_img_max">50dp</dimen>
     <dimen name="classic_item_img_pad">10dp</dimen>
     <dimen name="classic_item_size">50%</dimen>
+    <dimen name="classic_item_img_size_min">0dp</dimen>
     <dimen name="classic_item_img_size">100dp</dimen>
     <dimen name="classic_item_txt_size">20dp</dimen>
+
+    <dimen name="cart_item_string_size">20dp</dimen>
+    <dimen name="cart_price_margin">10dp</dimen>
+    <dimen name="cart_name_margin">10dp</dimen>
+
+    <dimen name="item_note_height">100dp</dimen>
+    <dimen name="item_name_size">30dp</dimen>
+
+    <dimen name="add_label_size">20dp</dimen>
+
+    <dimen name="check_text_size">20dp</dimen>
+    <dimen name="check_page_image_size">30dp</dimen>
 
 </resources>

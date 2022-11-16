@@ -51,7 +51,8 @@ class DBRes {
 	@SOSVersion(since = "0.0")
 	var sha256 = ""
 		get() {
-			if(field.isBlank()) throw Exceptions.DBDataNotGetException(DBColumn.RES_SHA256.columnName)
+			if(field.isBlank()) throw Exceptions.DBDataNotGetException(
+				DBColumn.RES_SHA256.columnName)
 			return field
 		}
 	

@@ -17,7 +17,9 @@
     <color name="theme_main">#29B6F6</color>
     <color name="theme_dark">#0288D1</color>
 
+    <color name="side_menu_background">#8333</color>
     <color name="gray_background">#5555</color>
+    <color name="side_menu_button_bg">#000</color>
     <color name="text_black">#222</color>
 
 </resources>

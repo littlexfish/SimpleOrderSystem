@@ -1,16 +1,20 @@
 package edu.nptu.dllab.sos
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.*
+import android.graphics.PointF
+import android.graphics.RectF
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.provider.Settings
 import android.util.Log
 import android.view.SurfaceHolder
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
@@ -29,6 +33,9 @@ class QrCodeScanner : AppCompatActivity() {
 	private val tag = "QrCodeScanner"
 	private val boxNone = RectF(0f, 0f, 0f, 0f)
 	private lateinit var binding: ActivityQrCodeScannerBinding
+	private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+			checkPermission()
+		}
 	
 	/**
 	 * The camera use for scan qrcode
@@ -60,10 +67,8 @@ class QrCodeScanner : AppCompatActivity() {
 		binding = ActivityQrCodeScannerBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 		
-		detector = BarcodeDetector.Builder(this)
-			.setBarcodeFormats(Barcode.QR_CODE).build()
-		camera = CameraSource.Builder(this, detector)
-			.setAutoFocusEnabled(true).build()
+		detector = BarcodeDetector.Builder(this).setBarcodeFormats(Barcode.QR_CODE).build()
+		camera = CameraSource.Builder(this, detector).setAutoFocusEnabled(true).build()
 		
 		val width = resources.displayMetrics.widthPixels
 		val height = width * 16 / 9
@@ -80,25 +85,16 @@ class QrCodeScanner : AppCompatActivity() {
 		
 		binding.qrView.holder.addCallback(object : SurfaceHolder.Callback {
 			override fun surfaceCreated(holder: SurfaceHolder) {
-				if(checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-					requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 50)
-				}
-				else {
-					camera.start(holder)
-				}
+				checkPermission()
 			}
-			override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int,
-			                            height: Int) {
-			}
+			override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 			override fun surfaceDestroyed(holder: SurfaceHolder) {
 				camera.stop()
 			}
 		})
 		
 		detector.setProcessor(object : Detector.Processor<Barcode> {
-			override fun release() {
-			}
-			
+			override fun release() {}
 			override fun receiveDetections(det: Detector.Detections<Barcode>) {
 				val dets = det.detectedItems
 				if(dets.size() > 0) {
@@ -172,25 +168,27 @@ class QrCodeScanner : AppCompatActivity() {
 		}
 	}
 	
-	override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-	                                        grantResults: IntArray) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-		if(checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-			if(shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA)) {
-				requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 50)
-			}
-			else {
+	private fun checkPermission() {
+		if(checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
 				AlertDialog.Builder(this)
 					.setMessage(Translator.getString("qrcode.permission"))
 					.setPositiveButton(Translator.getString("qrcode.back")) { _, _ ->
-						finishActivity(Util.REQUEST_ERROR_PERMISSION)
+						finish()
+					}
+					.setNegativeButton(Translator.getString("qrcode.settings")) { _, _ ->
+						startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+							data = Uri.fromParts("package", packageName, null)
+						})
 					}
 					.create().show()
 			}
+			else {
+				permissionRequest.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+				                                 Manifest.permission.ACCESS_FINE_LOCATION))
+			}
 		}
-		else {
-			camera.start(binding.qrView.holder)
-		}
+		else camera.start(binding.qrView.holder)
 	}
 	
 	override fun onDestroy() {

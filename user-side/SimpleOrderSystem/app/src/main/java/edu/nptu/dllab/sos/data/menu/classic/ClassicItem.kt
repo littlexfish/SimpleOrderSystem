@@ -2,11 +2,11 @@ package edu.nptu.dllab.sos.data.menu.classic
 
 import edu.nptu.dllab.sos.data.menu.OrderItem
 import edu.nptu.dllab.sos.util.SOSVersion
-import org.msgpack.value.MapValue
-import org.msgpack.value.ValueFactory
 import edu.nptu.dllab.sos.util.Util.toFloatValue
 import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
+import org.msgpack.value.MapValue
+import org.msgpack.value.ValueFactory
 
 private const val NOTE = "note"
 
@@ -24,9 +24,9 @@ private const val ITEM_ID = "id"
  * The order item of classic type menu
  */
 @SOSVersion(since = "0.0")
-class ClassicItem(shopId: Int, val cate: String, itemId: String, val name: String, val des: String?,
-                  val price: Double, val currencyCode: String, val addition: List<ClassicAddition>,
-                  val tags: Array<String>, val resId: Int) : OrderItem(shopId, itemId) {
+class ClassicItem(shopId: Int, val cate: String, itemId: String, name: String, val des: String?,
+                  price: Double, currencyCode: String, val addition: List<ClassicAddition>,
+                  val tags: Array<String>, val resId: Int) : OrderItem(shopId, itemId, name, currencyCode, price) {
 	
 	/**
 	 * Item note
@@ -46,7 +46,7 @@ class ClassicItem(shopId: Int, val cate: String, itemId: String, val name: Strin
 		val map = ValueFactory.newMapBuilder()
 		map.put(ITEM_CATEGORY.toStringValue(), cate.toStringValue())
 		map.put(ITEM_ITEM_ID.toStringValue(), itemId.toStringValue())
-		map.put(ITEM_NAME.toStringValue(), name.toStringValue())
+		map.put(ITEM_NAME.toStringValue(), display.toStringValue())
 		des?.let { map.put(ITEM_DES.toStringValue(), it.toStringValue()) }
 		map.put(ITEM_PRICE.toStringValue(), price.toFloatValue())
 		map.put(ITEM_CURRENCY_CODE.toStringValue(), currencyCode.toStringValue())

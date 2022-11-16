@@ -1,10 +1,10 @@
 package edu.nptu.dllab.sos.test.frag
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.data.push.DownloadRequestEvent
 import edu.nptu.dllab.sos.databinding.FragmentTestDownloadBinding
@@ -31,7 +31,7 @@ class TestDownload : Fragment() {
 			val t = binding.testText.text.toString()
 			val spl = t.split(Regex("[\r\n]"))
 			for(s in spl) e.addPath(s)
-			(activity as TestActivity).sendEvent(e)
+			(activity as TestActivity.TestLinkActivity).sendEvent(e)
 		}
 		
 	}

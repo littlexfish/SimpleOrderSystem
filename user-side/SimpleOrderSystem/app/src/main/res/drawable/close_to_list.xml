@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/list_close">
+
+    <target
+        android:animation="@animator/close_to_list_upper"
+        android:name="upper" />
+
+    <target
+        android:animation="@animator/close_to_list_lower"
+        android:name="lower" />
+
+</animated-vector>

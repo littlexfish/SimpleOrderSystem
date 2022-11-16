@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/addStringValue"
+        android:layout_width="297dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:ems="10"
+        android:inputType="textMultiLine" />
+
+    <TextView
+        android:id="@+id/addStringName"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_gravity="top|left"
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="@dimen/add_label_size" />
+</FrameLayout>

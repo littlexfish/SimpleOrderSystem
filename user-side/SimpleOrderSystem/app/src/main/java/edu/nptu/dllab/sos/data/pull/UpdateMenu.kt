@@ -1,11 +1,10 @@
 package edu.nptu.dllab.sos.data.pull
 
-import com.google.gson.JsonElement
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPuller
 import edu.nptu.dllab.sos.data.Resource
-import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.data.menu.MenuBase
+import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.util.Exceptions
 import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
@@ -18,7 +17,6 @@ import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.core.MessageTypeCastException
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
-import kotlin.collections.ArrayList
 
 /**
  * The event to store menu need to update

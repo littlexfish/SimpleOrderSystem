@@ -1,7 +1,5 @@
 package edu.nptu.dllab.sos.data.push
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonNull
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPusher
 import edu.nptu.dllab.sos.data.menu.OrderItem
@@ -21,6 +19,10 @@ class OrderEvent : Event(EVENT_KEY), EventPusher {
 	
 	fun addItem(item: OrderItem) {
 		items.add(item)
+	}
+	
+	fun addAllItems(i: Iterable<OrderItem>) {
+		items.addAll(i)
 	}
 	
 	override fun toValue(): Value {

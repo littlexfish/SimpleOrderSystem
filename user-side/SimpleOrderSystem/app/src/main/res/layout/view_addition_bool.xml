@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/addBoolValue"
+        android:layout_width="426dp"
+        android:layout_height="442dp"
+        android:button="@drawable/checkbox"
+        android:checked="false"
+        android:text="CheckBox"
+        android:textSize="@dimen/add_label_size" />
+</FrameLayout>

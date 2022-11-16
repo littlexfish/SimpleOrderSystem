@@ -1,16 +1,16 @@
 package edu.nptu.dllab.sos.io
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonParser
-import edu.nptu.dllab.sos.data.*
-import edu.nptu.dllab.sos.data.pull.EventMenu
-import edu.nptu.dllab.sos.data.pull.NearShop
-import edu.nptu.dllab.sos.data.pull.ResourceDownload
-import edu.nptu.dllab.sos.data.pull.UpdateMenu
+import android.content.Context
+import android.os.Handler
+import android.os.HandlerThread
+import android.widget.Toast
+import edu.nptu.dllab.sos.data.Event
+import edu.nptu.dllab.sos.data.EventPuller
+import edu.nptu.dllab.sos.data.EventPusher
+import edu.nptu.dllab.sos.data.pull.*
 import edu.nptu.dllab.sos.util.Exceptions
 import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
-import edu.nptu.dllab.sos.util.Util.asMap
 import edu.nptu.dllab.sos.util.Util.asString
 import edu.nptu.dllab.sos.util.Util.toByteArray
 import edu.nptu.dllab.sos.util.Util.toStringValue
@@ -30,6 +30,7 @@ private const val EVENT_PULL_UPDATE = "update"
 private const val EVENT_PULL_EVENT_MENU = "event_menu"
 private const val EVENT_PUSH_DOWNLOAD = "download"
 private const val EVENT_PULL_RESOURCE = "resource"
+private const val EVENT_PULL_ERROR = "error"
 
 /**
  * A class handle socket that can process event functionally
@@ -52,6 +53,9 @@ class SocketHandler {
 	@SOSVersion(since = "0.0")
 	private var socket: Socket? = null
 	
+	private val thread = HandlerThread("network").also { it.start() }
+	private val handler = Handler(thread.looper)
+	
 	/**
 	 * Uses charset, default UTF-8
 	 */
@@ -73,6 +77,24 @@ class SocketHandler {
 		connected = true
 	}
 	
+	fun linkAndRun(ip: String, port: Int, func: ((handler: SocketHandler) -> Unit)?,
+	               error: ((e: Exception) -> Unit)? = null) {
+		handler.post {
+			try {
+				link(ip, port)
+				func?.let { it(this) }
+			}
+			catch(e: Exception) {
+				if(error == null) {
+					throw e
+				}
+				else {
+					error(e)
+				}
+			}
+		}
+	}
+	
 	/**
 	 * @return true if is connected
 	 */
@@ -86,25 +108,26 @@ class SocketHandler {
 	@SOSVersion(since = "0.0")
 	@Synchronized
 	fun pushEvent(event: EventPusher) {
-		/*
-		 * FISH NOTE:
-		 *   To parse data easily,
-		 *    we write data size first,
-		 *    than write data.
-		 */
-		checkConnectedState()
-		val buffer = ByteArrayOutputStream()
-		val v = event.toValue()
-		val packer = MessagePack.newDefaultPacker(buffer)
-		packer.packValue(v)
-		packer.flush()
-		val bs = buffer.toByteArray()
-		if(socket != null) {
-			val os = socket!!.getOutputStream()
-			// write byte size first
-			os.write(bs.size.toByteArray())
-			// than write data
-			os.write(bs)
+		handler.post {			/*
+			 * FISH NOTE:
+			 *   To parse data easily,
+			 *    we write data size first,
+			 *    than write data.
+			 */
+			checkConnectedState()
+			val buffer = ByteArrayOutputStream()
+			val v = event.toValue()
+			val packer = MessagePack.newDefaultPacker(buffer)
+			packer.packValue(v)
+			packer.flush()
+			val bs = buffer.toByteArray()
+			if(socket != null) {
+				val os = socket!!.getOutputStream()
+				// write byte size first
+				os.write(bs.size.toByteArray())
+				// than write data
+				os.write(bs)
+			}
 		}
 	}
 	
@@ -151,6 +174,35 @@ class SocketHandler {
 		throw RuntimeException()
 	}
 	
+	fun waitEventAndRun(func: (e: EventPuller) -> Unit) {
+		handler.post {
+			val e = waitEvent()
+			func(e)
+		}
+	}
+	
+	/**
+	 * Wait event until the event is correct.
+	 * This method will block the process.
+	 * Auto process error event.
+	 *
+	 * @param eClass The class of event you want
+	 * @param tryTimes The max times this method try
+	 *
+	 * @throws IllegalStateException When try too many times and got error event
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun <T : EventPuller> waitEvent(context: Context, eClass: Class<T>, tryTimes: Int = 5): T {
+		for(i in 0 until tryTimes) {
+			val e = waitEvent()
+			if(e.javaClass == eClass) return e as T
+			if(checkErrorAndThrow(context, e as Event)) {
+				throw IllegalStateException("got error event")
+			}
+		}
+		throw IllegalStateException("event type not found, try count: $tryTimes")
+	}
+	
 	/**
 	 * Hold the event
 	 */
@@ -180,6 +232,7 @@ class SocketHandler {
 			EVENT_PULL_UPDATE -> UpdateMenu()
 			EVENT_PULL_EVENT_MENU -> EventMenu()
 			EVENT_PULL_RESOURCE -> ResourceDownload()
+			EVENT_PULL_ERROR -> Error()
 			else -> throw Exceptions.EventNotFoundException(map[KEY_EVENT.toStringValue()]?.asString() ?: "null")
 		}
 		e.fromValue(value)
@@ -188,6 +241,16 @@ class SocketHandler {
 	
 	fun close() {
 		socket?.close()
+	}
+	
+	companion object {
+		fun checkErrorAndThrow(context: Context, evt: Event): Boolean {
+			if(evt is Error) {
+				Toast.makeText(context, Translator.getString("net.event.error.${evt.reason}").format(evt.format), Toast.LENGTH_SHORT).show()
+				return true
+			}
+			return false
+		}
 	}
 	
 }

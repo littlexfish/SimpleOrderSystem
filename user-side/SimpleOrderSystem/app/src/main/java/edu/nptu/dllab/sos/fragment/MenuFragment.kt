@@ -2,8 +2,8 @@ package edu.nptu.dllab.sos.fragment
 
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
-import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.data.menu.MenuBase
+import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.util.SOSVersion
 
 /**
@@ -86,7 +86,9 @@ abstract class MenuFragment : Fragment() {
 	 * @return `false` if not consume
 	 */
 	@SOSVersion(since = "0.0")
-	open fun onBackPressed(): Boolean { return false }
+	open fun onBackPressed(): Boolean {
+		return false
+	}
 	
 	/**
 	 * Get menu

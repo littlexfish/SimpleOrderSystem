@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/addFloatValue"
+        android:layout_width="200dp"
+        android:layout_height="45dp"
+        android:layout_gravity="right|center_vertical"
+        android:ems="10"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/addFloatName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:text="TextView"
+        android:textSize="@dimen/add_label_size" />
+
+    <ImageView
+        android:id="@+id/addFloatUp"
+        android:layout_width="200dp"
+        android:layout_height="20dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginTop="-33dp"
+        android:background="@drawable/roll_up_button_bg"
+        android:scaleType="center"
+        app:srcCompat="@drawable/roll_up" />
+
+    <ImageView
+        android:id="@+id/addFloatDown"
+        android:layout_width="200dp"
+        android:layout_height="20dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginTop="33dp"
+        android:background="@drawable/roll_up_button_bg"
+        android:scaleType="center"
+        app:srcCompat="@drawable/roll_down" />
+</FrameLayout>

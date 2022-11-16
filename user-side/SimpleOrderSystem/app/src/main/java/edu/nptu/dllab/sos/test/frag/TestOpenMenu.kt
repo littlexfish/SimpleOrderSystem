@@ -1,12 +1,12 @@
 package edu.nptu.dllab.sos.test.frag
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.fragment.app.Fragment
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.data.push.OpenMenuEvent
 import edu.nptu.dllab.sos.databinding.FragmentTestLinkBinding
@@ -33,6 +33,7 @@ class TestOpenMenu : Fragment() {
 			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 				binding.textView4.text = progress.toString()
 			}
+			
 			override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 			override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 		})
@@ -40,6 +41,7 @@ class TestOpenMenu : Fragment() {
 			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 				binding.textView5.text = progress.toString()
 			}
+			
 			override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 			override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 		})
@@ -47,7 +49,7 @@ class TestOpenMenu : Fragment() {
 			val e = OpenMenuEvent()
 			e.shopId = binding.seekBar.progress
 			e.menuVersion = binding.seekBar2.progress
-			(activity as TestActivity).sendEvent(e)
+			(activity as TestActivity.TestLinkActivity).sendEvent(e)
 		}
 	}
 	

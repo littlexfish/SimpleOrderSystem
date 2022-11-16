@@ -24,7 +24,7 @@ object ResourceReader {
 	 * @param resId - the res unique id
 	 *
 	 * @return res file
-	*/
+	 */
 	@SOSVersion(since = "0.0")
 	fun getResource(context: Context, shopId: Int, resId: Int): File {
 		val db = DBHelper(context)

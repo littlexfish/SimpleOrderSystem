@@ -38,7 +38,10 @@ namespace SQLiteHelper {
 			for(var i = 0; i < _values.Count; i++) {
 				sql.Append('(');
 				for(var j = 0; j < _values[i].Length; j++) {
+					var isText = _values[i][j] is string;
+					if(isText) sql.Append('\'');
 					sql.Append(_values[i][j]);
+					if(isText) sql.Append('\'');
 					if(j < _values[i].Length - 1) {
 						sql.Append(',');
 					}

@@ -1,14 +1,16 @@
 package edu.nptu.dllab.sos.fragment
 
-import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import edu.nptu.dllab.sos.ItemOrderActivity
+import edu.nptu.dllab.sos.MenuActivity
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
@@ -17,9 +19,6 @@ import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.view.classic.CategoryView
 import edu.nptu.dllab.sos.view.classic.ItemBlock
 import edu.nptu.dllab.sos.view.classic.ItemFolder
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * A fragment class of classic type menu
@@ -28,6 +27,18 @@ import kotlin.collections.HashMap
 class ClassicMenuFragment : MenuFragment() {
 	
 	private lateinit var binding: FragmentClassicMenuBinding
+	
+	private val requestSelectItem =
+		registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+			when(it.resultCode) {
+				ItemOrderActivity.RESULT_ADD -> {
+					(activity as? MenuActivity)?.animCart()
+				}
+				ItemOrderActivity.RESULT_CANCEL -> {
+				
+				}
+			}
+		}
 	
 	/**
 	 * The category path
@@ -86,8 +97,7 @@ class ClassicMenuFragment : MenuFragment() {
 	 * Refresh the screen with current category
 	 */
 	@SOSVersion(since = "0.0")
-	private fun refreshScreen() {
-		// refresh main category
+	private fun refreshScreen() {		// refresh main category
 		if(!::binding.isInitialized || classic == null) {
 			refresh = true
 			return
@@ -135,9 +145,9 @@ class ClassicMenuFragment : MenuFragment() {
 				else {
 					val item = pairList[index]
 					val view = if(item.second) ItemFolder(requireContext(), this, item.first)
-					else  {
+					else {
 						val i = classic!!.getShopItem(item.first)
-						val vi = ItemBlock(requireContext(), this, i.itemId, i.name, resData[i.resId])
+						val vi = ItemBlock(requireContext(), this, i.itemId, i.display, resData[i.resId], i.price)
 						vi
 					}
 					view.layoutParams = param
@@ -165,7 +175,8 @@ class ClassicMenuFragment : MenuFragment() {
 	 */
 	@SOSVersion(since = "0.0")
 	fun clickItem(id: String) {
-		// TODO: get in item detail
+		ItemOrderActivity.selectedItem = classic?.getShopItem(id)
+		requestSelectItem.launch(Intent(requireActivity(), ItemOrderActivity::class.java))
 	}
 	
 	override fun onBackPressed(): Boolean {

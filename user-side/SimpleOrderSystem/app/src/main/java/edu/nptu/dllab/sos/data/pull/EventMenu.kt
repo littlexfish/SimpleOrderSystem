@@ -1,6 +1,5 @@
 package edu.nptu.dllab.sos.data.pull
 
-import com.google.gson.JsonElement
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPuller
 import edu.nptu.dllab.sos.data.Resource
@@ -16,7 +15,6 @@ import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.MapValue
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
-import kotlin.collections.ArrayList
 
 /**
  * The event menu event
@@ -39,7 +37,8 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 	 */
 	@SOSVersion(since = "0.0")
 	fun getNeedDownloadResources(): List<Resource> {
-		TODO("Not yet implemented")
+		// TODO: Implements
+		return emptyList()
 	}
 	
 	override fun fromValue(value: Value) {

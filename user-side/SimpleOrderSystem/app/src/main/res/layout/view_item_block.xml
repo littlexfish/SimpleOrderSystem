@@ -25,7 +25,6 @@
         android:layout_marginStart="@dimen/classic_item_img_pad"
         android:layout_marginTop="@dimen/classic_item_img_pad"
         android:layout_marginEnd="@dimen/classic_item_img_pad"
-        android:minHeight="@dimen/classic_item_img_size"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,12 +38,22 @@
         android:layout_marginStart="@dimen/classic_item_img_pad"
         android:layout_marginTop="@dimen/classic_item_img_pad"
         android:layout_marginEnd="@dimen/classic_item_img_pad"
-        android:layout_marginBottom="@dimen/classic_item_img_pad"
         android:gravity="center_horizontal|top"
         android:text="TextView"
         android:textSize="@dimen/classic_item_txt_size"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/classic_item_img" />
+
+    <TextView
+        android:id="@+id/classic_item_extra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/classic_item_img_pad"
+        android:layout_marginBottom="@dimen/classic_item_img_pad"
+        android:gravity="right"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="@+id/classic_item_text"
+        app:layout_constraintTop_toBottomOf="@+id/classic_item_text" />
 </androidx.constraintlayout.widget.ConstraintLayout>

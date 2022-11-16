@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/cart">
+
+    <target
+        android:animation="@animator/add_to_cart"
+        android:name="cart_rot" />
+
+</animated-vector>

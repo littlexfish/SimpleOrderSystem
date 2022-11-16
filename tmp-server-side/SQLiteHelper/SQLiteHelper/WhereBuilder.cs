@@ -37,7 +37,15 @@ namespace SQLiteHelper {
 			Util.CheckNotNullParameter(symbol, "symbol");
 			Util.CheckNotNullParameter(right, "right");
 			CheckNoAndOr();
-			_sb.Append($"{left}{symbol.Condition}{right}");
+			var leftText = left is string;
+			if(leftText) _sb.Append('\'');
+			_sb.Append(left);
+			if(leftText) _sb.Append('\'');
+			_sb.Append(symbol.Condition);
+			var rightText = right is string;
+			if(rightText) _sb.Append('\'');
+			_sb.Append(right);
+			if(rightText) _sb.Append('\'');
 			_needNewCondition = false;
 			return this;
 		}

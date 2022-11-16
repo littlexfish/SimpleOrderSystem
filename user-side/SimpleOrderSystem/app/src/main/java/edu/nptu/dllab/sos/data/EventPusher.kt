@@ -1,6 +1,5 @@
 package edu.nptu.dllab.sos.data
 
-import com.google.gson.JsonElement
 import edu.nptu.dllab.sos.util.SOSVersion
 import org.msgpack.value.Value
 

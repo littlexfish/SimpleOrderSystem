@@ -48,4 +48,5 @@ dependencies {
     implementation 'org.msgpack:msgpack-core:0.9.3'
     implementation 'com.google.android.gms:play-services-vision:20.1.3' // bar code and qrcode scanner
     implementation 'com.google.zxing:core:3.3.0' // gen qrcode
+    implementation 'com.google.android.gms:play-services-location:21.0.1' // google location
 }

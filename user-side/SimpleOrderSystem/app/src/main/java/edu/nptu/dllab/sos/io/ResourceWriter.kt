@@ -30,8 +30,7 @@ object ResourceWriter {
 	 */
 	@SOSVersion(since = "0.0")
 	fun saveResource(context: Context, shopId: Int, resId: Int, path: String, data: ByteArray, sha256: String? = null): Boolean {
-		if(!checkSha256(data, sha256)) return false
-		// save path "file/res/<shopId>/path"
+		if(!checkSha256(data, sha256)) return false		// save path "file/res/<shopId>/path"
 		val df = getDirFile(shopId, path)
 		val fileDir = context.filesDir
 		val dir = File("$fileDir/${df.first}")

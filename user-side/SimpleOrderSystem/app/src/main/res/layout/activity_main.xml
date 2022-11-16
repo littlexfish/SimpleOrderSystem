@@ -25,29 +25,101 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/qr_code_scanner" />
 
-    <edu.nptu.dllab.sos.view.QrBoxOverlay
-        android:id="@+id/scanOverlay"
+    <TextView
+        android:id="@+id/mainTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/mainToolBar"
+        app:layout_constraintStart_toEndOf="@+id/mainMenuButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/testBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/mainToolBar"
+        app:layout_constraintEnd_toStartOf="@+id/mainQrScanner"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toEndOf="@+id/mainTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/error" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mainFragment"
+        android:name="edu.nptu.dllab.sos.fragment.EmptyFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainToolBar" />
+        app:layout_constraintTop_toBottomOf="@+id/mainToolBar"
+        tools:layout="@layout/empty" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TEST"
+    <ImageView
+        android:id="@+id/mainMenuBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="@color/side_menu_background"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainToolBar" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MENU"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/mainMenu"
+        android:layout_width="@dimen/main_menu_root"
+        android:layout_height="0dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:layout_width="@dimen/main_menu"
+            android:layout_height="match_parent"
+            android:layout_gravity="right">
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                app:srcCompat="@color/theme_light" />
+
+            <TextView
+                android:id="@+id/mainMenuAccount"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/side_menu_button"
+                android:gravity="left|center_vertical"
+                android:paddingStart="@dimen/main_menu_item_padding"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/mainMenuSettings"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="170dp"
+                android:background="@drawable/side_menu_button"
+                android:gravity="left|center_vertical"
+                android:paddingStart="@dimen/main_menu_item_padding"
+                android:text="TextView" />
+
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/mainMenuButton"
+        android:layout_width="@dimen/main_toolbar"
+        android:layout_height="@dimen/main_toolbar"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="@+id/mainToolBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/list_to_close" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,17 +2,18 @@ package edu.nptu.dllab.sos.data.menu
 
 import androidx.annotation.CallSuper
 import edu.nptu.dllab.sos.util.SOSVersion
-import org.msgpack.value.MapValue
-import org.msgpack.value.ValueFactory
 import edu.nptu.dllab.sos.util.Util.OrderKey
 import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
+import org.msgpack.value.MapValue
+import org.msgpack.value.ValueFactory
 
 /**
  * The base class of order item
  */
 @SOSVersion(since = "0.0")
-abstract class OrderItem(val shopId: Int, val itemId: String) {
+abstract class OrderItem(val shopId: Int, val itemId: String, val display: String = "",
+                         val currencyCode: String = "NTD", val price: Double = 0.0) {
 	
 	/**
 	 * Get msgpack of item use to order

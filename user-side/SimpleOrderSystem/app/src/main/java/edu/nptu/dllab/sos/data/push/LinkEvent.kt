@@ -1,13 +1,11 @@
 package edu.nptu.dllab.sos.data.push
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPusher
 import edu.nptu.dllab.sos.util.Position
 import edu.nptu.dllab.sos.util.SOSVersion
-import edu.nptu.dllab.sos.util.Util.NET_KEY_EVENT
 import edu.nptu.dllab.sos.util.Util.LinkKey
+import edu.nptu.dllab.sos.util.Util.NET_KEY_EVENT
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory

@@ -45,6 +45,7 @@ object DownloadBitmap {
 	 * Get drawable from input stream
 	 */
 	@SOSVersion(since = "0.0")
-	fun getDrawable(inStream: InputStream, res: Resources?): Drawable = BitmapDrawable(res, getBitmap(inStream))
+	fun getDrawable(inStream: InputStream, res: Resources?): Drawable =
+		BitmapDrawable(res, getBitmap(inStream))
 	
 }

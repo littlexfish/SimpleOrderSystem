@@ -1,15 +1,77 @@
 {
+  "dist.unit.m": "公尺",
+  "dist.unit.ft": "英尺",
+
+  "main.list.title": "店家列表",
+  "main.permission.location": "需要GPS權限取得當前位置",
+  "main.leave": "離開",
+  "main.settings.permission": "前往設定",
+  "main.shop.wait": "等待店家資訊",
+  "main.location.wait": "等待位置資訊",
+  "main.location.failed": "無法取得位置資訊",
+  "main.location.error": "取得位置資訊時出現錯誤",
+  "main.connect": "是否獲取範圍內店家",
+  "main.true": "是",
+  "main.false": "否",
+  "main.back": "再按一次返回建退出程式",
+
+  "side.account": "帳戶(尚未開放)",
+  "side.settings": "設定",
+
+  "menu.shop.close": "未開店",
+  "shop.reload": "點擊獲取附近店家",
+
   "qrcode.permission": "掃描QRCode需要相機權限，請至設定開啟再進入此功能",
   "qrcode.back": "返回",
+  "qrcode.settings": "前往設定",
   "qrcode.redirect": "(長按跳轉)",
+  "qrcode.string.test": "TEST",
+  "qrcode.string.open": "開啟SOS",
+  "qrcode.string.menu": "開啟菜單(%d)",
 
   "net.connect.timeout": "無法連接伺服器: 連線逾時",
   "net.connect.unreachable": "無法連接伺服器",
+  "net.event.shop.noName": "<沒有名字>",
 
   "menu.error.shopId": "店家id出錯，請重新整理",
   "menu.loading.back": "再按一次返回建返回",
   "menu.download.message": "是否下載檔案",
   "menu.download.progress": "正在下載檔案 (%1$d/%2$d)",
   "menu.download.confirm": "確認",
-  "menu.download.cancel": "取消"
+  "menu.download.cancel": "取消",
+  "menu.back.list": "返回列表?",
+
+  "order.title": "購物車",
+  "order.items.title": "內容",
+  "order.items.moneyLabel": "總金額",
+  "order.confirm": "確認訂單",
+  "order.empty": "購物車為空",
+  "order.empty.confirm": "是",
+  "order.delete.message": "確定要刪除 \"%s\" 嗎?",
+  "order.delete.confirm": "是",
+  "order.delete.cancel": "否",
+  "order.confirm.message": "總金額為 $%.2f",
+  "order.confirm.confirm": "送出",
+  "order.confirm.cancel": "返回",
+  "order.process": "正在處理訂單",
+  "order.wait": "正在等待伺服器回應",
+  "order.showId": "訂單已準備好\n訂單編號: %s",
+  "order.showId.confirm": "確認",
+  "order.showId.check": "查看訂單",
+
+  "settings.confirm": "儲存",
+  "settings.dialog.msg": "有位儲存的設定，是否儲存?",
+  "settings.dialog.confirm": "儲存",
+  "settings.dialog.cancel": "不儲存",
+  "settings.lang": "語言",
+  "settings.lang.zh_tw": "中文",
+  "settings.linkOnStart": "程式開啟自動讀取附近店家",
+  "settings.shop": "店家相關:",
+  "settings.showClosedShop": "顯示已歇業店家",
+  "settings.distUnit": "距離單位",
+
+  "item.title": "商品訂製",
+  "item.note": "寫點建議",
+  "item.confirm": "加入購物車($ %.2f)"
+
 }

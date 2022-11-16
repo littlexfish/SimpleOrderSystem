@@ -1,8 +1,8 @@
 package edu.nptu.dllab.sos.data.menu
 
 import com.google.gson.JsonObject
-import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
+import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.fragment.MenuFragment
 import edu.nptu.dllab.sos.util.SOSVersion
 import org.msgpack.value.ArrayValue
@@ -15,7 +15,8 @@ import org.msgpack.value.MapValue
  * @since 22/10/03
  */
 @SOSVersion(since = "0.0")
-abstract class MenuBase(protected val type: MenuType, private val shopId: Int, private val version: Int) {
+abstract class MenuBase(protected val type: MenuType, private val shopId: Int,
+                        private val version: Int) {
 	
 	/**
 	 * Get [OrderItem] by item id
@@ -106,8 +107,8 @@ abstract class MenuBase(protected val type: MenuType, private val shopId: Int, p
 		/**
 		 * The custom type menu
 		 */
-		CUSTOM
-		;
+		CUSTOM;
+		
 		companion object {
 			/**
 			 * Get type by any string
@@ -115,6 +116,7 @@ abstract class MenuBase(protected val type: MenuType, private val shopId: Int, p
 			fun getTypeByString(str: String) = valueOf(str.uppercase())
 		}
 	}
+	
 	companion object {
 		/**
 		 * Get menu has been build

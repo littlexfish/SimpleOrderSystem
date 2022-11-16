@@ -3,9 +3,6 @@ package edu.nptu.dllab.sos.data.menu.classic
 import androidx.annotation.CallSuper
 import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
-import org.msgpack.value.MapValue
-import org.msgpack.value.Value
-import org.msgpack.value.ValueFactory
 import edu.nptu.dllab.sos.util.Util.OrderKey
 import edu.nptu.dllab.sos.util.Util.asDouble
 import edu.nptu.dllab.sos.util.Util.asInt
@@ -14,6 +11,9 @@ import edu.nptu.dllab.sos.util.Util.asString
 import edu.nptu.dllab.sos.util.Util.toFloatValue
 import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
+import org.msgpack.value.MapValue
+import org.msgpack.value.Value
+import org.msgpack.value.ValueFactory
 
 private const val ID = "id"
 private const val NAME = "name"
@@ -130,11 +130,11 @@ abstract class ClassicAddition(var id: String = "", var name: String = "", var d
  * Int type addition
  */
 @SOSVersion(since = "0.0")
-class IntAddition(id: String = "", name: String = "", des: String? = null, var max: Int = -1, var min: Int = -1, var step: Int = 1, var value: Int = min) :
+class IntAddition(id: String = "", name: String = "", des: String? = null, var max: Int = -1,
+                  var min: Int = -1, var step: Int = 1, var value: Int = min) :
 	ClassicAddition(id, name, des, TYPE_INT) {
 	
-	override fun clone(): IntAddition =
-		IntAddition(id, name, des, max, min, step, value)
+	override fun clone(): IntAddition = IntAddition(id, name, des, max, min, step, value)
 	
 	override fun getValue(): Value = value.toIntegerValue()
 	
@@ -163,11 +163,11 @@ class IntAddition(id: String = "", name: String = "", des: String? = null, var m
  * Float type addition
  */
 @SOSVersion(since = "0.0")
-class FloatAddition(id: String = "", name: String = "", des: String? = null, var max: Double = -1.0, var min: Double = -1.0, var step: Double = 1.0, var value: Double = min) :
+class FloatAddition(id: String = "", name: String = "", des: String? = null, var max: Double = -1.0,
+                    var min: Double = -1.0, var step: Double = 1.0, var value: Double = min) :
 	ClassicAddition(id, name, des, TYPE_FLOAT) {
 	
-	override fun clone(): FloatAddition =
-		FloatAddition(id, name, des, max, min, step, value)
+	override fun clone(): FloatAddition = FloatAddition(id, name, des, max, min, step, value)
 	
 	override fun getValue(): Value = value.toFloatValue()
 	
@@ -196,11 +196,10 @@ class FloatAddition(id: String = "", name: String = "", des: String? = null, var
  * String type addition
  */
 @SOSVersion(since = "0.0")
-class StringAddition(id: String = "", name: String = "", des: String? = null, var length: Int = 0, var value: String = "") :
-	ClassicAddition(id, name, des, TYPE_STRING) {
+class StringAddition(id: String = "", name: String = "", des: String? = null, var length: Int = 0,
+                     var value: String = "") : ClassicAddition(id, name, des, TYPE_STRING) {
 	
-	override fun clone(): StringAddition =
-		StringAddition(id, name, des, length, value)
+	override fun clone(): StringAddition = StringAddition(id, name, des, length, value)
 	
 	override fun getValue(): Value = value.toStringValue()
 	
@@ -223,11 +222,10 @@ class StringAddition(id: String = "", name: String = "", des: String? = null, va
  * Boolean type addition
  */
 @SOSVersion(since = "0.0")
-class BoolAddition(id: String = "", name: String = "", des: String? = null, var value: Boolean = false) :
-	ClassicAddition(id, name, des, TYPE_BOOL) {
+class BoolAddition(id: String = "", name: String = "", des: String? = null,
+                   var value: Boolean = false) : ClassicAddition(id, name, des, TYPE_BOOL) {
 	
-	override fun clone(): BoolAddition =
-		BoolAddition(id, name, des, value)
+	override fun clone(): BoolAddition = BoolAddition(id, name, des, value)
 	
 	override fun getValue(): Value = ValueFactory.newBoolean(value)
 	
@@ -250,11 +248,10 @@ class BoolAddition(id: String = "", name: String = "", des: String? = null, var 
  * Radio(single select) type addition
  */
 @SOSVersion(since = "0.0")
-class RadioAddition(id: String = "", name: String = "", des: String? = null, var items: Array<String> = emptyArray(), var value: Int = 0) :
-	ClassicAddition(id, name, des, TYPE_RADIO) {
+class RadioAddition(id: String = "", name: String = "", des: String? = null,
+                    var items: Array<String> = emptyArray(), var value: Int = 0) : ClassicAddition(id, name, des, TYPE_RADIO) {
 	
-	override fun clone(): RadioAddition =
-		RadioAddition(id, name, des, items, value)
+	override fun clone(): RadioAddition = RadioAddition(id, name, des, items, value)
 	
 	override fun getValue(): Value = value.toIntegerValue()
 	

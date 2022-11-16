@@ -21,8 +21,8 @@ enum class ShopState(val key: String) {
 	 * The shop is not open
 	 */
 	@SOSVersion(since = "0.0")
-	CLOSE("open")
-	;
+	CLOSE("close");
+	
 	companion object {
 		/**
 		 * Get state with string, avoid case sensitive

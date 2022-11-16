@@ -1,6 +1,5 @@
 package edu.nptu.dllab.sos.data.pull
 
-import com.google.gson.JsonElement
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPuller
 import edu.nptu.dllab.sos.util.SOSVersion

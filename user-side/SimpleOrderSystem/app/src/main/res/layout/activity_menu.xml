@@ -33,11 +33,29 @@
         android:layout_width="@dimen/main_toolbar"
         android:layout_height="@dimen/main_toolbar"
         android:scaleType="center"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/arrow_back" />
+
+    <ImageView
+        android:id="@+id/menuReload"
+        android:layout_width="@dimen/main_toolbar"
+        android:layout_height="@dimen/main_toolbar"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/refresh" />
+
+    <ImageView
+        android:id="@+id/menuCart"
+        android:layout_width="@dimen/main_toolbar"
+        android:layout_height="@dimen/main_toolbar"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/menuReload"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cart_anim" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

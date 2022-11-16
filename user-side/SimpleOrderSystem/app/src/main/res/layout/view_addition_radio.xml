@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="10dp">
+
+    <TextView
+        android:id="@+id/addRadioName"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:gravity="left|center_vertical"
+        android:text="TextView"
+        android:textSize="@dimen/add_label_size" />
+
+    <LinearLayout
+        android:id="@+id/addRadioList"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"/>
+
+</LinearLayout>

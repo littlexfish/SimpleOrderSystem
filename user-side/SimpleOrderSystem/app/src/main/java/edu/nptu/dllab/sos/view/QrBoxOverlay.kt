@@ -6,13 +6,20 @@ import android.util.AttributeSet
 import android.view.View
 import edu.nptu.dllab.sos.util.SOSVersion
 
-private val QR_OVERLAY_COLOR = Color.RED//Color.parseColor("#FF0000")
-private val QR_STRING_OVERLAY_COLOR = Color.WHITE//Color.parseColor("#FF0000")
-private val QR_STRING_S_OVERLAY_COLOR = Color.BLACK//Color.parseColor("#FF0000")
+private val QR_OVERLAY_COLOR = Color.RED //Color.parseColor("#FF0000")
+private val QR_STRING_OVERLAY_COLOR = Color.WHITE //Color.parseColor("#FF0000")
+private val QR_STRING_S_OVERLAY_COLOR = Color.BLACK //Color.parseColor("#FF0000")
 private const val STROKE_SIZE = 5f
-private val QR_PAINT = Paint().also { it.strokeWidth = STROKE_SIZE;it.style = Paint.Style.STROKE;it.color = QR_OVERLAY_COLOR }
-private val QR_STRING_PAINT = Paint().also { it.textSize = 50f;it.style = Paint.Style.FILL;it.color = QR_STRING_OVERLAY_COLOR }
-private val QR_STRING_S_PAINT = Paint().also { it.textSize = 50f;it.style = Paint.Style.STROKE;it.strokeWidth = 5f;it.color = QR_STRING_S_OVERLAY_COLOR }
+private val QR_PAINT = Paint().also {
+	it.strokeWidth = STROKE_SIZE;it.style = Paint.Style.STROKE;it.color = QR_OVERLAY_COLOR
+}
+private val QR_STRING_PAINT = Paint().also {
+	it.textSize = 50f;it.style = Paint.Style.FILL;it.color = QR_STRING_OVERLAY_COLOR
+}
+private val QR_STRING_S_PAINT = Paint().also {
+	it.textSize = 50f;it.style = Paint.Style.STROKE;it.strokeWidth = 5f;it.color =
+	QR_STRING_S_OVERLAY_COLOR
+}
 
 /**
  * The overlay use for show box on qrcode been scan
@@ -40,8 +47,8 @@ class QrBoxOverlay : View {
 	
 	constructor(context: Context?) : super(context)
 	constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-	constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) :
-			super(context, attrs, defStyleAttr, defStyleRes)
+	constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int,
+	            defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 	
 	override fun onDraw(canvas: Canvas?) {
 		super.onDraw(canvas)

@@ -1,10 +1,10 @@
 package edu.nptu.dllab.sos
 
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -12,7 +12,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import edu.nptu.dllab.sos.data.*
+import androidx.appcompat.app.AppCompatActivity
+import edu.nptu.dllab.sos.data.Event
+import edu.nptu.dllab.sos.data.Resource
 import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.data.pull.ResourceDownload
@@ -20,12 +22,10 @@ import edu.nptu.dllab.sos.data.pull.UpdateMenu
 import edu.nptu.dllab.sos.data.push.DownloadRequestEvent
 import edu.nptu.dllab.sos.data.push.OpenMenuEvent
 import edu.nptu.dllab.sos.databinding.ActivityMenuBinding
+import edu.nptu.dllab.sos.dialog.LoadingDialog
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 import edu.nptu.dllab.sos.fragment.MenuFragment
-import edu.nptu.dllab.sos.io.DBHelper
-import edu.nptu.dllab.sos.io.FileIO
-import edu.nptu.dllab.sos.io.ResourceWriter
-import edu.nptu.dllab.sos.io.Translator
+import edu.nptu.dllab.sos.io.*
 import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.io.db.DBMenu
 import edu.nptu.dllab.sos.util.SOSVersion
@@ -49,31 +49,26 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * The dialog to avoid user active when loading
 	 */
-	@SOSVersion(since = "0.0")
 	private lateinit var loadingDialog: LoadingDialog
 	
 	/**
 	 * The shop id
 	 */
-	@SOSVersion(since = "0.0")
 	private var shopId = -1
 	
 	/**
 	 * The thread to process network
 	 */
-	@SOSVersion(since = "0.0")
 	private val handlerThread = HandlerThread("menu-net").also { it.start() }
 	
 	/**
 	 * The handler to process network
 	 */
-	@SOSVersion(since = "0.0")
 	private val handler = Handler(handlerThread.looper)
 	
 	/**
 	 * The menu fragment now on
 	 */
-	@SOSVersion(since = "0.0")
 	private var nowFragment: MenuFragment = ClassicMenuFragment.newInstance(-1)
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,38 +84,69 @@ class MenuActivity : AppCompatActivity() {
 		
 		// start get data
 		loadingDialog = LoadingDialog(this)
-		loadingDialog.setCanceledOnTouchOutside(false)
-		loadingDialog.setMessage("Loading...")
 		
 		// auto load on first time
 		binding.menuFragment.post {
-			/*
-			 * FISH NOTE:
-			 *   Load test menu when shop is less than 0
-			 */
-			if(shopId < 0) {
-				testLoadMenu()
-			}
-			else {
-				loadFromServer()
-			}
+			loadMenu(true)
 		}
 		
 		onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
 			override fun handleOnBackPressed() {
-				if(!nowFragment.onBackPressed()) finish()
+				if(!nowFragment.onBackPressed()) {
+					backToList()
+				}
 			}
 		})
 		
 		// Close activity when touch back button
-		binding.menuBack.setOnClickListener { finish() }
+		binding.menuBack.setOnClickListener {
+			backToList()
+		}
 		
+		binding.menuReload.setOnClickListener { loadMenu(false) }
+		
+		binding.menuCart.setOnClickListener {
+			startActivity(Intent(this, OrderActivity::class.java))
+		}
+		
+	}
+	
+	/**
+	 * Let user accept finish this activity
+	 */
+	@SOSVersion(since = "0.0")
+	private fun backToList() {
+		AlertDialog.Builder(this)
+			.setMessage(Translator.getString("menu.back.list"))
+			.setPositiveButton(Translator.getString("menu.download.confirm")) { _, _ ->
+				finish()
+			}
+			.setNegativeButton(Translator.getString("menu.download.cancel")) { _, _ -> }
+			.create().show()
+	}
+	
+	/**
+	 * Request load menu and replace it
+	 */
+	@SOSVersion(since = "0.0")
+	private fun loadMenu(firstLoad: Boolean) {
+		/*
+		 * FISH NOTE:
+		 *   Load test menu when shop is less than 0
+		 */
+		if(shopId < 0) {
+			testLoadMenu(firstLoad)
+		}
+		else {
+			loadFromServer(firstLoad)
+		}
 	}
 	
 	/**
 	 * Load test menu when shopId is less than 0
 	 */
-	private fun testLoadMenu() {
+	@SOSVersion(since = "0.0")
+	private fun testLoadMenu(firstLoad: Boolean) {
 		startLoading()
 		// Force load menu from assets/testMenu.menu
 		val inS = resources.assets.open("testMenu.menu")
@@ -129,44 +155,50 @@ class MenuActivity : AppCompatActivity() {
 		inS.close()
 		
 		val type = value.map()[Util.UpdateKey.MENU_TYPE.toStringValue()]!!.asString()
-		val menuBase = MenuBase.buildByType(MenuBase.MenuType.getTypeByString(type), shopId, 0, value)
+		val menuBase =
+			MenuBase.buildByType(MenuBase.MenuType.getTypeByString(type), shopId, 0, value)
 		changeFragAndBuildMenu(menuBase)
 		
-		/*
-		 * FISH NOTE:
-		 *   The dialog emulate the download request
-		 */
-		AlertDialog.Builder(this)
-			.setMessage(Translator.getString("menu.download.message"))
-			.setPositiveButton(Translator.getString("menu.download.confirm")) { _, _ ->
-				val dl = DownloadDialog(this)
-				dl.show()
-				dl.set(0, 0)
-				handler.post {
-					val max = (Math.random() * 10).toInt() + 2
-					for(i in 0 until max) {
-						Thread.sleep((Math.random() * 3000).toLong() + 1000)
-						dl.set(i + 1, max)
-					}
-					
-					runOnUiThread {
-						dl.dismiss()
-						stopLoading()
+		if(firstLoad) {
+			/*
+			 * FISH NOTE:
+			 *   The dialog emulate the download request
+			 */
+			AlertDialog.Builder(this)
+				.setMessage(Translator.getString("menu.download.message"))
+				.setPositiveButton(Translator.getString("menu.download.confirm")) { _, _ ->
+					val dl = DownloadDialog(this)
+					dl.show()
+					dl.set(0, 0)
+					handler.post {
+						val max = (Math.random() * 5).toInt() + 2
+						for(i in 0 until max) {
+							Thread.sleep((Math.random() * 2000).toLong() + 500)
+							runOnUiThread { dl.set(i + 1, max) }
+						}
+						
+						runOnUiThread {
+							dl.dismiss()
+							stopLoading()
+						}
 					}
 				}
-			}
-			.setNegativeButton(Translator.getString("menu.download.cancel")) { _, _ ->
-				stopLoading()
-			}
-			.setCancelable(false)
-			.create().show()
+				.setNegativeButton(Translator.getString("menu.download.cancel")) { _, _ ->
+					stopLoading()
+				}
+				.setCancelable(false)
+				.create().show()
+		}
+		else {
+			stopLoading()
+		}
 	}
 	
 	/**
 	 * Load menu from server
 	 */
 	@SOSVersion(since = "0.0")
-	private fun loadFromServer() {
+	private fun loadFromServer(firstLoad: Boolean) {
 		handler.post {
 			runOnUiThread { startLoading() }
 			/*
@@ -204,6 +236,10 @@ class MenuActivity : AppCompatActivity() {
 			// update menu
 			var needUpdate = false
 			var get = handler.waitEvent()
+			if(SocketHandler.checkErrorAndThrow(applicationContext, get as Event)) {
+				return@post
+			}
+			
 			val resMap = HashMap<String, Resource>()
 			/*
 			 * FISH NOTE:
@@ -258,7 +294,12 @@ class MenuActivity : AppCompatActivity() {
 			 *   Than we process the data what we get from server
 			 */
 			run {
-				if(needUpdate) get = handler.waitEvent()
+				if(needUpdate) {
+					get = handler.waitEvent()
+					if(SocketHandler.checkErrorAndThrow(applicationContext, get as Event)) {
+						return@post
+					}
+				}
 				if(get is EventMenu) {
 					val em = get as EventMenu
 					runOnUiThread {
@@ -268,27 +309,28 @@ class MenuActivity : AppCompatActivity() {
 				}
 			}
 			
-			runOnUiThread {
-				/*
-				 * FISH NOTE:
-				 *   The dialog let user has choice that not download
-				 *    any resource on this menu.
-				 *   Request download when user choose confirm, or do nothing
-				 *    when user choose cancel
-				 */
-				// TODO: (FUTURE)Add check box let user has choice
-				//  that not show download confirm again when user
-				//  had cancel once
-				AlertDialog.Builder(this)
-					.setMessage(Translator.getString("menu.download.message"))
-					.setPositiveButton(Translator.getString("menu.download.confirm")) { _, _ ->
-						val dl = DownloadDialog(this)
-						dl.show()
-						dl.set(0, 1)
-						this.handler.post {
-							if(resMap.isNotEmpty()) {
+			if(firstLoad && resMap.isNotEmpty()) {
+				runOnUiThread {
+					/*
+					 * FISH NOTE:
+					 *   The dialog let user has choice that not download
+					 *    any resource on this menu.
+					 *   Request download when user choose confirm, or do nothing
+					 *    when user choose cancel
+					 */
+					// TODO: (FUTURE)Add check box let user has choice
+					//  that not show download confirm again when user
+					//  had cancel once
+					AlertDialog.Builder(this)
+						.setMessage(Translator.getString("menu.download.message"))
+						.setPositiveButton(Translator.getString("menu.download.confirm")) { _, _ ->
+							val dl = DownloadDialog(this)
+							dl.show()
+							dl.set(0, 1)
+							this.handler.post {
 								val download = DownloadRequestEvent()
 								download.addAllPath(resMap.keys)
+								handler.pushEvent(download)
 								
 								while(true) {
 									get = handler.waitEvent()
@@ -311,21 +353,25 @@ class MenuActivity : AppCompatActivity() {
 								runOnUiThread {
 									nowFragment.reloadResource()
 								}
-							}
-							
-							db.close()
-							runOnUiThread {
-								dl.dismiss()
-								stopLoading()
+								
+								db.close()
+								runOnUiThread {
+									dl.dismiss()
+									stopLoading()
+								}
 							}
 						}
-					}
-					.setNegativeButton(Translator.getString("menu.download.cancel")) { _, _ ->
-						db.close()
-						stopLoading()
-					}
-					.setCancelable(false) // let dialog cannot cancel
-					.create().show()
+						.setNegativeButton(Translator.getString("menu.download.cancel")) { _, _ ->
+							db.close()
+							stopLoading()
+						}
+						.setCancelable(false) // let dialog cannot cancel
+						.create().show()
+				}
+			}
+			else {
+				db.close()
+				runOnUiThread { stopLoading() }
 			}
 		}
 	}
@@ -378,7 +424,11 @@ class MenuActivity : AppCompatActivity() {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun stopLoading() {
-		loadingDialog.dismiss()
+		loadingDialog.dismissAtLeast()
+	}
+	
+	fun animCart() {
+		(binding.menuCart.drawable as AnimatedVectorDrawable).start()
 	}
 	
 	override fun onDestroy() {
@@ -391,48 +441,26 @@ class MenuActivity : AppCompatActivity() {
 		const val EXTRA_SHOP_ID = "menu.extra.shopId"
 	}
 	
-	class LoadingDialog(private val act: Activity) : ProgressDialog(act) {
-		
-		/**
-		 * Two back button press interval
-		 */
-		private val waitTime = 1500
-		
-		/**
-		 * Last back button press time
-		 */
-		private var lastTime = 0L
+	/**
+	 * The dialog shows download status
+	 */
+	@SOSVersion(since = "0.0")
+	class DownloadDialog(context: Context) : ProgressDialog(context) {
 		
 		init {
+			setProgressStyle(STYLE_HORIZONTAL)
+			setCanceledOnTouchOutside(false)
 			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-				onBackInvokedDispatcher.registerOnBackInvokedCallback(1) {
-					pressBack()
+				onBackInvokedDispatcher.registerOnBackInvokedCallback(
+					1) {					// do nothing
 				}
 			}
 		}
 		
 		override fun onBackPressed() {
 			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-				pressBack()
+			// do nothing
 			}
-		}
-		
-		private fun pressBack() {
-			val cur = System.currentTimeMillis()
-			if(cur - lastTime > waitTime) {
-				lastTime = cur
-				Toast.makeText(context, Translator.getString("menu.loading.back"), Toast.LENGTH_SHORT).show()
-			}
-			else {
-				act.finish()
-			}
-		}
-	}
-	
-	class DownloadDialog(context: Context) : ProgressDialog(context) {
-		
-		init {
-			setProgressStyle(STYLE_HORIZONTAL)
 		}
 		
 		fun set(value: Int, max: Int) {

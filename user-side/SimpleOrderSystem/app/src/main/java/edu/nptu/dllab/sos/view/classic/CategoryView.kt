@@ -2,7 +2,6 @@ package edu.nptu.dllab.sos.view.classic
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -36,6 +35,7 @@ class CategoryView : ConstraintLayout {
 		set(value) {
 			textView.text = value
 		}
+	
 	/**
 	 * Set get of category img
 	 */
@@ -54,7 +54,8 @@ class CategoryView : ConstraintLayout {
 		init()
 	}
 	
-	constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+	constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs,
+	                                                                          defStyle) {
 		init()
 	}
 	

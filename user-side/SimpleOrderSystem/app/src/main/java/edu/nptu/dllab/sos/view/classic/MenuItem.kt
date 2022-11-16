@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.drawable.toBitmap
 import edu.nptu.dllab.sos.R
-import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.databinding.ViewItemBlockBinding
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 import edu.nptu.dllab.sos.util.SOSVersion
@@ -57,17 +56,22 @@ abstract class MenuItem : ConstraintLayout {
 		}
 	
 	
-	constructor(context: Context, frag: ClassicMenuFragment, n: String) : super(context) {
+	constructor(context: Context, frag: ClassicMenuFragment, n: String)
+			: super(context) {
 		init()
 		fragment = frag
 		setString(n)
 	}
-	constructor(context: Context, attr: AttributeSet?, frag: ClassicMenuFragment, n: String) : super(context, attr) {
+	
+	constructor(context: Context, attr: AttributeSet?, frag: ClassicMenuFragment, n: String)
+			: super(context, attr) {
 		init()
 		fragment = frag
 		setString(n)
 	}
-	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int, frag: ClassicMenuFragment, n: String) : super(context, attr, defStyleAttr) {
+	
+	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int, frag: ClassicMenuFragment, n: String)
+			: super(context, attr, defStyleAttr) {
 		init()
 		fragment = frag
 		setString(n)
@@ -93,8 +97,10 @@ abstract class MenuItem : ConstraintLayout {
 	 * Set image with bitmap
 	 */
 	@SOSVersion(since = "0.0")
-	protected fun setImage(bitmap: Bitmap) {
+	protected fun setImage(bitmap: Bitmap?) {
 		binding.classicItemImg.setImageBitmap(bitmap)
+		if(bitmap == null) binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size_min)
+		else binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size)
 	}
 	
 	/**
@@ -103,6 +109,8 @@ abstract class MenuItem : ConstraintLayout {
 	@SOSVersion(since = "0.0")
 	protected fun setImage(drawable: Drawable?) {
 		binding.classicItemImg.setImageDrawable(drawable)
+		if(drawable == null) binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size_min)
+		else binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size)
 	}
 	
 	/**
@@ -111,6 +119,12 @@ abstract class MenuItem : ConstraintLayout {
 	@SOSVersion(since = "0.0")
 	protected fun setString(t: String) {
 		binding.classicItemText.text = t
+	}
+	
+	fun setExtra(str: String) {
+		binding.classicItemExtra.text = str
+		if(str.isBlank()) binding.classicItemExtra.layoutParams.height = 0
+		else binding.classicItemExtra.layoutParams.height = -2
 	}
 	
 }

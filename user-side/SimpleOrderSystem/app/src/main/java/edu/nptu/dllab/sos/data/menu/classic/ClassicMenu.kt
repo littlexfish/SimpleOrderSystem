@@ -1,13 +1,12 @@
 package edu.nptu.dllab.sos.data.menu.classic
 
 import com.google.gson.JsonObject
-import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.data.menu.MenuBase
+import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 import edu.nptu.dllab.sos.fragment.MenuFragment
 import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
-import edu.nptu.dllab.sos.util.Util.asDouble
 import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.asMap
 import edu.nptu.dllab.sos.util.Util.asString
@@ -55,8 +54,7 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	}
 	
 	@Deprecated("use buildMenu(org.msgpack.value.MapValue)")
-	override fun buildMenu(data: JsonObject) {
-		// now do nothing
+	override fun buildMenu(data: JsonObject) {		// now do nothing
 	}
 	
 	override fun buildMenu(data: MapValue) {
@@ -69,10 +67,11 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 			val itemId = item[ITEM_ITEM_ID.toStringValue()]!!.asString()
 			val name = item[ITEM_NAME.toStringValue()]!!.asString()
 			val des = item[ITEM_DES.toStringValue()]?.asString()
-			val price = item[ITEM_PRICE.toStringValue()]!!.asDouble()
+			val priceValue = item[ITEM_PRICE.toStringValue()]
+			val price = (if(priceValue?.isIntegerValue == true) priceValue.asIntegerValue()?.toInt()?.toDouble()
+			else priceValue?.asFloatValue()?.toDouble()) ?: 0.0
 			val cc = item[ITEM_CURRENCY_CODE.toStringValue()]?.asString() ?: DEFAULT_CURRENCY_CODE
-			val additions = item[ITEM_ADDITION.toStringValue()]!!.asArrayValue()
-				.map { ClassicAddition.buildByValue(it) }
+			val additions = item[ITEM_ADDITION.toStringValue()]!!.asArrayValue().map { ClassicAddition.buildByValue(it) }
 			val tags = item[ITEM_TAGS.toStringValue()]!!.asArrayValue().map { it.asString() }.toTypedArray()
 			val resId = item[ITEM_ID.toStringValue()]!!.asInt()
 			
@@ -97,7 +96,8 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 				val node = Node(i, lastNode)
 				lastNode.addNode(node)
 				node
-			} else next
+			}
+			else next
 		}
 	}
 	
@@ -108,9 +108,7 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	@SOSVersion(since = "0.0")
 	fun getListFromCategory(cate: String): ArrayList<Pair<String, Boolean>> {
 		val ret = ArrayList<Pair<String, Boolean>>()
-		val node = if(cate.isEmpty()) {
-			root
-		}
+		val node = if(cate.isEmpty()) root
 		else {
 			val spl = if(cate.startsWith("/")) cate.substring(1).split("/") else cate.split("/")
 			var lastNode = root

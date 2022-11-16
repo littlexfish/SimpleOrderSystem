@@ -1,7 +1,5 @@
 package edu.nptu.dllab.sos.util
 
-import kotlin.RuntimeException
-
 /**
  * The class contains some of exception that public can use
  *
@@ -17,10 +15,10 @@ abstract class Exceptions {
 		constructor(e: Exception) : super(e)
 		constructor(e: Exception, msg: String) : super(msg, e)
 	}
+	
 	@SOSVersion(since = "0.0")
-	class EventNotFoundException(event: String) :
-		RuntimeException("event not found: $event")
+	class EventNotFoundException(event: String) : RuntimeException("event not found: $event")
+	
 	@SOSVersion(since = "0.0")
-	class DBDataNotGetException(columnName: String) :
-		RuntimeException("data \"$columnName\" not select as filter")
+	class DBDataNotGetException(columnName: String) : RuntimeException("data \"$columnName\" not select as filter")
 }

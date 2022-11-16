@@ -43,7 +43,7 @@ object Translator {
 			remapTrans(context.resources.assets.open("$langDirName/$lang.json"), lang)
 			return
 		}
-		val dataLangDir = File("${context.dataDir}/$langDirName")
+		val dataLangDir = context.getFileStreamPath(langDirName)
 		if(!dataLangDir.exists()) {
 			dataLangDir.mkdirs()
 		}
@@ -52,6 +52,23 @@ object Translator {
 			return
 		}
 		Log.w(TAG, "language file not found: $lang")
+	}
+	
+	fun listLangs(context: Context): Set<String> {
+		val set = HashSet<String>()
+		val assFiles = context.resources.assets.list(langDirName) ?: emptyArray()
+		for(f in assFiles) {
+			set.add(f.removeSuffix(".json"))
+		}
+		val dataFile = context.getFileStreamPath(langDirName)
+		if(!dataFile.exists()) {
+			dataFile.mkdirs()
+		}
+		val dataFiles = dataFile.list() ?: emptyArray()
+		for(f in dataFiles) {
+			set.add(f.removeSuffix(".json"))
+		}
+		return set
 	}
 	
 	/**
