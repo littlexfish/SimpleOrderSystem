@@ -1,6 +1,8 @@
 package edu.nptu.dllab.sos.io
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import edu.nptu.dllab.sos.util.Util.asDouble
 import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.asMap
@@ -17,108 +19,71 @@ object Config {
 	
 	private const val FILE_NAME = "config"
 	
-	private val settings = HashMap<String, Any?>()
+	private val default = HashMap<String, Any>()
+	private lateinit var settings: SharedPreferences
+	
+	init {
+		default[Key.LANG] = "zh_tw"
+		default[Key.LINK_ON_START] = false
+		default[Key.TIME_FORMAT] = "Y4M2D2_HM"
+		default[Key.SHOW_CLOSED_SHOP] = false
+		default[Key.DISTANCE_UNIT] = "m"
+	}
 	
 	fun init(context: Context) {
-		if(!context.getFileStreamPath(FILE_NAME).exists()) {
-			copyFile(context)
-		}
-		val i = context.openFileInput(FILE_NAME)
-		val unpacker = MessagePack.newDefaultUnpacker(i)
-		val value = unpacker.unpackValue()
-		unpacker.close()
-		i.close()
-		settings.putAll(deepPut(value) as HashMap<String, Any?>)
+		settings = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
+//		settings.edit {
+//			var change = false
+//			for(k in default.keys) {
+//				if(!settings.contains(k)) {
+//					change = true
+//					putDefault(this, k, default[k]!!)
+//				}
+//			}
+//			if(change) commit()
+//		}
 	}
 	
-	private fun deepPut(value: Value?): Any? {
-		if(value == null) return null
-		return if(value.isMapValue) {
-			val v = value.asMap()
-			val map = HashMap<String, Any?>()
-			for(k in v.keys) {
-				map[k.asString()] = deepPut(v[k])
+	private fun putDefault(edit: SharedPreferences.Editor, key: String, value: Any) {
+		when(value) {
+			is Int -> edit.putInt(key, value)
+			is Double -> edit.putFloat(key, value.toFloat())
+			is Boolean -> edit.putBoolean(key, value)
+			is String -> edit.putString(key, value)
+		}
+	}
+	
+	fun getInt(key: String) = settings.getInt(key, default[key] as? Int ?: throwNoDefault(key))
+	
+	fun getString(key: String) = settings.getString(key, default[key] as? String ?: throwNoDefault(key))!!
+	
+	fun getDouble(key: String) = settings.getFloat(key, default[key] as? Float ?: throwNoDefault(key)).toDouble()
+	
+	fun getBoolean(key: String) = settings.getBoolean(key, default[key] as? Boolean ?: throwNoDefault(key))
+	
+	fun setConfig(key: String, value: Any) {
+		settings.edit {
+			when(value) {
+				is Int -> putInt(key, value)
+				is Double -> putFloat(key, value.toFloat())
+				is Boolean -> putBoolean(key, value)
+				is String -> putString(key, value)
 			}
-			map
+			apply()
 		}
-		else if(value.isStringValue) value.asString()
-		else if(value.isIntegerValue) value.asInt()
-		else if(value.isFloatValue) value.asDouble()
-		else if(value.isBooleanValue) value.asBooleanValue().boolean
-		else null
-	}
-	
-	private fun copyFile(context: Context) {
-		val i = context.assets.open(FILE_NAME)
-		val o = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)
-		i.copyTo(o)
-		o.close()
-		i.close()
-	}
-	
-	fun getConfig(key: String): Any? {
-		val keys = key.split('.')
-		var v = settings[keys[0]]
-		for(i in 1 until keys.size) {
-			if(v == null) return null
-			if(v is HashMap<*, *>) v = v[keys[i]]
-			else return v
-		}
-		return v
-	}
-	
-	fun getInt(key: String) = getConfig(key)!! as Int
-	
-	fun getString(key: String) = getConfig(key)!! as String
-	
-	fun getDouble(key: String) = getConfig(key)!! as Double
-	
-	fun getBoolean(key: String) = getConfig(key)!! as Boolean
-	
-	fun setConfig(key: String, value: Any?) {
-		val keys = key.split('.')
-		var v = settings[keys[0]]
-		for(i in 1 until keys.size - 1) {
-			if(v == null) return
-			if(v is HashMap<*, *>) v = v[keys[i]]
-			else return
-		}
-		if(v != null && v is HashMap<*, *>) (v as HashMap<String, Any?>)[keys.last()] = value
 	}
 	
 	fun saveConfig(context: Context) {
-		val buffer = ByteArrayOutputStream()
-		val packer = MessagePack.newDefaultPacker(buffer)
-		packer.packValue(deepToValue(settings))
-		packer.flush()
-		packer.close()
-		val o = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)
-		buffer.writeTo(o)
-		o.close()
 	}
 	
-	private fun deepToValue(any: Any?): Value {
-		return when(any) {
-			null -> ValueFactory.newNil()
-			is HashMap<*, *> -> {
-				any as HashMap<String, Any?>
-				val map = ValueFactory.newMapBuilder()
-				for(k in any.keys) {
-					map.put(k.toStringValue(), deepToValue(any[k]))
-				}
-				map.build()
-			}
-			is String -> any.toStringValue()
-			is Int -> any.toIntegerValue()
-			is Double -> any.toFloatValue()
-			is Boolean -> ValueFactory.newBoolean(any)
-			else -> ValueFactory.newNil()
-		}
+	private fun <T> throwNoDefault(key: String): T {
+		throw IllegalArgumentException("settings key not found: $key")
 	}
 	
 	object Key {
 		const val LANG = "lang"
 		const val LINK_ON_START = "link_on_start"
+		const val TIME_FORMAT = "time_format"
 		const val SHOW_CLOSED_SHOP = "shop.show_closed"
 		const val DISTANCE_UNIT = "shop.dist_unit"
 	}

@@ -2,18 +2,29 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_pressed="true">
-        <vector android:autoMirrored="true" android:height="24dp"
-            android:tint="#111" android:viewportHeight="24"
+        <vector android:height="24dp"
+            android:viewportHeight="24"
             android:viewportWidth="24" android:width="24dp">
-            <path android:fillColor="@android:color/white" android:pathData="M15.41,16.59L10.83,12l4.58,-4.59L14,6l-6,6 6,6 1.41,-1.41z"/>
+            <path android:fillColor="#111"
+                android:pathData="M15.41,16.59L10.83,12l4.58,-4.59L14,6l-6,6 6,6 1.41,-1.41z"/>
+        </vector>
+    </item>
+
+    <item android:state_pressed="false">
+        <vector android:height="24dp"
+            android:viewportHeight="24"
+            android:viewportWidth="24" android:width="24dp">
+            <path android:fillColor="#000"
+                android:pathData="M15.41,16.59L10.83,12l4.58,-4.59L14,6l-6,6 6,6 1.41,-1.41z"/>
         </vector>
     </item>
 
     <item>
-        <vector android:autoMirrored="true" android:height="24dp"
-            android:tint="#000000" android:viewportHeight="24"
+        <vector android:height="24dp"
+            android:viewportHeight="24"
             android:viewportWidth="24" android:width="24dp">
-            <path android:fillColor="@android:color/white" android:pathData="M15.41,16.59L10.83,12l4.58,-4.59L14,6l-6,6 6,6 1.41,-1.41z"/>
+            <path android:fillColor="#000"
+                android:pathData="M15.41,16.59L10.83,12l4.58,-4.59L14,6l-6,6 6,6 1.41,-1.41z"/>
         </vector>
     </item>
 

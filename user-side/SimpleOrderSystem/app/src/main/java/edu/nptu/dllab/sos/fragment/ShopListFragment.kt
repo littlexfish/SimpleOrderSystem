@@ -86,6 +86,7 @@ class ShopListFragment : Fragment() {
 	}
 	
 	private fun checkPermission() {
+		if(context == null) return
 		if(checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
 				|| checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 			if(shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -143,7 +144,7 @@ class ShopListFragment : Fragment() {
 		val evt = LinkEvent()
 		evt.position = pos
 		StaticData.ensureSocketHandler(requireContext(), {
-			StaticData.socketHandler.pushEvent(evt)
+			StaticData.socketHandler.pushEventRePush(evt)
 			val get = StaticData.socketHandler.waitEvent()
 			
 			requireActivity().runOnUiThread {
@@ -153,6 +154,7 @@ class ShopListFragment : Fragment() {
 					val showClose = Config.getBoolean(Config.Key.SHOW_CLOSED_SHOP)
 					for(v in shops) {
 						if(v.state == ShopState.OPEN || (v.state == ShopState.CLOSE && showClose)) {
+							Log.d(tag, "shopId: ${v.shopId}, position: (${v.position.x}, ${v.position.y})")
 							val view = ShopItemView(requireContext())
 							view.name = v.name
 							view.distance = Util.getDistance(pos, v.position)
@@ -172,6 +174,7 @@ class ShopListFragment : Fragment() {
 						}
 					}
 				}
+				loadingDialog.dismiss()
 			}
 		}) {
 			requireActivity().runOnUiThread {

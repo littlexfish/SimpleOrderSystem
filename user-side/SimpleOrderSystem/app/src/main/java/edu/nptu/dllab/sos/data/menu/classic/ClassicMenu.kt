@@ -106,8 +106,8 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	 * @return name and isFolder
 	 */
 	@SOSVersion(since = "0.0")
-	fun getListFromCategory(cate: String): ArrayList<Pair<String, Boolean>> {
-		val ret = ArrayList<Pair<String, Boolean>>()
+	fun getListFromCategory(cate: String): ArrayList<Pair<Any, Boolean>> {
+		val ret = ArrayList<Pair<Any, Boolean>>()
 		val node = if(cate.isEmpty()) root
 		else {
 			val spl = if(cate.startsWith("/")) cate.substring(1).split("/") else cate.split("/")
@@ -120,8 +120,16 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 			lastNode
 		}
 		ret.addAll(node.getPosts().map { Pair(it, true) })
-		ret.addAll(items.filterValues { it.cate == cate }.map { Pair(it.value.itemId, false) })
+		ret.addAll(items.filterValues { it.cate == cate }.map { Pair(it.value, false) })
 		return ret
+	}
+	
+	fun getContainTags(): List<String> {
+		val sets = HashSet<String>()
+		for(i in items.values) {
+			sets.addAll(i.tags)
+		}
+		return ArrayList(sets)
 	}
 	
 	override fun getMenuData(): MapValue {

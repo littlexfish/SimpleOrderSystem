@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.SimpleOrderSystem" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/theme_main</item>
+        <item name="colorPrimaryVariant">@color/theme_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -13,4 +13,19 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.SimpleOrderSystem.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/text_frame</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
+    </style>
+
+    <style name="Theme.SimpleOrderSystem.SideMenuItem" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@drawable/side_menu_button</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:paddingLeft">@dimen/main_menu_item_padding</item>
+    </style>
+
 </resources>

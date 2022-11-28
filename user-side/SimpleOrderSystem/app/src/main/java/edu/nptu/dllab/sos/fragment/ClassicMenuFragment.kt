@@ -13,6 +13,7 @@ import edu.nptu.dllab.sos.ItemOrderActivity
 import edu.nptu.dllab.sos.MenuActivity
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.data.menu.MenuBase
+import edu.nptu.dllab.sos.data.menu.classic.ClassicItem
 import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.databinding.FragmentClassicMenuBinding
 import edu.nptu.dllab.sos.util.SOSVersion
@@ -59,6 +60,9 @@ class ClassicMenuFragment : MenuFragment() {
 	
 	private var refresh = false
 	
+	private lateinit var filterFrag: FilterFragment
+	private var filter: Set<String> = HashSet()
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		arguments?.let {
@@ -76,8 +80,16 @@ class ClassicMenuFragment : MenuFragment() {
 		
 		binding = FragmentClassicMenuBinding.bind(view)
 		
+		filterFrag = FilterFragment()
+		parentFragmentManager.beginTransaction().replace(R.id.classicFilterFrag, filterFrag).commit()
+		filterFrag.setOnClose {
+			filter = it
+			refreshScreen()
+			binding.classicFilterFrag.visibility = View.GONE
+		}
+		
 		binding.classicFilter.setOnClickListener {
-			// TODO: open filter
+			binding.classicFilterFrag.visibility = View.VISIBLE
 		}
 		
 		if(refresh) {
@@ -97,19 +109,47 @@ class ClassicMenuFragment : MenuFragment() {
 	 * Refresh the screen with current category
 	 */
 	@SOSVersion(since = "0.0")
-	private fun refreshScreen() {		// refresh main category
+	private fun refreshScreen() {
 		if(!::binding.isInitialized || classic == null) {
 			refresh = true
 			return
 		}
+		// get data
+		val cate = nowCate.joinToString("/")
+		val tmpList = classic!!.getListFromCategory(cate)
+		val tmpPairList = ArrayList(classic!!.getListFromCategory(cate))
+		for(p in tmpList) {
+			if(!p.second) {
+				val i = p.first as ClassicItem
+				for(f in filter) {
+					if(f !in i.tags) {
+						tmpPairList.remove(p)
+						break
+					}
+				}
+			}
+		}
+		
+		val folderSet = HashSet<Pair<Any, Boolean>>()
+		val itemSet = HashSet<Pair<Any, Boolean>>()
+		
+		for(i in tmpPairList) {
+			if(i.second) folderSet.add(i)
+			else itemSet.add(i)
+		}
+		
+		val pairList = ArrayList<Pair<Any, Boolean>>()
+		pairList.addAll(folderSet)
+		pairList.addAll(itemSet)
+		
+		// refresh main category
 		binding.menuClassicCate.removeAllViews()
-		val mc = classic!!.getListFromCategory("")
-		for(cate in mc) {
-			if(cate.second) {
+		for(c in classic!!.getListFromCategory("")) {
+			if(c.second) {
 				val cv = CategoryView(requireContext())
-				cv.string = cate.first
+				cv.string = c.first.toString()
 				cv.setOnClickListener {
-					nowCate = arrayListOf(cate.first)
+					nowCate = arrayListOf(c.first.toString())
 					refreshScreen()
 				}
 				binding.menuClassicCate.addView(cv)
@@ -121,9 +161,10 @@ class ClassicMenuFragment : MenuFragment() {
 		place.layoutParams = LinearLayout.LayoutParams(dimen, dimen)
 		binding.menuClassicCate.addView(place)
 		
+		// refresh filter
+		filterFrag.setAllFilter(classic!!.getContainTags())
+		
 		// refresh items
-		val cate = nowCate.joinToString("/")
-		val pairList = classic!!.getListFromCategory(cate)
 		val vCount = pairList.size / 2 + if(pairList.size % 2 == 0) 0 else 1
 		val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
 		
@@ -144,9 +185,9 @@ class ClassicMenuFragment : MenuFragment() {
 				}
 				else {
 					val item = pairList[index]
-					val view = if(item.second) ItemFolder(requireContext(), this, item.first)
+					val view = if(item.second) ItemFolder(requireContext(), this, item.first.toString())
 					else {
-						val i = classic!!.getShopItem(item.first)
+						val i = item.first as ClassicItem
 						val vi = ItemBlock(requireContext(), this, i.itemId, i.display, resData[i.resId], i.price)
 						vi
 					}

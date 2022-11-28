@@ -1,8 +1,11 @@
 package edu.nptu.dllab.sos
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import edu.nptu.dllab.sos.data.menu.OrderItem
 import edu.nptu.dllab.sos.data.menu.classic.ClassicItem
@@ -16,6 +19,29 @@ class ItemOrderActivity : AppCompatActivity() {
 	private lateinit var binding: ActivityItemOrderBinding
 	
 	private val additionList = ArrayList<AdditionView>()
+	
+	private var oldKeyboardVisibility = false
+	private val keyboardDetector = ViewTreeObserver.OnGlobalLayoutListener {
+		val root = binding.root
+		val rect = Rect()
+		root.getWindowVisibleDisplayFrame(rect)
+		val screenHeight = root.rootView.height
+		
+		val keypadHeight = screenHeight - rect.bottom
+		
+		if(keypadHeight > screenHeight * 0.15) {
+			if(!oldKeyboardVisibility) {
+				oldKeyboardVisibility = true
+				onKeyBoardVisibilityChange(true)
+			}
+		}
+		else {
+			if(oldKeyboardVisibility) {
+				oldKeyboardVisibility = false
+				onKeyBoardVisibilityChange(false)
+			}
+		}
+	}
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -47,6 +73,13 @@ class ItemOrderActivity : AppCompatActivity() {
 				selected.note = binding.orderItemNote.text.toString()
 			}
 		})
+		binding.orderItemNote.setOnFocusChangeListener { _, hasFocus ->
+			if(!hasFocus && oldKeyboardVisibility) {
+				binding.orderItemNote.visibility = View.GONE
+				binding.orderItemNoteLength.visibility = View.GONE
+				binding.orderItemShowNote.visibility = View.VISIBLE
+			}
+		}
 		
 		binding.orderItemConfirm.setOnClickListener {
 			StaticData.addItem(selected)
@@ -59,6 +92,41 @@ class ItemOrderActivity : AppCompatActivity() {
 			finish()
 		}
 		
+		binding.orderItemShowNote.text = Translator.getString("item.note.show")
+		binding.orderItemShowNote.setOnClickListener {
+			binding.orderItemNote.visibility = View.VISIBLE
+			binding.orderItemNoteLength.visibility = View.VISIBLE
+			binding.orderItemShowNote.visibility = View.GONE
+			binding.orderItemNote.requestFocus()
+		}
+		
+		binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardDetector)
+		
+	}
+	
+	private fun onKeyBoardVisibilityChange(visible: Boolean) {
+		if(visible) {
+			if(!binding.orderItemNote.isFocused) {
+				binding.orderItemNote.visibility = View.GONE
+				binding.orderItemNoteLength.visibility = View.GONE
+				binding.orderItemShowNote.visibility = View.VISIBLE
+			}
+			else {
+				binding.orderItemNote.visibility = View.VISIBLE
+				binding.orderItemNoteLength.visibility = View.VISIBLE
+				binding.orderItemShowNote.visibility = View.GONE
+			}
+		}
+		else {
+			binding.orderItemNote.visibility = View.VISIBLE
+			binding.orderItemNoteLength.visibility = View.VISIBLE
+			binding.orderItemShowNote.visibility = View.GONE
+		}
+	}
+	
+	override fun onDestroy() {
+		super.onDestroy()
+		binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardDetector)
 	}
 	
 	companion object {

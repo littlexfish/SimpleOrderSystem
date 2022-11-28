@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.TextView
 import edu.nptu.dllab.sos.R
+import edu.nptu.dllab.sos.io.Translator
 
 @SuppressLint("ViewConstructor")
 class OrderCheckItemView : FrameLayout {
@@ -26,7 +27,7 @@ class OrderCheckItemView : FrameLayout {
 	private fun init(id: String, time: String) {
 		val view = inflate(context, R.layout.view_order_item_check, this)
 		
-		view.findViewById<TextView>(R.id.checkOrderId).text = id
+		view.findViewById<TextView>(R.id.checkOrderId).text = "${Translator.getString("check.orderId")}: $id"
 		view.findViewById<TextView>(R.id.checkTime).text = time
 	}
 	

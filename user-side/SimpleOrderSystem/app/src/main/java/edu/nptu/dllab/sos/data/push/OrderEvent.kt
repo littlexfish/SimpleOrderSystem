@@ -10,7 +10,7 @@ import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
 
 /**
- * TODO: implement it
+ *
  */
 @SOSVersion(since = "0.0")
 class OrderEvent : Event(EVENT_KEY), EventPusher {
@@ -30,6 +30,10 @@ class OrderEvent : Event(EVENT_KEY), EventPusher {
 		map[Util.NET_KEY_EVENT.toStringValue()] = EVENT_KEY.toStringValue()
 		map[Util.OrderKey.ITEM.toStringValue()] = ValueFactory.newArray(items.map { it.toValue() })
 		return ValueFactory.newMap(map)
+	}
+	
+	override fun toString(): String {
+		return toValue().toJson()
 	}
 	
 	companion object {

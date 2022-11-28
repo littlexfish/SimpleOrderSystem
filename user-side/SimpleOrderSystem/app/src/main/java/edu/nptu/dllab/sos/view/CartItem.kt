@@ -17,13 +17,12 @@ class CartItem : FrameLayout {
 		}
 	
 	private var currency: Double = 0.0
-	private var fractureDigit = 0
 	
 	var money: Double
 		get() = currency
 		set(value) {
 			currency = value
-			binding.itemMoney.text = "$%.${fractureDigit}f".format(value)
+			binding.itemMoney.text = "$ %.2f".format(value)
 		}
 	
 	constructor(context: Context) : super(context) {

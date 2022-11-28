@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -19,6 +20,7 @@ import edu.nptu.dllab.sos.io.Config
 import edu.nptu.dllab.sos.io.Translator
 import edu.nptu.dllab.sos.test.TestActivity
 import edu.nptu.dllab.sos.util.SOSVersion
+import org.intellij.lang.annotations.Language
 
 /**
  * The main activity of this app
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 	
 	private val loginRequest =
 		registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+			closeMenuCutOut()
 			when(it.resultCode) {
 				LoginActivity.RESULT_USER -> {
 					val t = supportFragmentManager.beginTransaction()
@@ -102,13 +105,16 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 		binding.mainMenuAccount.text = Translator.getString("side.account")
+		binding.mainMenuOrderCheck.text = Translator.getString("side.orderCheck")
 		binding.mainMenuSettings.text = Translator.getString("side.settings")
-		binding.mainMenuAccount.setOnClickListener { /*  do nothing  */ }
 		binding.mainMenuSettings.setOnClickListener {
 			startActivity(Intent(this, SettingsActivity::class.java))
 		}
 		binding.mainMenuAccount.setOnClickListener {
 			loginRequest.launch(Intent(this, LoginActivity::class.java))
+		}
+		binding.mainMenuOrderCheck.setOnClickListener {
+			startActivity(Intent(this, OrderCheckActivity::class.java))
 		}
 		
 		onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
@@ -209,6 +215,20 @@ class MainActivity : AppCompatActivity() {
 					startActivity(menuActI)
 				}
 			}
+			HOST_CHECK -> {
+				startActivity(Intent(applicationContext, OrderCheckActivity::class.java).apply {
+					val orderId = uri.getQueryParameter("orderId")
+					if(orderId != null) putExtra(OrderCheckActivity.EXTRA_ORDER_ID, orderId)
+				})
+			}
+			HOST_LOGIN -> {
+				startActivity(Intent(applicationContext, LoginActivity::class.java).apply {
+					val acc = uri.getQueryParameter("account")
+					val pass = uri.getQueryParameter("password")
+					if(acc != null) putExtra(LoginActivity.EXTRA_ACCOUNT, acc)
+					if(pass != null) putExtra(LoginActivity.EXTRA_PASSWORD, pass)
+				})
+			}
 			else -> return false
 		}
 		return true
@@ -217,6 +237,8 @@ class MainActivity : AppCompatActivity() {
 	companion object {
 		const val HOST_TEST = "dllab.test"
 		const val HOST_MENU = "dllab.menu"
+		const val HOST_CHECK = "dllab.check"
+		const val HOST_LOGIN = "dllab.login"
 		const val HOST_NONE = "dllab.none"
 	}
 	

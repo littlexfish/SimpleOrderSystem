@@ -51,13 +51,19 @@ enum class DBColumn(private val defaultColumn: Int, val columnName: String, val 
 	@SOSVersion(since = "0.0")
 	MENU_SHOP_ID(0, "shopId", DBHelper.TABLE_MENU),
 	
+	MENU_NAME(1, "name", DBHelper.TABLE_MENU),
+	
 	/**
 	 * Menu version
 	 */
 	@SOSVersion(since = "0.0")
-	MENU_VERSION(1, "version", DBHelper.TABLE_MENU),
+	MENU_VERSION(2, "version", DBHelper.TABLE_MENU),
 	
-	ORDER_ID(0, "orderId", DBHelper.TABLE_ORDER), ORDER_TIME(1, "time", DBHelper.TABLE_ORDER),
-	ORDER_STATUS(2, "status", DBHelper.TABLE_ORDER), ;
+	ORDER_AUTO_ID(0, "id", DBHelper.TABLE_ORDER),
+	ORDER_ID(1, "orderId", DBHelper.TABLE_ORDER),
+	ORDER_TIME(2, "time", DBHelper.TABLE_ORDER),
+	ORDER_STATUS(3, "status", DBHelper.TABLE_ORDER),
+	ORDER_REASON(4, "reason", DBHelper.TABLE_ORDER),
+	;
 	
 }

@@ -19,6 +19,7 @@ import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.data.pull.ResourceDownload
 import edu.nptu.dllab.sos.data.pull.UpdateMenu
+import edu.nptu.dllab.sos.data.pull.Error
 import edu.nptu.dllab.sos.data.push.DownloadRequestEvent
 import edu.nptu.dllab.sos.data.push.OpenMenuEvent
 import edu.nptu.dllab.sos.databinding.ActivityMenuBinding
@@ -56,6 +57,8 @@ class MenuActivity : AppCompatActivity() {
 	 */
 	private var shopId = -1
 	
+	private var name = ""
+	
 	/**
 	 * The thread to process network
 	 */
@@ -81,6 +84,9 @@ class MenuActivity : AppCompatActivity() {
 		
 		// load shop id from extra
 		shopId = extra!!.getInt(EXTRA_SHOP_ID)
+		name = extra.getString(EXTRA_NAME) ?: ""
+		
+		binding.menuTitle.text = name
 		
 		// start get data
 		loadingDialog = LoadingDialog(this)
@@ -147,7 +153,7 @@ class MenuActivity : AppCompatActivity() {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun testLoadMenu(firstLoad: Boolean) {
-		startLoading()
+		loadingDialog.show()
 		// Force load menu from assets/testMenu.menu
 		val inS = resources.assets.open("testMenu.menu")
 		
@@ -179,18 +185,18 @@ class MenuActivity : AppCompatActivity() {
 						
 						runOnUiThread {
 							dl.dismiss()
-							stopLoading()
+							loadingDialog.dismiss()
 						}
 					}
 				}
 				.setNegativeButton(Translator.getString("menu.download.cancel")) { _, _ ->
-					stopLoading()
+					loadingDialog.dismiss()
 				}
 				.setCancelable(false)
 				.create().show()
 		}
 		else {
-			stopLoading()
+			loadingDialog.dismiss()
 		}
 	}
 	
@@ -200,7 +206,7 @@ class MenuActivity : AppCompatActivity() {
 	@SOSVersion(since = "0.0")
 	private fun loadFromServer(firstLoad: Boolean) {
 		handler.post {
-			runOnUiThread { startLoading() }
+			runOnUiThread { loadingDialog.show() }
 			/*
 			 * FISH NOTE:
 			 *   Get information on database
@@ -231,7 +237,7 @@ class MenuActivity : AppCompatActivity() {
 			}
 			
 			val handler = StaticData.socketHandler
-			handler.pushEvent(event)
+			handler.pushEventRePush(event)
 			
 			// update menu
 			var needUpdate = false
@@ -255,7 +261,7 @@ class MenuActivity : AppCompatActivity() {
 					if(getShopId == shopId) { // check id is same
 						val newVersion = um.version
 						// get resource
-						putAllResource(resMap, um.getNeedDownloadResources())
+						putAllResource(resMap, um.getNeedDownloadResources(applicationContext))
 						// save menu
 						val menuFile = FileIO.newMenuFile()
 						menuFile.setMenuData(um.menu.getMenuData())
@@ -265,7 +271,7 @@ class MenuActivity : AppCompatActivity() {
 							changeFragAndBuildMenu(um.menu)
 						}
 						// update database
-						val newDbMenu = DBMenu(shopId, newVersion)
+						val newDbMenu = DBMenu(shopId, name, newVersion)
 						db.writableDatabase.update(DBHelper.TABLE_MENU, newDbMenu.toContentValues(), "${DBColumn.RES_SHOP_ID.columnName}=$shopId", null)
 					}
 					else {
@@ -305,7 +311,7 @@ class MenuActivity : AppCompatActivity() {
 					runOnUiThread {
 						nowFragment.insertAllEvent(em.items)
 					}
-					putAllResource(resMap, em.getNeedDownloadResources())
+					putAllResource(resMap, em.getNeedDownloadResources(applicationContext, shopId))
 				}
 			}
 			
@@ -326,14 +332,18 @@ class MenuActivity : AppCompatActivity() {
 						.setPositiveButton(Translator.getString("menu.download.confirm")) { _, _ ->
 							val dl = DownloadDialog(this)
 							dl.show()
-							dl.set(0, 1)
+							dl.set(0, 0)
+							loadingDialog.dismiss()
 							this.handler.post {
 								val download = DownloadRequestEvent()
 								download.addAllPath(resMap.keys)
-								handler.pushEvent(download)
+								handler.pushEventRePush(download)
 								
 								while(true) {
 									get = handler.waitEvent()
+									if(get is Error && Error.isErrorEquals(get as Error, Error.ERR_NO_RESOURCE)) {
+										break
+									}
 									if(get is ResourceDownload) {
 										val rd = get as ResourceDownload
 										runOnUiThread {
@@ -357,13 +367,12 @@ class MenuActivity : AppCompatActivity() {
 								db.close()
 								runOnUiThread {
 									dl.dismiss()
-									stopLoading()
 								}
 							}
 						}
 						.setNegativeButton(Translator.getString("menu.download.cancel")) { _, _ ->
 							db.close()
-							stopLoading()
+							loadingDialog.dismiss()
 						}
 						.setCancelable(false) // let dialog cannot cancel
 						.create().show()
@@ -371,7 +380,7 @@ class MenuActivity : AppCompatActivity() {
 			}
 			else {
 				db.close()
-				runOnUiThread { stopLoading() }
+				runOnUiThread { loadingDialog.dismissAtLeast() }
 			}
 		}
 	}
@@ -409,24 +418,6 @@ class MenuActivity : AppCompatActivity() {
 		}
 	}
 	
-	/**
-	 * Request on loading,
-	 *  show loading dialog to avoid user interact on screen
-	 */
-	@SOSVersion(since = "0.0")
-	private fun startLoading() {
-		loadingDialog.show()
-	}
-	
-	/**
-	 * Request on not loading,
-	 *  stop show loading dialog that user can interact screen
-	 */
-	@SOSVersion(since = "0.0")
-	private fun stopLoading() {
-		loadingDialog.dismissAtLeast()
-	}
-	
 	fun animCart() {
 		(binding.menuCart.drawable as AnimatedVectorDrawable).start()
 	}
@@ -439,6 +430,7 @@ class MenuActivity : AppCompatActivity() {
 	
 	companion object {
 		const val EXTRA_SHOP_ID = "menu.extra.shopId"
+		const val EXTRA_NAME = "menu.extra.name"
 	}
 	
 	/**

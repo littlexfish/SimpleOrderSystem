@@ -12,12 +12,14 @@ import androidx.core.content.res.ResourcesCompat
 import edu.nptu.dllab.sos.databinding.ActivitySettingsBinding
 import edu.nptu.dllab.sos.io.Config
 import edu.nptu.dllab.sos.io.Translator
+import edu.nptu.dllab.sos.util.TimeFormat
 
 class SettingsActivity : AppCompatActivity() {
 	
 	private lateinit var binding: ActivitySettingsBinding
 	private val oriLang = Config.getString(Config.Key.LANG)
 	private val oriLOS = Config.getBoolean(Config.Key.LINK_ON_START)
+	private val oriTime = Config.getString(Config.Key.TIME_FORMAT)
 	private val oriShowClose = Config.getBoolean(Config.Key.SHOW_CLOSED_SHOP)
 	private val oriDistUnit = Config.getString(Config.Key.DISTANCE_UNIT)
 	
@@ -29,6 +31,7 @@ class SettingsActivity : AppCompatActivity() {
 		// text
 		binding.settingsLangLabel.text = Translator.getString("settings.lang")
 		binding.settingsLinkOnStart.text = Translator.getString("settings.linkOnStart")
+		binding.settingsTimeLabel.text = Translator.getString("settings.time")
 		binding.settingsShopLabel.text = Translator.getString("settings.shop")
 		binding.settingsShowClose.text = Translator.getString("settings.showClosedShop")
 		binding.settingsDistUnitLabel.text = Translator.getString("settings.distUnit")
@@ -49,9 +52,7 @@ class SettingsActivity : AppCompatActivity() {
 						            .toFloat())
 					setTextColor(ResourcesCompat.getColor(resources, R.color.text_black, null))
 				}
-			
-			override fun getDropDownView(position: Int, convertView: View?,
-			                             parent: ViewGroup?): View {
+			override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
 				return super.getDropDownView(position, convertView, parent).apply {
 					setPadding(50, 10, 50, 10)
 				}
@@ -70,19 +71,34 @@ class SettingsActivity : AppCompatActivity() {
 					setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.settings_label_size).toFloat())
 					setTextColor(ResourcesCompat.getColor(resources, R.color.text_black, null))
 				}
-			
-			override fun getDropDownView(position: Int, convertView: View?,
-			                             parent: ViewGroup?): View {
+			override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
 				return super.getDropDownView(position, convertView, parent).apply {
 					setPadding(50, 10, 50, 10)
 				}
 			}
-			
+		}
+		
+		binding.settingsTime.adapter = object : BaseAdapter() {
+			override fun getCount(): Int = TimeFormat.values().size
+			override fun getItem(position: Int): Any = TimeFormat.values()[position]
+			override fun getItemId(position: Int): Long = position.toLong()
+			override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View =
+				TextView(this@SettingsActivity).apply {
+					text = Translator.getString("settings.time.${(getItem(position) as TimeFormat).display}")
+					setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.settings_label_size).toFloat())
+					setTextColor(ResourcesCompat.getColor(resources, R.color.text_black, null))
+				}
+			override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
+				return super.getDropDownView(position, convertView, parent).apply {
+					setPadding(50, 10, 50, 10)
+				}
+			}
 		}
 		
 		// set default
 		binding.settingsLang.setSelection(tmpLang.indexOf(oriLang))
 		binding.settingsLinkOnStart.isChecked = oriLOS
+		binding.settingsTime.setSelection(TimeFormat.values().indexOf(TimeFormat.valueOf(oriTime)))
 		binding.settingsShowClose.isChecked = oriShowClose
 		binding.settingsDistUnit.setSelection(tmpUnit.indexOf(oriDistUnit))
 		
@@ -112,6 +128,7 @@ class SettingsActivity : AppCompatActivity() {
 		if(binding.settingsLinkOnStart.isChecked != oriLOS) return true
 		if(binding.settingsShowClose.isChecked != oriShowClose) return true
 		if(binding.settingsDistUnit.selectedItem.toString() != oriDistUnit) return true
+		if(binding.settingsTime.selectedItem.toString() != oriTime) return true
 		return false
 	}
 	
@@ -120,6 +137,7 @@ class SettingsActivity : AppCompatActivity() {
 		Config.setConfig(Config.Key.LINK_ON_START, binding.settingsLinkOnStart.isChecked)
 		Config.setConfig(Config.Key.SHOW_CLOSED_SHOP, binding.settingsShowClose.isChecked)
 		Config.setConfig(Config.Key.DISTANCE_UNIT, binding.settingsDistUnit.selectedItem.toString())
+		Config.setConfig(Config.Key.TIME_FORMAT, binding.settingsTime.selectedItem.toString())
 		Config.saveConfig(applicationContext)
 	}
 	

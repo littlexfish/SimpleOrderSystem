@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.data.push.DownloadRequestEvent
+import edu.nptu.dllab.sos.data.push.OrderEvent
 import edu.nptu.dllab.sos.databinding.FragmentTestDownloadBinding
 import edu.nptu.dllab.sos.test.TestActivity
 
@@ -27,10 +28,12 @@ class TestDownload : Fragment() {
 		val binding = FragmentTestDownloadBinding.bind(view)
 		
 		binding.button3.setOnClickListener {
-			val e = DownloadRequestEvent()
-			val t = binding.testText.text.toString()
-			val spl = t.split(Regex("[\r\n]"))
-			for(s in spl) e.addPath(s)
+//			val e = DownloadRequestEvent()
+//			val t = binding.testText.text.toString()
+//			val spl = t.split(Regex("[\r\n]"))
+//			for(s in spl) e.addPath(s)
+			val e = OrderEvent()
+			
 			(activity as TestActivity.TestLinkActivity).sendEvent(e)
 		}
 		

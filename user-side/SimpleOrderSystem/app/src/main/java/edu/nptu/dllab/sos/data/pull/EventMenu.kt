@@ -1,9 +1,13 @@
 package edu.nptu.dllab.sos.data.pull
 
+import android.content.Context
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPuller
 import edu.nptu.dllab.sos.data.Resource
 import edu.nptu.dllab.sos.data.item.ItemCondition
+import edu.nptu.dllab.sos.io.DBHelper
+import edu.nptu.dllab.sos.io.db.DBColumn
+import edu.nptu.dllab.sos.io.db.DBRes
 import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.EventMenuKey
@@ -36,9 +40,30 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 	 * Get resources that need download
 	 */
 	@SOSVersion(since = "0.0")
-	fun getNeedDownloadResources(): List<Resource> {
-		// TODO: Implements
-		return emptyList()
+	fun getNeedDownloadResources(context: Context, shopId: Int): List<Resource> {
+		val db = DBHelper(context)
+		val cur = db.readableDatabase.rawQuery("SELECT * FROM ${DBHelper.TABLE_RES} WHERE ${DBColumn.MENU_SHOP_ID.columnName}=$shopId", null)
+		val ret = ArrayList<Resource>()
+		val dbRes = HashMap<Int, DBRes>()
+		while(cur.moveToNext()) {
+			val d = DBRes(cur)
+			dbRes[d.id] = d
+		}
+		cur.close()
+		
+		for(r in res) {
+			if(r.id in dbRes.keys) {
+				val dbR = res[r.id]
+				if(r.sha256 != dbR.sha256) {
+					ret.add(r)
+				}
+			}
+			else {
+				ret.add(r)
+			}
+		}
+		
+		return ret
 	}
 	
 	override fun fromValue(value: Value) {

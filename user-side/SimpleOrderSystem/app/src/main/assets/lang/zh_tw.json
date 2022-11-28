@@ -16,6 +16,7 @@
   "main.back": "再按一次返回建退出程式",
 
   "side.account": "帳戶(尚未開放)",
+  "side.orderCheck": "訂單列表",
   "side.settings": "設定",
 
   "menu.shop.close": "未開店",
@@ -66,12 +67,43 @@
   "settings.lang": "語言",
   "settings.lang.zh_tw": "中文",
   "settings.linkOnStart": "程式開啟自動讀取附近店家",
+  "settings.time": "時間格式",
+  "settings.time.m2d2y2": "mm/dd/yy",
+  "settings.time.m2d2y2_hm": "mm/dd/yy HH:MM",
+  "settings.time.y2m2d2": "yy/mm/dd",
+  "settings.time.y2m2d2_hm": "yy/mm/dd HH:MM",
+  "settings.time.y4m2d2": "yyyy/mm/dd",
+  "settings.time.y4m2d2_hm": "yyyy/mm/dd HH:MM",
+  "settings.time.m2d2y4": "mm/dd/yyyy",
+  "settings.time.m2d2y4_hm": "mm/dd/yyyy HH:MM",
+  "settings.time.d2m2y4": "dd/mm/yyyy",
+  "settings.time.d2m2y4_hm": "dd/mm/yyyy HH:MM",
   "settings.shop": "店家相關:",
   "settings.showClosedShop": "顯示已歇業店家",
   "settings.distUnit": "距離單位",
 
   "item.title": "商品訂製",
   "item.note": "寫點建議",
-  "item.confirm": "加入購物車($ %.2f)"
+  "item.note.show": "點擊編輯建議",
+  "item.confirm": "加入購物車($ %.2f)",
+
+  "check.title": "確認訂單",
+  "check.orderId": "訂單編號",
+  "check.dialog.message": "訂單編號: %1$s\n訂購時間: %2$s\n狀態: %3$s",
+  "check.dialog.confirm": "確認",
+  "check.dialog.cancel": "關閉",
+  "check.status.notProcess": "尚未處理",
+  "check.status.requesting": "等待受理",
+  "check.status.request": "訂單已受理",
+  "check.status.notRequest": "訂單被拒絕",
+  "check.status.processing": "訂單處理中",
+  "check.status.done": "訂單已完成",
+  "check.status.error": "錯誤",
+  "check.status.notFound": "訂單不存在",
+
+  "filter.now": "當前選擇:",
+  "filter.available": "可選擇:",
+  "filter.confirm": "確認",
+  "filter.cancel": "取消"
 
 }

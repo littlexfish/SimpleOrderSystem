@@ -34,15 +34,18 @@ class DBHelper(context: Context?) :
 		db?.execSQL(resCreate)
 		@Language("SQL") val menuCreate =
 			"CREATE TABLE IF NOT EXISTS $TABLE_MENU (\n" +
-			"   ${DBColumn.RES_ID.columnName} INTEGER DEFAULT -1 NOT NULL,\n" +
-			"   ${DBColumn.RES_SHOP_ID.columnName} INTEGER DEFAULT -1 NOT NULL\n" +
+			"   ${DBColumn.MENU_SHOP_ID.columnName} INTEGER DEFAULT -1 NOT NULL,\n" +
+			"   ${DBColumn.MENU_NAME.columnName} TEXT DEFAULT '' NOT NULL,\n" +
+			"   ${DBColumn.MENU_VERSION.columnName} INTEGER DEFAULT -1 NOT NULL\n" +
 			");"
 		db?.execSQL(menuCreate)
 		@Language("SQL") val orderCreate =
-			"CREATE TABLE IF NOT EXISTS $TABLE_ORDER(\n" +
+			"CREATE TABLE IF NOT EXISTS $TABLE_ORDER (\n" +
+			"   ${DBColumn.ORDER_AUTO_ID.columnName} INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
 			"   ${DBColumn.ORDER_ID.columnName} INTEGER DEFAULT -1 NOT NULL,\n" +
 			"   ${DBColumn.ORDER_TIME.columnName} INTEGER DEFAULT -1,\n" +
-			"   ${DBColumn.ORDER_STATUS.columnName} INTEGER DEFAULT -1\n" +
+			"   ${DBColumn.ORDER_STATUS.columnName} INTEGER DEFAULT -1,\n" +
+			"   ${DBColumn.ORDER_REASON.columnName} TEXT DEFAULT NULL\n" +
 			");"
 		db?.execSQL(orderCreate)
 	}
@@ -108,9 +111,9 @@ class DBHelper(context: Context?) :
 	fun select(table: String, filter: String = "*", where: String? = null, limit: Int = -1, offset: Int = -1, orderBy: String? = null, asc: Boolean = true): Cursor {
 		@Language("SQL") var sql = "SELECT $filter FROM $table"
 		if(where != null) sql += " WHERE $where"
+		if(orderBy != null) sql += " ORDER BY $orderBy ${if(asc) "ASC" else "DESC"}"
 		if(limit > 0) sql += " LIMIT $limit"
 		if(offset >= 0) sql += " OFFSET $offset"
-		if(orderBy != null) sql += " ORDER BY $orderBy ${if(asc) "ASC" else "DESC"}"
 		return query(sql)
 	}
 	
@@ -139,7 +142,7 @@ class DBHelper(context: Context?) :
 		 */
 		@SOSVersion(since = "0.0")
 		const val TABLE_MENU = "menu"
-		const val TABLE_ORDER = "order"
+		const val TABLE_ORDER = "order_map"
 	}
 	
 }

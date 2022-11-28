@@ -5,16 +5,19 @@
 
     <EditText
         android:id="@+id/addStringValue"
+        style="@style/Theme.SimpleOrderSystem.EditText"
         android:layout_width="297dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right|top"
+        android:layout_margin="5dp"
         android:ems="10"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:minHeight="40dp" />
 
     <TextView
         android:id="@+id/addStringName"
         android:layout_width="wrap_content"
-        android:layout_height="45dp"
+        android:layout_height="50dp"
         android:layout_gravity="top|left"
         android:gravity="center"
         android:text="TextView"

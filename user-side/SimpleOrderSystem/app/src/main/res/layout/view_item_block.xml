@@ -26,9 +26,9 @@
         android:layout_marginTop="@dimen/classic_item_img_pad"
         android:layout_marginEnd="@dimen/classic_item_img_pad"
         android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
         tools:srcCompat="@drawable/error" />
 
     <TextView
@@ -41,8 +41,8 @@
         android:gravity="center_horizontal|top"
         android:text="TextView"
         android:textSize="@dimen/classic_item_txt_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/classic_item_img" />
 
     <TextView

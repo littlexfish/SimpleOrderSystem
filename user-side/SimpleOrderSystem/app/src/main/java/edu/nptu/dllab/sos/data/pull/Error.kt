@@ -51,6 +51,13 @@ class Error : Event(EVENT_KEY), EventPuller {
 	
 	companion object {
 		const val EVENT_KEY = "error"
+		
+		const val ERR_SHOP_NOT_FOUND = "shopNotFound"
+		const val ERR_NO_RESOURCE = "noResource"
+		
+		fun isErrorEquals(err: Error, reason: String): Boolean {
+			return err.reason.uppercase() == reason.uppercase()
+		}
 	}
 	
 }

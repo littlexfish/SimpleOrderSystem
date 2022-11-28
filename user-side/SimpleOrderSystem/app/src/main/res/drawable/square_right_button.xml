@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true" android:drawable="@drawable/square_right_pressed" />
+
+<!--    <item android:drawable="@drawable/square_right" />-->
+
+    <item>
+        <layer-list>
+            <item android:width="48dp" android:height="48dp" android:gravity="center">
+                <shape>
+                    <padding android:top="1dp"
+                        android:left="1dp"
+                        android:right="1dp"
+                        android:bottom="1dp" />
+                    <corners android:radius="5dp" />
+                    <solid android:color="#CCC"/>
+                </shape>
+            </item>
+            <item android:width="48dp" android:height="48dp" android:gravity="center">
+                <vector android:height="24dp" android:viewportHeight="24"
+                    android:viewportWidth="24" android:width="24dp">
+                    <path android:fillColor="#000" android:pathData="M8.59,16.59L13.17,12 8.59,7.41 10,6l6,6 -6,6 -1.41,-1.41z"/>
+                </vector>
+            </item>
+        </layer-list>
+    </item>
+
+</selector>

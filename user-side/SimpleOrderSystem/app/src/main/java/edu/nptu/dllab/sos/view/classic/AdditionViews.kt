@@ -2,12 +2,16 @@ package edu.nptu.dllab.sos.view.classic
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.StateListDrawable
 import android.text.Editable
 import android.text.InputFilter.LengthFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
 import android.widget.*
 import android.widget.CompoundButton.OnCheckedChangeListener
+import androidx.core.content.res.ResourcesCompat
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.data.menu.classic.*
 import org.msgpack.value.Value
@@ -65,6 +69,7 @@ class IntAdditionView : AdditionView {
 	
 //	private var lastPos = Pair(0.0f, 0.0f)
 	
+	@SuppressLint("ClickableViewAccessibility")
 	private fun init() {
 		val view = inflate(context, R.layout.view_addition_int, this)
 		
@@ -80,19 +85,43 @@ class IntAdditionView : AdditionView {
 			 *   No focus means user leave keyboard
 			 */
 			if(!hasFocus) {
+				addition.value = value.text.toString().toIntOrNull() ?: addition.value
 				ensureValueRange()
 			}
 		}
-		// TODO: User can drag to change value
-		//		value.setOnTouchListener { _, event ->
-		//			event.x
-		//			false
-		//		}
 		val buttonUp = view.findViewById<ImageView>(R.id.addIntUp)
+		/*
+		 * FISH NOTE:
+		 *   We found that the state-list-drawable might be null on normal state,
+		 *    so we re-make the event to prevent the drawable not show normally.
+		 */
+		buttonUp.setOnTouchListener { _, event ->
+			if(event.action == MotionEvent.ACTION_DOWN) {
+				buttonUp.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_right_pressed, null))
+			}
+			else if(event.action == MotionEvent.ACTION_UP) {
+				buttonUp.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_right, null))
+			}
+			false
+		}
 		buttonUp.setOnClickListener {
 			plus()
 		}
 		val buttonDown = view.findViewById<ImageView>(R.id.addIntDown)
+		/*
+		 * FISH NOTE:
+		 *   We found that the state-list-drawable might be null on normal state,
+		 *    so we re-make the event to prevent the drawable not show normally.
+		 */
+		buttonDown.setOnTouchListener { _, event ->
+			if(event.action == MotionEvent.ACTION_DOWN) {
+				buttonDown.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_left_pressed, null))
+			}
+			else if(event.action == MotionEvent.ACTION_UP) {
+				buttonDown.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_left, null))
+			}
+			false
+		}
 		buttonDown.setOnClickListener {
 			minus()
 		}
@@ -115,7 +144,6 @@ class IntAdditionView : AdditionView {
 		addition as IntAddition
 		if(addition.value > addition.max) addition.value = addition.max
 		else if(addition.value < addition.min) addition.value = addition.min
-		else return
 		val value = findViewById<EditText>(R.id.addIntValue)
 		value.text.clear()
 		value.text.append(addition.value.toString())
@@ -139,6 +167,7 @@ class FloatAdditionView : AdditionView {
 		init()
 	}
 	
+	@SuppressLint("ClickableViewAccessibility")
 	private fun init() {
 		val view = inflate(context, R.layout.view_addition_float, this)
 		
@@ -154,19 +183,43 @@ class FloatAdditionView : AdditionView {
 			 *   No focus means user leave keyboard
 			 */
 			if(!hasFocus) {
+				addition.value = value.text.toString().toDoubleOrNull() ?: addition.value
 				ensureValueRange()
 			}
 		}
-		// TODO: User can drag to change value
-		//		value.setOnTouchListener { _, event ->
-		//			event.x
-		//			false
-		//		}
 		val buttonUp = view.findViewById<ImageView>(R.id.addFloatUp)
+		/*
+		 * FISH NOTE:
+		 *   We found that the state-list-drawable might be null on normal state,
+		 *    so we re-make the event to prevent the drawable not show normally.
+		 */
+		buttonUp.setOnTouchListener { _, event ->
+			if(event.action == MotionEvent.ACTION_DOWN) {
+				buttonUp.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_right_pressed, null))
+			}
+			else if(event.action == MotionEvent.ACTION_UP) {
+				buttonUp.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_right, null))
+			}
+			false
+		}
 		buttonUp.setOnClickListener {
 			plus()
 		}
 		val buttonDown = view.findViewById<ImageView>(R.id.addFloatDown)
+		/*
+		 * FISH NOTE:
+		 *   We found that the state-list-drawable might be null on normal state,
+		 *    so we re-make the event to prevent the drawable not show normally.
+		 */
+		buttonDown.setOnTouchListener { _, event ->
+			if(event.action == MotionEvent.ACTION_DOWN) {
+				buttonDown.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_left_pressed, null))
+			}
+			else if(event.action == MotionEvent.ACTION_UP) {
+				buttonDown.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_left, null))
+			}
+			false
+		}
 		buttonDown.setOnClickListener {
 			minus()
 		}
@@ -189,7 +242,6 @@ class FloatAdditionView : AdditionView {
 		addition as FloatAddition
 		if(addition.value > addition.max) addition.value = addition.max
 		else if(addition.value < addition.min) addition.value = addition.min
-		else return
 		val value = findViewById<EditText>(R.id.addFloatValue)
 		value.text.clear()
 		value.text.append("%.2f".format(addition.value))
@@ -288,7 +340,7 @@ class RadioAdditionView : AdditionView {
 	private val radioMap = HashMap<CheckBox, Int>()
 	
 	private fun init() {
-		val view = inflate(context, R.layout.view_addition_bool, this)
+		val view = inflate(context, R.layout.view_addition_radio, this)
 		
 		addition as RadioAddition
 		
@@ -300,8 +352,14 @@ class RadioAdditionView : AdditionView {
 			if(isChecked) {
 				addition.value = radioMap[buttonView]!!
 				for(c in radioMap.keys) {
-					if(c.isChecked) c.isChecked = false
+					if(c.isChecked && c != buttonView) c.isChecked = false
 				}
+			}
+			else {
+				for(c in radioMap.keys) {
+					if(c.isChecked) return@OnCheckedChangeListener
+				}
+				(buttonView as CheckBox).isChecked = true
 			}
 		}
 		
@@ -316,6 +374,8 @@ class RadioAdditionView : AdditionView {
 				if(index >= addition.items.size) break
 				val check = CheckBox(context)
 				check.setButtonDrawable(R.drawable.radio_button)
+				check.text = addition.items[index]
+				check.layoutParams = LinearLayout.LayoutParams(-1, -2, 1f)
 				if(index == addition.value) check.isChecked = true
 				check.setOnCheckedChangeListener(listener)
 				linear.addView(check)

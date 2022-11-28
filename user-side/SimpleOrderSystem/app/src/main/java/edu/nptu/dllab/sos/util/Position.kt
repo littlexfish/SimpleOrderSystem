@@ -8,6 +8,9 @@ import org.msgpack.value.ValueFactory
 /**
  * The data class that contains position we define
  *
+ * x -> latitude
+ * y -> longitude
+ *
  * @author Little Fish
  * @since 22/10/03
  */

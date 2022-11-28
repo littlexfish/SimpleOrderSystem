@@ -16,6 +16,10 @@ class OrderRequest : Event(EVENT_KEY), EventPuller {
 		orderId = map[Util.OrderRequestKey.ORDER_ID.toStringValue()]!!.asInt()
 	}
 	
+	override fun toString(): String {
+		return "OrderRequest { orderId=$orderId }"
+	}
+	
 	companion object {
 		const val EVENT_KEY = "order_request"
 	}

@@ -3,6 +3,7 @@ package edu.nptu.dllab.sos.io
 import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Log
 import android.widget.Toast
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPuller
@@ -19,6 +20,7 @@ import org.msgpack.value.Value
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.net.Socket
+import java.net.SocketException
 import java.nio.ByteBuffer
 
 private const val KEY_EVENT = "event"
@@ -30,6 +32,8 @@ private const val EVENT_PULL_UPDATE = "update"
 private const val EVENT_PULL_EVENT_MENU = "event_menu"
 private const val EVENT_PUSH_DOWNLOAD = "download"
 private const val EVENT_PULL_RESOURCE = "resource"
+private const val EVENT_ORDER_REQUEST = "order_request"
+private const val EVENT_ORDER_STATUS = "order_status"
 private const val EVENT_PULL_ERROR = "error"
 
 /**
@@ -40,6 +44,8 @@ private const val EVENT_PULL_ERROR = "error"
  */
 @SOSVersion(since = "0.0")
 class SocketHandler {
+	
+	private val tag = "network"
 	
 	/**
 	 * Check the connect state
@@ -53,8 +59,15 @@ class SocketHandler {
 	@SOSVersion(since = "0.0")
 	private var socket: Socket? = null
 	
-	private val thread = HandlerThread("network").also { it.start() }
-	private val handler = Handler(thread.looper)
+	private var ip = ""
+	private var port = 0
+	
+	private val threadLink = HandlerThread("net-link").also { it.start() }
+	private val threadPush = HandlerThread("net-push").also { it.start() }
+	private val threadPull = HandlerThread("net-pull").also { it.start() }
+	private val handlerLink = Handler(threadLink.looper)
+	private val handlerPush = Handler(threadPush.looper)
+	private val handlerPull = Handler(threadPull.looper)
 	
 	/**
 	 * Uses charset, default UTF-8
@@ -74,12 +87,14 @@ class SocketHandler {
 	@SOSVersion(since = "0.0")
 	fun link(ip: String, port: Int) {
 		socket = Socket(ip, port)
+		this.ip = ip
+		this.port = port
 		connected = true
 	}
 	
 	fun linkAndRun(ip: String, port: Int, func: ((handler: SocketHandler) -> Unit)?,
 	               error: ((e: Exception) -> Unit)? = null) {
-		handler.post {
+		handlerLink.post {
 			try {
 				link(ip, port)
 				func?.let { it(this) }
@@ -107,27 +122,49 @@ class SocketHandler {
 	 */
 	@SOSVersion(since = "0.0")
 	@Synchronized
-	fun pushEvent(event: EventPusher) {
-		handler.post {			/*
-			 * FISH NOTE:
-			 *   To parse data easily,
-			 *    we write data size first,
-			 *    than write data.
-			 */
-			checkConnectedState()
-			val buffer = ByteArrayOutputStream()
-			val v = event.toValue()
-			val packer = MessagePack.newDefaultPacker(buffer)
-			packer.packValue(v)
-			packer.flush()
-			val bs = buffer.toByteArray()
-			if(socket != null) {
-				val os = socket!!.getOutputStream()
-				// write byte size first
-				os.write(bs.size.toByteArray())
-				// than write data
-				os.write(bs)
+	fun pushEvent(event: EventPusher, error: ((e: Exception) -> Unit)? = null) {
+		handlerPush.post {
+			try {
+				/*
+				 * FISH NOTE:
+				 *   To parse data easily,
+				 *    we write data size first,
+				 *    than write data.
+				 */
+				checkConnectedState()
+				val buffer = ByteArrayOutputStream()
+				val v = event.toValue()
+				val packer = MessagePack.newDefaultPacker(buffer)
+				packer.packValue(v)
+				packer.flush()
+				packer.close()
+				val bs = buffer.toByteArray()
+				Log.d(tag, "push ${(event as Event).event}")
+				if(socket != null) {
+					val os = socket!!.getOutputStream()
+					// write byte size first
+					os.write(bs.size.toByteArray())
+					// than write data
+					os.write(bs)
+				}
 			}
+			catch(e: Exception) {
+				if(error == null) throw e
+				else error(e)
+			}
+		}
+	}
+	
+	fun pushEventRePush(event: EventPusher) {
+		pushEvent(event) {
+			if(it is SocketException) {
+				Log.w(tag, "error", it)
+				Log.w(tag, "re-push")
+				linkAndRun(ip, port, { pushEventRePush(event) }) { e ->
+					throw e
+				}
+			}
+			else throw it
 		}
 	}
 	
@@ -149,7 +186,8 @@ class SocketHandler {
 			if(holdEvent != null) { // check hold event and return first
 				val tmp = holdEvent
 				holdEvent = null
-				return tmp!!
+				Log.d(tag, "found hold event: ${(tmp as Event).event}")
+				return tmp
 			}
 			val ins = socket!!.getInputStream()
 			
@@ -168,16 +206,28 @@ class SocketHandler {
 			
 			// unpack from byte array
 			val unpacker = MessagePack.newDefaultUnpacker(ByteArrayInputStream(bos.toByteArray()))
-			return getEventValue(unpacker.unpackValue())
+			val event = getEventValue(unpacker.unpackValue())
+			Log.d(tag, "receive ${(event as Event).event}")
+			return event
 		}
 		// may not reach here
 		throw RuntimeException()
 	}
 	
 	fun waitEventAndRun(func: (e: EventPuller) -> Unit) {
-		handler.post {
-			val e = waitEvent()
-			func(e)
+		waitEventAndRun(func, null)
+	}
+	
+	fun waitEventAndRun(func: (e: EventPuller) -> Unit, error: ((e: Exception) -> Unit)?) {
+		handlerPull.post {
+			try {
+				val e = waitEvent()
+				func(e)
+			}
+			catch(e: Exception) {
+				if(error == null) throw e
+				else error(e)
+			}
 		}
 	}
 	
@@ -203,6 +253,10 @@ class SocketHandler {
 		throw IllegalStateException("event type not found, try count: $tryTimes")
 	}
 	
+	fun runOnNetworkThread(func: () -> Unit) {
+		handlerLink.post(func)
+	}
+	
 	/**
 	 * Hold the event
 	 */
@@ -216,7 +270,10 @@ class SocketHandler {
 	 */
 	@SOSVersion(since = "0.0")
 	private fun checkConnectedState() {
-		if(connected || socket == null) throw IllegalStateException("socket not connect.")
+		if(!connected || socket == null || !socket!!.isConnected) {
+			Log.w(tag, "warning", IllegalStateException("socket not connect."))
+			link(ip, port)
+		}
 	}
 	
 	/**
@@ -232,6 +289,8 @@ class SocketHandler {
 			EVENT_PULL_UPDATE -> UpdateMenu()
 			EVENT_PULL_EVENT_MENU -> EventMenu()
 			EVENT_PULL_RESOURCE -> ResourceDownload()
+			EVENT_ORDER_REQUEST -> OrderRequest()
+			EVENT_ORDER_STATUS -> OrderStatus()
 			EVENT_PULL_ERROR -> Error()
 			else -> throw Exceptions.EventNotFoundException(map[KEY_EVENT.toStringValue()]?.asString() ?: "null")
 		}

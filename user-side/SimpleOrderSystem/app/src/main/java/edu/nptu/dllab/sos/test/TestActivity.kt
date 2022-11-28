@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -14,39 +13,23 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import edu.nptu.dllab.sos.MenuActivity
 import edu.nptu.dllab.sos.OrderActivity
+import edu.nptu.dllab.sos.OrderCheckActivity
 import edu.nptu.dllab.sos.data.Event
-import edu.nptu.dllab.sos.data.EventPuller
 import edu.nptu.dllab.sos.data.EventPusher
 import edu.nptu.dllab.sos.data.menu.classic.ClassicItem
 import edu.nptu.dllab.sos.data.pull.*
 import edu.nptu.dllab.sos.databinding.ActivityTestBinding
 import edu.nptu.dllab.sos.databinding.ActivityTestLinkBinding
+import edu.nptu.dllab.sos.io.DBHelper
 import edu.nptu.dllab.sos.io.SocketHandler
+import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.test.frag.TestDownload
 import edu.nptu.dllab.sos.test.frag.TestLink
 import edu.nptu.dllab.sos.test.frag.TestOpenMenu
-import edu.nptu.dllab.sos.util.Exceptions
 import edu.nptu.dllab.sos.util.StaticData
-import edu.nptu.dllab.sos.util.Util
-import edu.nptu.dllab.sos.util.Util.asMap
-import edu.nptu.dllab.sos.util.Util.asString
-import edu.nptu.dllab.sos.util.Util.toByteArray
-import edu.nptu.dllab.sos.util.Util.toStringValue
-import org.msgpack.core.MessagePack
-import org.msgpack.value.Value
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.net.Socket
+import org.intellij.lang.annotations.Language
 import java.net.SocketException
-import java.nio.ByteBuffer
 import java.util.*
-
-
-private const val EVENT_PULL_NEAR_SHOP = "near_shop"
-private const val EVENT_PULL_UPDATE = "update"
-private const val EVENT_PULL_EVENT_MENU = "event_menu"
-private const val EVENT_PULL_RESOURCE = "resource"
-private const val EVENT_PULL_ERROR = "error"
 
 class TestActivity : AppCompatActivity() {
 	
@@ -74,18 +57,40 @@ class TestActivity : AppCompatActivity() {
 			StaticData.clearItems()
 			val count = (Math.random() * 30).toInt()
 			for(i in 0 until count) {
-				val item =
-					ClassicItem(-1, "0", getRandomName(), getRandomName(), null,
+				val name = getRandomName()
+				val item = ClassicItem(-1, "0", name, name, null,
 					            getRandomPrice(), "NTD", emptyList(), emptyArray(), -1)
+				item.note = getRandomName(50, 10)
 				StaticData.addItem(item)
 			}
 			startActivity(Intent(this, OrderActivity::class.java))
 		}
 		
+		binding.testCheck.setOnClickListener {
+			startActivity(Intent(this, OrderCheckActivity::class.java).apply {
+//				putExtra(OrderCheckActivity.EXTRA_ORDER_ID, 2)
+			})
+		}
+		
+		binding.testClearOrder.setOnClickListener {
+			@Language("SQL")
+			val orderCreate =
+				"CREATE TABLE IF NOT EXISTS ${DBHelper.TABLE_ORDER} (\n" +
+				"   ${DBColumn.ORDER_AUTO_ID.columnName} INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+				"   ${DBColumn.ORDER_ID.columnName} INTEGER DEFAULT -1 NOT NULL,\n" +
+				"   ${DBColumn.ORDER_TIME.columnName} INTEGER DEFAULT -1,\n" +
+				"   ${DBColumn.ORDER_STATUS.columnName} INTEGER DEFAULT -1,\n" +
+				"   ${DBColumn.ORDER_REASON.columnName} TEXT DEFAULT NULL\n" +
+				");"
+			val db = DBHelper(applicationContext).writableDatabase
+			db.execSQL("DROP TABLE ${DBHelper.TABLE_ORDER};")
+			db.execSQL(orderCreate)
+		}
+		
 	}
 	
-	private fun getRandomName(): String {
-		val randLength = (Math.random() * 10 + 3).toInt()
+	private fun getRandomName(max: Int = 13, min: Int = 3): String {
+		val randLength = (Math.random() * (max - min) + min).toInt()
 		val sb = StringBuilder()
 		for(i in 0 until randLength) {
 			sb.append(chars.random().toChar())
@@ -104,9 +109,7 @@ class TestActivity : AppCompatActivity() {
 			arrayOf(TestLink.newInstance(), TestOpenMenu.newInstance(), TestDownload.newInstance())
 		
 		private lateinit var binding: ActivityTestLinkBinding
-		private lateinit var socket: Socket
-		private val thread = HandlerThread("net").also { it.start() }
-		private val handler = Handler(thread.looper)
+		private var threadS = false
 		
 		override fun onCreate(savedInstanceState: Bundle?) {
 			super.onCreate(savedInstanceState)
@@ -128,30 +131,27 @@ class TestActivity : AppCompatActivity() {
 			}
 			
 			binding.button.setOnClickListener {
-				if(::socket.isInitialized) return@setOnClickListener
-				handler.post {
-					try {
-						socket = Socket(binding.spinner.selectedItem.toString(), 25000)
-					} catch(e: SocketException) {
-						finish()
-					}
-					Thread {
-						while(socket.isConnected) {
-							val e = getEvent()
-							runOnUiThread {
-								if(e is EventMenu) return@runOnUiThread
-								binding.textView.text = Objects.toString(e)
-							}
-							if(e == null) {
-								runOnUiThread {
-									finish()
-								}
-								break
-							}
-							SocketHandler.checkErrorAndThrow(applicationContext, e as Event)
-						}
-					}.start()
-				}
+				if(StaticData.socketHandler.isConnected()) return@setOnClickListener
+				StaticData.ensureSocketHandler(applicationContext, {
+//					Thread {
+//						while(!threadS) {
+//							try {
+//								val e = it.waitEvent()
+//								runOnUiThread {
+//									SocketHandler.checkErrorAndThrow(applicationContext, e as Event)
+//									if(e is EventMenu) return@runOnUiThread
+//									binding.textView.text = Objects.toString(e)
+//								}
+//							}
+//							catch(e: SocketException) {
+//								runOnUiThread {
+//									finish()
+//								}
+//								break
+//							}
+//						}
+//					}.start()
+				})
 			}
 			
 			binding.spinner2.adapter = object : BaseAdapter() {
@@ -178,73 +178,27 @@ class TestActivity : AppCompatActivity() {
 			
 		}
 		
-		private fun getEvent(): EventPuller? {
-			try {
-				val ins = socket.getInputStream()
-				// get the pack size, use 4 bytes
-				val intBs = ByteBuffer.allocate(4)
-				for(i in 0 until 4) {
-					intBs.put(ins.read().toByte())
-				}
-				// force read to size of pack
-				val size = intBs.getInt(0)
-				val bos = ByteArrayOutputStream()
-				for(i in 0 until size) {
-					bos.write(ins.read())
-				}                // unpack from byte array
-				val unpacker = MessagePack.newDefaultUnpacker(ByteArrayInputStream(bos.toByteArray()))
-				return getEventValue(unpacker.unpackValue())
-			}
-			catch(e: SocketException) {
-				Log.e("Test", "", e)
-			}
-			return null
-		}
-		
 		fun sendEvent(event: EventPusher) {
-			if(!::socket.isInitialized) return
-			handler.post {
-				try {
-					val value = event.toValue()
-					val bos = ByteArrayOutputStream()
-					val packer = MessagePack.newDefaultPacker(bos)
-					packer.packValue(value)
-					packer.flush()
-					val array = bos.toByteArray()
-					val size = array.size.toByteArray()
-					
-					socket.getOutputStream().write(size)
-					socket.getOutputStream().write(array)
+			StaticData.ensureSocketHandler(applicationContext, {
+				it.pushEventRePush(event)
+				
+				it.waitEventAndRun { e ->
+					runOnUiThread {
+						SocketHandler.checkErrorAndThrow(applicationContext, e as Event)
+						binding.textView.text = Objects.toString(e)
+					}
+					if(e is UpdateMenu) {
+						it.waitEvent()
+					}
 				}
-				catch(e: SocketException) {
-					Log.e("Test", "", e)
-				}
-			}
-		}
-		
-		private fun getEventValue(value: Value): EventPuller {
-			Util.checkMapValue(value)
-			val map = value.asMap()
-			val evt = map["event".toStringValue()]
-			if(evt?.isStringValue != true) throw IllegalStateException("no event or event not string")
-			val e = when(evt.asString()) {
-				EVENT_PULL_NEAR_SHOP -> NearShop()
-				EVENT_PULL_UPDATE -> UpdateMenu()
-				EVENT_PULL_EVENT_MENU -> EventMenu()
-				EVENT_PULL_RESOURCE -> ResourceDownload()
-				EVENT_PULL_ERROR -> Error()
-				else -> throw Exceptions.EventNotFoundException(map["event".toStringValue()]?.asString() ?: "null")
-			}
-			e.fromValue(value)
-			return e
+			})
 		}
 		
 		override fun onDestroy() {
 			super.onDestroy()
-			if(::socket.isInitialized && socket.isConnected) {
-				socket.close()
-			}
+			threadS = true
 		}
+		
 	}
 	
 }

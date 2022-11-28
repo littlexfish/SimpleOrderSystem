@@ -95,7 +95,7 @@ object FileIO {
 		@SOSVersion(since = "0.0")
 		fun write(context: Context, fileName: String) {
 			postWrite(context)
-			write(context, fileName)
+			onWrite(context, fileName)
 			postWrite(context)
 		}
 		

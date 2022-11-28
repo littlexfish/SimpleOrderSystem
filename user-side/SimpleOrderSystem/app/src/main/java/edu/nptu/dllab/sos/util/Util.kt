@@ -139,7 +139,7 @@ object Util {
 	fun getDistance(p1: Position, p2: Position): Double {
 		val delX = abs(p1.x - p2.x)
 		val delY = abs(p1.y - p2.y)
-		return earthRadius * 2 * asin(sqrt(sin(delX / 2.0).pow(2) + p1.x * p2.x * sin(delY / 2.0).pow(2)))
+		return earthRadius * 2 * asin(sqrt(sin(delX / 2.0).pow(2) + cos(p1.x) * cos(p2.x) * sin(delY / 2.0).pow(2)))
 	}
 	
 	fun calDistUnit(meter: Double, unit: String): Double = when(unit) {
@@ -213,7 +213,6 @@ object Util {
 	object LinkKey {
 		const val POSITION = "position"
 	}
-	
 	object NearShopKey {
 		const val SHOP = "shop"
 		const val SHOP_SHOP_ID = "shopId"
@@ -222,12 +221,10 @@ object Util {
 		const val SHOP_TAGS = "tags"
 		const val SHOP_NAME = "name"
 	}
-	
 	object OpenMenuKey {
 		const val SHOP_ID = "shopId"
 		const val MENU_VERSION = "menuVersion"
 	}
-	
 	object UpdateKey {
 		const val SHOP_ID = "shopId"
 		const val MENU_VERSION = "menuVersion"
@@ -239,7 +236,6 @@ object Util {
 		const val RES_POS = "position"
 		const val RES_SHA256 = "sha256"
 	}
-	
 	object EventMenuKey {
 		const val MENU = "menu"
 		const val MENU_CATE = "category"
@@ -255,37 +251,37 @@ object Util {
 		const val RES_POS = "position"
 		const val RES_SHA256 = "sha256"
 	}
-	
 	object DownloadKey {
 		const val PATH = "path"
 	}
-	
 	object ResourceKey {
 		const val FILE_INDEX = "file"
 		const val FILE_TOTAL = "total"
 		const val PATH = "path"
 		const val SHA256 = "sha256"
-		const val SIZE = "size"
 		const val DATA = "data"
 		const val POSITION = "position"
 		const val ID = "id"
 	}
-	
 	object OrderKey {
 		const val ITEM = "item"
 		const val ITEM_SHOP_ID = "shopId"
 		const val ITEM_ITEM_ID = "itemId"
-		const val ITEM_ADDITION = "addition"
 		const val ITEM_ADDITION_ID = "id"
 		const val ITEM_ADDITION_TYPE = "type"
 		const val ITEM_ADDITION_VALUE = "value"
-		const val ITEM_NOTE = "note"
 	}
-	
 	object OrderRequestKey {
 		const val ORDER_ID = "orderId"
 	}
-	
+	object TraceKey {
+		const val ORDER_ID = "orderId"
+	}
+	object OrderStatusKey {
+		const val ORDER_ID = "orderId"
+		const val STATUS = "status"
+		const val REASON = "reason"
+	}
 	object ErrorKey {
 		const val REASON = "reason"
 		const val FORMAT = "format"

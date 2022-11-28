@@ -78,7 +78,7 @@ abstract class MenuFragment : Fragment() {
 	 */
 	@SOSVersion(since = "0.0")
 	fun reloadResource() {
-		TODO("Reload resource")
+		// TODO("Reload resource")
 	}
 	
 	/**

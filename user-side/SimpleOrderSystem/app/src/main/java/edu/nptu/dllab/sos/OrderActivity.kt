@@ -3,6 +3,7 @@ package edu.nptu.dllab.sos
 import android.content.Intent
 import android.icu.util.Currency
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -51,16 +52,16 @@ class OrderActivity : AppCompatActivity() {
 						val evt = OrderEvent()
 						evt.addAllItems(StaticData.getItems())
 						
-						it.pushEvent(evt)
-						
+						it.pushEventRePush(evt)
 						runOnUiThread { loading.setMessage(Translator.getString("order.wait")) }
+						
 						it.waitEventAndRun { e ->
 							if(e is OrderRequest) {
 								val id = e.orderId
 								val time = System.currentTimeMillis()
 								
 								val db = DBHelper(applicationContext)
-								val dbO = DBOrder(id, time)
+								val dbO = DBOrder(id, time, DBOrder.STATUS_NOT_PROCESS, null)
 								db.insert(DBHelper.TABLE_ORDER, dbO.toContentValues())
 								db.close()
 								
@@ -129,8 +130,7 @@ class OrderActivity : AppCompatActivity() {
 		 *   Show sum of money that ignore any currency code.
 		 *   The currency code always NTD
 		 */
-		val currency = Currency.getInstance("NTD")
-		binding.orderMoney.text = "${currency.displayName}$ ${mS.roundToInt()}"
+		binding.orderMoney.text = "$ %.2f".format(mS)
 		
 		binding.orderList.removeAllViews()
 		for(index in items.indices) {

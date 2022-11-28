@@ -42,26 +42,30 @@
         app:layout_constraintTop_toTopOf="@+id/horizontalScrollView"
         app:srcCompat="@drawable/classic_filter" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView">
 
-        <ScrollView
+        <LinearLayout
+            android:id="@+id/menuClassicItems"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
-            <LinearLayout
-                android:id="@+id/menuClassicItems"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
-
-    </androidx.cardview.widget.CardView>
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/classicFilterFrag"
+        android:name="edu.nptu.dllab.sos.fragment.EmptyFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_filter" />
 </androidx.constraintlayout.widget.ConstraintLayout>

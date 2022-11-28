@@ -8,7 +8,7 @@ import android.os.Looper
 import android.widget.Toast
 import edu.nptu.dllab.sos.io.Translator
 
-class LoadingDialog(private val act: Activity, private var atLeastTime: Long = 2000,
+class LoadingDialog(private val act: Activity, private var atLeastTime: Long = 2000, private var finishOnBack: Boolean = true,
                     private var finishSecondClick: Boolean = true) : ProgressDialog(act) {
 	
 	/**
@@ -28,14 +28,18 @@ class LoadingDialog(private val act: Activity, private var atLeastTime: Long = 2
 		setMessage("Loading...")
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 			onBackInvokedDispatcher.registerOnBackInvokedCallback(1) {
-				pressBack()
+				if(finishOnBack) {
+					pressBack()
+				}
 			}
 		}
 	}
 	
 	override fun onBackPressed() {
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-			pressBack()
+		if(finishOnBack) {
+			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+				pressBack()
+			}
 		}
 	}
 	
