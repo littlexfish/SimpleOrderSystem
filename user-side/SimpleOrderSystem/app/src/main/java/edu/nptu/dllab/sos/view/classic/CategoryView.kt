@@ -6,30 +6,25 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import edu.nptu.dllab.sos.R
-import edu.nptu.dllab.sos.util.SOSVersion
 
 /**
  * The classic menu type category
  */
-@SOSVersion(since = "0.0")
 class CategoryView : ConstraintLayout {
 	
 	/**
 	 * The category name
 	 */
-	@SOSVersion(since = "0.0")
 	private lateinit var textView: TextView
 	
 	/**
 	 * The category img
 	 */
-	@SOSVersion(since = "0.0")
 	private lateinit var imageView: ImageView
 	
 	/**
 	 * Set get of category name
 	 */
-	@SOSVersion(since = "0.0")
 	var string
 		get() = textView.text
 		set(value) {
@@ -39,7 +34,6 @@ class CategoryView : ConstraintLayout {
 	/**
 	 * Set get of category img
 	 */
-	@SOSVersion(since = "0.0")
 	var image
 		get() = imageView.drawable
 		set(value) {

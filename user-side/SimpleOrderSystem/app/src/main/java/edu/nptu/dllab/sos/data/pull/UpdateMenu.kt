@@ -10,56 +10,45 @@ import edu.nptu.dllab.sos.io.DBHelper
 import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.io.db.DBRes
 import edu.nptu.dllab.sos.util.Exceptions
-import edu.nptu.dllab.sos.util.SOSVersion
-import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.UpdateKey
 import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.asMap
 import edu.nptu.dllab.sos.util.Util.asString
-import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.core.MessageTypeCastException
 import org.msgpack.value.Value
-import org.msgpack.value.ValueFactory
 
 /**
  * The event to store menu need to update
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 class UpdateMenu : Event(EVENT_KEY), EventPuller {
 	
 	/**
 	 * The shop id
-	@SOSVersion(since = "0.0")
 	 */
 	var shopId: Int = -1
 	
 	/**
 	 * The menu version
 	 */
-	@SOSVersion(since = "0.0")
 	var version: Int = -1
 	
 	/**
 	 * The menu object
 	 * @see MenuBase
 	 */
-	@SOSVersion(since = "0.0")
 	var menu: MenuBase = ClassicMenu(shopId, version)
 	
 	/**
 	 * The resources menu needed
 	 */
-	@SOSVersion(since = "0.0")
 	private val res = ArrayList<Resource>()
 	
 	/**
 	 * Get resources that need download
 	 */
-	@SOSVersion(since = "0.0")
 	fun getNeedDownloadResources(context: Context): List<Resource> {
 		val db = DBHelper(context)
 		val cur = db.readableDatabase.rawQuery("SELECT * FROM ${DBHelper.TABLE_RES} WHERE ${DBColumn.MENU_SHOP_ID.columnName}=$shopId", null)
@@ -73,7 +62,7 @@ class UpdateMenu : Event(EVENT_KEY), EventPuller {
 		
 		for(r in res) {
 			if(r.id in dbRes.keys) {
-				val dbR = res[r.id]
+				val dbR = dbRes[r.id]!!
 				if(r.sha256 != dbR.sha256) {
 					ret.add(r)
 				}
@@ -113,13 +102,7 @@ class UpdateMenu : Event(EVENT_KEY), EventPuller {
 	}
 	
 	override fun toString(): String {
-		val map = ValueFactory.newMapBuilder()
-		map.put(Util.NET_KEY_EVENT.toStringValue(), event.toStringValue())
-		map.put(UpdateKey.SHOP_ID.toStringValue(), shopId.toIntegerValue())
-		map.put(UpdateKey.MENU_VERSION.toStringValue(), version.toIntegerValue())
-		map.put(UpdateKey.MENU.toStringValue(), menu.getMenuData())
-		map.put(UpdateKey.RESOURCE.toStringValue(), ValueFactory.newArray(res.map { it.getValue() }))
-		return map.build().toString()
+		return "update { shopId=$shopId, version=$version }"
 	}
 	
 	companion object {

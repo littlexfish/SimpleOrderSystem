@@ -29,7 +29,6 @@ import edu.nptu.dllab.sos.fragment.MenuFragment
 import edu.nptu.dllab.sos.io.*
 import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.io.db.DBMenu
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.StaticData
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.asString
@@ -40,7 +39,6 @@ import java.net.SocketException
 /**
  * The activity show the menu
  */
-@SOSVersion(since = "0.0")
 class MenuActivity : AppCompatActivity() {
 	
 	private val tag = "MenuActivity"
@@ -120,7 +118,6 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * Let user accept finish this activity
 	 */
-	@SOSVersion(since = "0.0")
 	private fun backToList() {
 		AlertDialog.Builder(this)
 			.setMessage(Translator.getString("menu.back.list"))
@@ -134,7 +131,6 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * Request load menu and replace it
 	 */
-	@SOSVersion(since = "0.0")
 	private fun loadMenu(firstLoad: Boolean) {
 		/*
 		 * FISH NOTE:
@@ -151,7 +147,6 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * Load test menu when shopId is less than 0
 	 */
-	@SOSVersion(since = "0.0")
 	private fun testLoadMenu(firstLoad: Boolean) {
 		loadingDialog.show()
 		// Force load menu from assets/testMenu.menu
@@ -203,7 +198,6 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * Load menu from server
 	 */
-	@SOSVersion(since = "0.0")
 	private fun loadFromServer(firstLoad: Boolean) {
 		handler.post {
 			runOnUiThread { loadingDialog.show() }
@@ -350,7 +344,7 @@ class MenuActivity : AppCompatActivity() {
 											dl.set(rd.fileIndex + 1, rd.fileTotal)
 										}
 										val res = resMap[rd.path]!!
-										if(!ResourceWriter.saveResource(applicationContext, shopId, res.id, res.position, rd.resData, rd.sha256)) {
+										if(!ResourceWriter.saveResource(applicationContext, shopId, res.id, res.path, rd.resData, rd.sha256)) {
 											Log.w(tag, "resource save error")
 										}
 										if(rd.fileIndex + 1 >= rd.fileTotal) break
@@ -388,7 +382,6 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * Change fragment and build menu with menu base
 	 */
-	@SOSVersion(since = "0.0")
 	private fun changeFragAndBuildMenu(menu: MenuBase) {
 		runOnUiThread {
 			val frag = menu.getMenuFragment()
@@ -403,7 +396,6 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * Put the resource in map
 	 */
-	@SOSVersion(since = "0.0")
 	private fun putInResource(resMap: HashMap<String, Resource>, res: Resource) {
 		resMap[res.path] = res
 	}
@@ -411,7 +403,6 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * Put all resource in map
 	 */
-	@SOSVersion(since = "0.0")
 	private fun putAllResource(resMap: HashMap<String, Resource>, res: Iterable<Resource>) {
 		for(r in res) {
 			putInResource(resMap, r)
@@ -419,7 +410,10 @@ class MenuActivity : AppCompatActivity() {
 	}
 	
 	fun animCart() {
-		(binding.menuCart.drawable as AnimatedVectorDrawable).start()
+		(binding.menuCart.drawable as AnimatedVectorDrawable).let {
+			it.reset()
+			it.start()
+		}
 	}
 	
 	override fun onDestroy() {
@@ -436,7 +430,6 @@ class MenuActivity : AppCompatActivity() {
 	/**
 	 * The dialog shows download status
 	 */
-	@SOSVersion(since = "0.0")
 	class DownloadDialog(context: Context) : ProgressDialog(context) {
 		
 		init {

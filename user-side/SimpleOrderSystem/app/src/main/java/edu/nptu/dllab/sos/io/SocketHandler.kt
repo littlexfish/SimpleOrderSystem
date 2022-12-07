@@ -10,7 +10,6 @@ import edu.nptu.dllab.sos.data.EventPuller
 import edu.nptu.dllab.sos.data.EventPusher
 import edu.nptu.dllab.sos.data.pull.*
 import edu.nptu.dllab.sos.util.Exceptions
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.asString
 import edu.nptu.dllab.sos.util.Util.toByteArray
@@ -23,26 +22,11 @@ import java.net.Socket
 import java.net.SocketException
 import java.nio.ByteBuffer
 
-private const val KEY_EVENT = "event"
-
-private const val EVENT_PUSH_LINK = "link"
-private const val EVENT_PULL_NEAR_SHOP = "near_shop"
-private const val EVENT_PUSH_OPEN_MENU = "open_menu"
-private const val EVENT_PULL_UPDATE = "update"
-private const val EVENT_PULL_EVENT_MENU = "event_menu"
-private const val EVENT_PUSH_DOWNLOAD = "download"
-private const val EVENT_PULL_RESOURCE = "resource"
-private const val EVENT_ORDER_REQUEST = "order_request"
-private const val EVENT_ORDER_STATUS = "order_status"
-private const val EVENT_PULL_ERROR = "error"
-
 /**
  * A class handle socket that can process event functionally
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 class SocketHandler {
 	
 	private val tag = "network"
@@ -50,41 +34,67 @@ class SocketHandler {
 	/**
 	 * Check the connect state
 	 */
-	@SOSVersion(since = "0.0")
 	private var connected = false
 	
 	/**
 	 * The network socket
 	 */
-	@SOSVersion(since = "0.0")
 	private var socket: Socket? = null
 	
+	/**
+	 * The old ip
+	 */
 	private var ip = ""
+	
+	/**
+	 * The old port
+	 */
 	private var port = 0
 	
+	/**
+	 * The thread for link and other network
+	 */
 	private val threadLink = HandlerThread("net-link").also { it.start() }
+	
+	/**
+	 * The thread for push event
+	 */
 	private val threadPush = HandlerThread("net-push").also { it.start() }
+	
+	/**
+	 * The thread for pull event
+	 */
 	private val threadPull = HandlerThread("net-pull").also { it.start() }
+	
+	/**
+	 * The handler for link and other network
+	 *
+	 */
 	private val handlerLink = Handler(threadLink.looper)
+	
+	/**
+	 * The handler for push event
+	 */
 	private val handlerPush = Handler(threadPush.looper)
+	
+	/**
+	 * The handler for pull event
+	 */
 	private val handlerPull = Handler(threadPull.looper)
 	
 	/**
 	 * Uses charset, default UTF-8
 	 */
-	@SOSVersion(since = "0.0")
 	var charset = Charsets.UTF_8
 	
 	/**
 	 * The last event which not process
 	 */
-	@SOSVersion(since = "0.0")
 	private var holdEvent: EventPuller? = null
 	
 	/**
 	 * Link to server
 	 */
-	@SOSVersion(since = "0.0")
 	fun link(ip: String, port: Int) {
 		socket = Socket(ip, port)
 		this.ip = ip
@@ -92,6 +102,9 @@ class SocketHandler {
 		connected = true
 	}
 	
+	/**
+	 * Link to server and run function on network thread, or run error function on got exception
+	 */
 	fun linkAndRun(ip: String, port: Int, func: ((handler: SocketHandler) -> Unit)?,
 	               error: ((e: Exception) -> Unit)? = null) {
 		handlerLink.post {
@@ -113,40 +126,17 @@ class SocketHandler {
 	/**
 	 * @return true if is connected
 	 */
-	@SOSVersion(since = "0.0")
 	fun isConnected() = connected && socket != null
 	
 	/**
 	 * Push event via socket
 	 * @param event - event to push
 	 */
-	@SOSVersion(since = "0.0")
 	@Synchronized
 	fun pushEvent(event: EventPusher, error: ((e: Exception) -> Unit)? = null) {
 		handlerPush.post {
 			try {
-				/*
-				 * FISH NOTE:
-				 *   To parse data easily,
-				 *    we write data size first,
-				 *    than write data.
-				 */
-				checkConnectedState()
-				val buffer = ByteArrayOutputStream()
-				val v = event.toValue()
-				val packer = MessagePack.newDefaultPacker(buffer)
-				packer.packValue(v)
-				packer.flush()
-				packer.close()
-				val bs = buffer.toByteArray()
-				Log.d(tag, "push ${(event as Event).event}")
-				if(socket != null) {
-					val os = socket!!.getOutputStream()
-					// write byte size first
-					os.write(bs.size.toByteArray())
-					// than write data
-					os.write(bs)
-				}
+				pushEventNoHandler(event)
 			}
 			catch(e: Exception) {
 				if(error == null) throw e
@@ -155,6 +145,37 @@ class SocketHandler {
 		}
 	}
 	
+	/**
+	 * Push event with no handler
+	 */
+	fun pushEventNoHandler(event: EventPusher) {
+		/*
+		 * FISH NOTE:
+		 *   To parse data easily,
+		 *    we write data size first,
+		 *    than write data.
+		 */
+		checkConnectedState()
+		val buffer = ByteArrayOutputStream()
+		val v = event.toValue()
+		val packer = MessagePack.newDefaultPacker(buffer)
+		packer.packValue(v)
+		packer.flush()
+		packer.close()
+		val bs = buffer.toByteArray()
+		Log.d(tag, "push $event")
+		if(socket != null) {
+			val os = socket!!.getOutputStream()
+			// write byte size first
+			os.write(bs.size.toByteArray())
+			// than write data
+			os.write(bs)
+		}
+	}
+	
+	/**
+	 * Push event and auto re-push when got error
+	 */
 	fun pushEventRePush(event: EventPusher) {
 		pushEvent(event) {
 			if(it is SocketException) {
@@ -172,9 +193,19 @@ class SocketHandler {
 	 * Get event via socket, will block the thread
 	 * @return event socket read
 	 */
-	@SOSVersion(since = "0.0")
 	@Synchronized
 	fun waitEvent(): EventPuller {
+		while(true) {
+			val e = waitEventOrNull()
+			if(e != null)
+				return e
+		}
+	}
+	
+	/**
+	 * Get event via socket, return `null` if no new event or some error
+	 */
+	fun waitEventOrNull(): EventPuller? {
 		/*
 		 * FISH NOTE:
 		 *   Because write data size first,
@@ -186,10 +217,11 @@ class SocketHandler {
 			if(holdEvent != null) { // check hold event and return first
 				val tmp = holdEvent
 				holdEvent = null
-				Log.d(tag, "found hold event: ${(tmp as Event).event}")
+				Log.d(tag, "found hold event: $tmp")
 				return tmp
 			}
 			val ins = socket!!.getInputStream()
+			if(ins.available() == 0) return null
 			
 			// get the pack size, use 4 bytes
 			val intBs = ByteBuffer.allocate(4)
@@ -207,17 +239,23 @@ class SocketHandler {
 			// unpack from byte array
 			val unpacker = MessagePack.newDefaultUnpacker(ByteArrayInputStream(bos.toByteArray()))
 			val event = getEventValue(unpacker.unpackValue())
-			Log.d(tag, "receive ${(event as Event).event}")
+			Log.d(tag, "receive $event")
 			return event
 		}
 		// may not reach here
-		throw RuntimeException()
+		return null
 	}
 	
+	/**
+	 * Get event and run function
+	 */
 	fun waitEventAndRun(func: (e: EventPuller) -> Unit) {
 		waitEventAndRun(func, null)
 	}
 	
+	/**
+	 * Get event and run function, or run error function when got event
+	 */
 	fun waitEventAndRun(func: (e: EventPuller) -> Unit, error: ((e: Exception) -> Unit)?) {
 		handlerPull.post {
 			try {
@@ -253,6 +291,9 @@ class SocketHandler {
 		throw IllegalStateException("event type not found, try count: $tryTimes")
 	}
 	
+	/**
+	 * Run something on network thread
+	 */
 	fun runOnNetworkThread(func: () -> Unit) {
 		handlerLink.post(func)
 	}
@@ -260,7 +301,6 @@ class SocketHandler {
 	/**
 	 * Hold the event
 	 */
-	@SOSVersion(since = "0.0")
 	fun holdEvent(event: EventPuller) {
 		holdEvent = event
 	}
@@ -268,7 +308,6 @@ class SocketHandler {
 	/**
 	 * Check the connect state, and throw if not connect
 	 */
-	@SOSVersion(since = "0.0")
 	private fun checkConnectedState() {
 		if(!connected || socket == null || !socket!!.isConnected) {
 			Log.w(tag, "warning", IllegalStateException("socket not connect."))
@@ -281,28 +320,34 @@ class SocketHandler {
 	 * @param value - [Value]
 	 * @return [EventPuller]
 	 */
-	@SOSVersion(since = "0.0")
 	private fun getEventValue(value: Value): EventPuller {
 		val map = Util.checkMapValue(value).map()
-		val e = when(map[KEY_EVENT.toStringValue()]?.asString()) {
-			EVENT_PULL_NEAR_SHOP -> NearShop()
-			EVENT_PULL_UPDATE -> UpdateMenu()
-			EVENT_PULL_EVENT_MENU -> EventMenu()
-			EVENT_PULL_RESOURCE -> ResourceDownload()
-			EVENT_ORDER_REQUEST -> OrderRequest()
-			EVENT_ORDER_STATUS -> OrderStatus()
-			EVENT_PULL_ERROR -> Error()
-			else -> throw Exceptions.EventNotFoundException(map[KEY_EVENT.toStringValue()]?.asString() ?: "null")
+		val e = when(val eId = map[Util.NET_KEY_EVENT.toStringValue()]?.asString()) {
+			NearShop.EVENT_KEY -> NearShop()
+			UpdateMenu.EVENT_KEY -> UpdateMenu()
+			EventMenu.EVENT_KEY -> EventMenu()
+			ResourceDownload.EVENT_KEY -> ResourceDownload()
+			OrderRequest.EVENT_KEY -> OrderRequest()
+			OrderStatus.EVENT_KEY -> OrderStatus()
+			Error.EVENT_KEY -> Error()
+			OrderReceive.EVENT_KEY -> OrderReceive()
+			else -> throw Exceptions.EventNotFoundException(if(eId != null) map[eId.toStringValue()]?.asString() ?: "null" else "null")
 		}
 		e.fromValue(value)
 		return e
 	}
 	
+	/**
+	 * Close socket
+	 */
 	fun close() {
 		socket?.close()
 	}
 	
 	companion object {
+		/**
+		 * Check error and throw when got error
+		 */
 		fun checkErrorAndThrow(context: Context, evt: Event): Boolean {
 			if(evt is Error) {
 				Toast.makeText(context, Translator.getString("net.event.error.${evt.reason}").format(evt.format), Toast.LENGTH_SHORT).show()

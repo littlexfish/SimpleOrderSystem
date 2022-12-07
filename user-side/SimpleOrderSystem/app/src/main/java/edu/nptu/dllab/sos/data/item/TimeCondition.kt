@@ -1,7 +1,6 @@
 package edu.nptu.dllab.sos.data.item
 
 import com.google.gson.JsonObject
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util.asLong
 import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
@@ -14,7 +13,6 @@ private const val KEY_END = "end"
 /**
  * The time type condition
  */
-@SOSVersion(since = "0.0")
 class TimeCondition : ItemCondition("time") {
 	
 	/**

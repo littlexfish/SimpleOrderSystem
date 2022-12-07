@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import edu.nptu.dllab.sos.MenuActivity
 import edu.nptu.dllab.sos.OrderActivity
 import edu.nptu.dllab.sos.OrderCheckActivity
+import edu.nptu.dllab.sos.ShopSideActivity
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPusher
 import edu.nptu.dllab.sos.data.menu.classic.ClassicItem
@@ -85,6 +86,10 @@ class TestActivity : AppCompatActivity() {
 			val db = DBHelper(applicationContext).writableDatabase
 			db.execSQL("DROP TABLE ${DBHelper.TABLE_ORDER};")
 			db.execSQL(orderCreate)
+		}
+		
+		binding.testShopSide.setOnClickListener {
+			startActivity(Intent(this, ShopSideActivity::class.java))
 		}
 		
 	}

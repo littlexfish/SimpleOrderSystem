@@ -33,10 +33,18 @@ import edu.nptu.dllab.sos.util.StaticData
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.view.ShopItemView
 
+/**
+ * The fragment for show shop list
+ *
+ * @author Little Fish
+ */
 class ShopListFragment : Fragment() {
 	
 	private lateinit var binding: FragmentShopListBinding
 	
+	/**
+	 * Request gain permission
+	 */
 	private val permissionRequest =
 		registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
 			checkPermission()
@@ -85,6 +93,9 @@ class ShopListFragment : Fragment() {
 		}
 	}
 	
+	/**
+	 * Check permission and start on permission gain
+	 */
 	private fun checkPermission() {
 		if(context == null) return
 		if(checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -110,14 +121,17 @@ class ShopListFragment : Fragment() {
 		else start()
 	}
 	
+	/**
+	 * Start the shop list finder
+	 */
 	@SuppressLint("MissingPermission")
 	private fun start() {
 		if(loadingDialog.isShowing) return
-		Log.i(tag, "get shop data from server")
+		Log.i(TAG, "get shop data from server")
 		binding.shopReload.visibility = View.GONE
 		loadingDialog.show()
 		cancellationToken = CancellationTokenSource()
-		Log.i(tag, "get location")
+		Log.i(TAG, "get location")
 		loadingDialog.setMessage(Translator.getString("main.location.wait"))
 		fusedLocationProviderClient.getCurrentLocation(CurrentLocationRequest.Builder().setDurationMillis(10 * 1000).build(), cancellationToken.token)
 			.addOnSuccessListener {
@@ -127,7 +141,7 @@ class ShopListFragment : Fragment() {
 					loadingDialog.dismissAtLeast()
 				}
 				else {
-					Log.i(tag, "find location: ${it.latitude}, ${it.longitude}")
+					Log.i(TAG, "find location: ${it.latitude}, ${it.longitude}")
 					runLinkEvent(Position(it.latitude, it.longitude))
 				}
 			}
@@ -135,10 +149,13 @@ class ShopListFragment : Fragment() {
 				loadingDialog.dismissAtLeast()
 				Toast.makeText(requireContext(), Translator.getString("main.location.error"),
 				               Toast.LENGTH_SHORT).show()
-				Log.e(tag, "error", it)
+				Log.e(TAG, "error", it)
 			}
 	}
 	
+	/**
+	 * Start when get position
+	 */
 	private fun runLinkEvent(pos: Position) {
 		loadingDialog.setMessage(Translator.getString("main.shop.wait"))
 		val evt = LinkEvent()
@@ -154,10 +171,12 @@ class ShopListFragment : Fragment() {
 					val showClose = Config.getBoolean(Config.Key.SHOW_CLOSED_SHOP)
 					for(v in shops) {
 						if(v.state == ShopState.OPEN || (v.state == ShopState.CLOSE && showClose)) {
-							Log.d(tag, "shopId: ${v.shopId}, position: (${v.position.x}, ${v.position.y})")
+							Log.d(TAG, "shopId: ${v.shopId}, position: (${v.position.x}, ${v.position.y})")
+							val dist = Util.getDistance(pos, v.position)
+							Log.d(TAG, "distance: $dist")
 							val view = ShopItemView(requireContext())
 							view.name = v.name
-							view.distance = Util.getDistance(pos, v.position)
+							view.distance = dist
 							if(v.state == ShopState.OPEN) {
 								view.setOnClickListener {
 									startActivity(Intent(requireContext(), MenuActivity::class.java).apply {
@@ -190,6 +209,7 @@ class ShopListFragment : Fragment() {
 	}
 	
 	companion object {
+		private const val TAG = "shopList"
 		fun newInstance() = ShopListFragment().apply {
 			arguments = Bundle().apply { }
 		}

@@ -3,7 +3,6 @@ package edu.nptu.dllab.sos.data.push
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPusher
 import edu.nptu.dllab.sos.util.Position
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util.LinkKey
 import edu.nptu.dllab.sos.util.Util.NET_KEY_EVENT
 import edu.nptu.dllab.sos.util.Util.toStringValue
@@ -14,15 +13,12 @@ import org.msgpack.value.ValueFactory
  * The event link to server
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 class LinkEvent : Event(EVENT_KEY), EventPusher {
 	
 	/**
 	 * The position
 	 */
-	@SOSVersion(since = "0.0")
 	var position = Position()
 	
 	override fun toValue(): Value {
@@ -33,7 +29,7 @@ class LinkEvent : Event(EVENT_KEY), EventPusher {
 	}
 	
 	override fun toString(): String {
-		return toValue().toString()
+		return "link { position=(${position.x}, ${position.y}) }"
 	}
 	
 	companion object {

@@ -17,63 +17,52 @@ import kotlin.math.*
  * The class store some of function
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 object Util {
 	
 	/**
 	 * The transfer protocol of event key
 	 */
-	@SOSVersion(since = "0.0")
 	const val NET_KEY_EVENT = "event"
 	
 	/**
 	 * This app uses scheme
 	 */
-	@SOSVersion(since = "0.0")
 	const val PREFIX_SOS_URL = "sos://"
 	
 	/**
 	 * The activity request code that is ok
 	 */
-	@SOSVersion(since = "0.0")
 	const val REQUEST_OK = 0
 	
 	/**
 	 * The activity request code that is back
 	 */
-	@SOSVersion(since = "0.0")
 	const val REQUEST_BACK = -1
 	
 	/**
 	 * The activity request code that is error
 	 */
-	@SOSVersion(since = "0.0")
 	const val REQUEST_ERROR = 1
 	
 	/**
 	 * The activity request code that is error on extra
 	 */
-	@SOSVersion(since = "0.0")
 	const val REQUEST_ERROR_EXTRA = 2
 	
 	/**
 	 * The activity request code that is error on permission
 	 */
-	@SOSVersion(since = "0.0")
 	const val REQUEST_ERROR_PERMISSION = 3
 	
 	/**
 	 * The global charset
 	 */
-	@SOSVersion(since = "0.0")
 	val CHARSET_GLOBAL = Charsets.UTF_8
 	
 	/**
 	 * Get custom string from sos url
 	 */
-	@SOSVersion(since = "0.0")
 	fun getSOSTypeUrlString(url: String): String {
 		if(url.matches(Regex(".+://.+"))) {
 			val uri = Uri.parse(url)
@@ -100,7 +89,6 @@ object Util {
 	/**
 	 * Gen a qrcode
 	 */
-	@SOSVersion(since = "0.0")
 	fun genQrCode(content: String, width: Int, height: Int): Bitmap {
 		if(content.isEmpty()) {
 			return Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888)
@@ -120,7 +108,6 @@ object Util {
 	/**
 	 * Check the value is map value
 	 */
-	@SOSVersion(since = "0.0")
 	fun checkMapValue(value: Value): MapValue {
 		if(!value.isMapValue) throw Exceptions.DataFormatException("data format not map type")
 		return value.asMapValue()
@@ -130,6 +117,8 @@ object Util {
 	 * Define the radius of earth by meter
 	 */
 	private const val earthRadius = 6371009.0
+	private const val earthLongRadius = 6378136.49
+	private const val earthShortRadius = 6356755.00
 	
 	/**
 	 * Calculate distance by two position use Great-Circle Distance function
@@ -137,9 +126,52 @@ object Util {
 	 * @return distance by meter
 	 */
 	fun getDistance(p1: Position, p2: Position): Double {
-		val delX = abs(p1.x - p2.x)
-		val delY = abs(p1.y - p2.y)
-		return earthRadius * 2 * asin(sqrt(sin(delX / 2.0).pow(2) + cos(p1.x) * cos(p2.x) * sin(delY / 2.0).pow(2)))
+		val p1x = Math.toRadians(p1.x)
+		val p1y = Math.toRadians(p1.y)
+		val p2x = Math.toRadians(p2.x)
+		val p2y = Math.toRadians(p2.y)
+		val delX = abs(p1x - p2x)
+		val delY = abs(p1y - p2y)
+		return earthRadius * 2 * asin(sqrt(sin(delX / 2.0).pow(2) + cos(p1x) * cos(p2x) * sin(delY / 2.0).pow(2)))
+//		return earthRadius * acos(sin(p1x) * sin(p2x) + cos(p1x) * cos(p2x) * delY)
+
+//		val delX = abs(p1.x - p2.x)
+//		val delY = abs(p1.y - p2.y)
+//		return earthRadius * 2 * asin(sqrt(sin(delX / 2.0).pow(2) + cos(p1.x) * cos(p2.x) * sin(delY / 2.0).pow(2)))
+//		return earthRadius * acos(sin(p1.x) * sin(p2.x) + cos(p1.x) * cos(p2.x) * delY)
+//		return getAndoyerDistance(p1, p2)
+	}
+	
+	private fun getAndoyerDistance(p1: Position, p2: Position): Double {
+//		val p1x = Math.toRadians(p1.x)
+//		val p1y = Math.toRadians(p1.y)
+//		val p2x = Math.toRadians(p2.x)
+//		val p2y = Math.toRadians(p2.y)
+//		val f = (p1x + p2x) / 2
+//		val g = (p1x - p2x) / 2
+//		val lambda = (p1y - p2y) / 2
+		val f = (p1.x + p2.x) / 2
+		val g = (p1.x - p2.x) / 2
+		val lambda = (p1.y - p2.y) / 2
+		
+		val s = sin(g).pow(2) * cos(lambda).pow(2) + cos(f).pow(2) * sin(lambda).pow(2)
+		val c = cos(g).pow(2) * cos(lambda).pow(2) + sin(f).pow(2) * sin(lambda).pow(2)
+		val omega = atan(s / c)
+		val r = sqrt(s * c / omega)
+		
+		val fp = getF()
+		val d = 2 * omega * earthLongRadius
+		val h1 = (3 * r - 1) / (2 * c)
+		val h2 = (3 * r + 1) / (2 * s)
+		
+		return d * (1 + fp * h1 * sin(f).pow(2) * cos(g).pow(2) - fp * h2 * cos(f).pow(2) * sin(g).pow(2))
+	}
+	
+	private fun getF(): Double {
+		val halfShort = earthShortRadius / 2
+		val halfLong = earthLongRadius / 2
+		val ae = acos(halfShort / halfLong)
+		return 1 - cos(ae)
 	}
 	
 	fun calDistUnit(meter: Double, unit: String): Double = when(unit) {
@@ -152,55 +184,46 @@ object Util {
 	/**
 	 * String change to [org.msgpack.value.StringValue]
 	 */
-	@SOSVersion(since = "0.0")
 	fun String.toStringValue() = ValueFactory.newString(this)!!
 	
 	/**
 	 * int change to [org.msgpack.value.IntegerValue]
 	 */
-	@SOSVersion(since = "0.0")
 	fun Int.toIntegerValue() = ValueFactory.newInteger(this)!!
 	
 	/**
 	 * long change to [org.msgpack.value.IntegerValue]
 	 */
-	@SOSVersion(since = "0.0")
 	fun Long.toIntegerValue() = ValueFactory.newInteger(this)!!
 	
 	/**
 	 * double change to [org.msgpack.value.FloatValue]
 	 */
-	@SOSVersion(since = "0.0")
 	fun Double.toFloatValue() = ValueFactory.newFloat(this)!!
 	
 	/**
 	 * [org.msgpack.value.Value] change to int
 	 */
-	@SOSVersion(since = "0.0")
 	fun Value.asInt() = this.asIntegerValue().toInt()
 	
 	/**
 	 * [org.msgpack.value.Value] change to long
 	 */
-	@SOSVersion(since = "0.0")
 	fun Value.asLong() = this.asIntegerValue().toLong()
 	
 	/**
 	 * [org.msgpack.value.Value] change to [String]
 	 */
-	@SOSVersion(since = "0.0")
 	fun Value.asString() = this.asStringValue().asString()!!
 	
 	/**
 	 * [org.msgpack.value.Value] change to double
 	 */
-	@SOSVersion(since = "0.0")
 	fun Value.asDouble() = this.asFloatValue().toDouble()
 	
 	/**
 	 * [org.msgpack.value.Value] change to [MutableMap]
 	 */
-	@SOSVersion(since = "0.0")
 	fun Value.asMap(): MutableMap<Value, Value> = this.asMapValue().map()!!
 	
 	fun Int.toByteArray(): ByteArray {
@@ -285,6 +308,14 @@ object Util {
 	object ErrorKey {
 		const val REASON = "reason"
 		const val FORMAT = "format"
+	}
+	object OrderReceiveKey {
+		const val ORDER_ID = "orderId"
+		const val ITEM = "item"
+	}
+	object UpdateStatusKey {
+		const val ORDER_ID = "orderId"
+		const val STATUS = "status"
 	}
 	
 }

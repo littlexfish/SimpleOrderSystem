@@ -21,13 +21,11 @@ import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import edu.nptu.dllab.sos.databinding.ActivityQrCodeScannerBinding
 import edu.nptu.dllab.sos.io.Translator
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
 
 /**
  * The activity use for scan qrcode
  */
-@SOSVersion(since = "0.0")
 class QrCodeScanner : AppCompatActivity() {
 	
 	private val tag = "QrCodeScanner"
@@ -40,25 +38,21 @@ class QrCodeScanner : AppCompatActivity() {
 	/**
 	 * The camera use for scan qrcode
 	 */
-	@SOSVersion(since = "0.0")
 	private lateinit var camera: CameraSource
 	
 	/**
 	 * The detector use for detect qrcode
 	 */
-	@SOSVersion(since = "0.0")
 	private lateinit var detector: BarcodeDetector
 	
 	/**
 	 * The value been scan
 	 */
-	@SOSVersion(since = "0.0")
 	private var qrScanValue: String? = null
 	
 	/**
 	 * The detect timer
 	 */
-	@SOSVersion(since = "0.0")
 	private val timer = DetectTimer()
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,7 +142,6 @@ class QrCodeScanner : AppCompatActivity() {
 	/**
 	 * Process qrcode value
 	 */
-	@SOSVersion(since = "0.0")
 	private fun setQrScanValue(value: String?) {
 		if(value == qrScanValue) return
 		runOnUiThread {
@@ -200,7 +193,6 @@ class QrCodeScanner : AppCompatActivity() {
 	/**
 	 * The timer use for prevent scan box blinking
 	 */
-	@SOSVersion(since = "0.0")
 	inner class DetectTimer : CountDownTimer(250, 250) {
 		override fun onTick(millisUntilFinished: Long) {}
 		

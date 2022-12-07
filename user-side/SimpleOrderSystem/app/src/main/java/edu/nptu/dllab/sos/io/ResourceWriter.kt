@@ -1,9 +1,9 @@
 package edu.nptu.dllab.sos.io
 
 import android.content.Context
+import androidx.core.net.toUri
 import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.io.db.DBRes
-import edu.nptu.dllab.sos.util.SOSVersion
 import java.io.File
 import java.io.FileOutputStream
 import java.security.MessageDigest
@@ -12,9 +12,7 @@ import java.security.MessageDigest
  * The class that can save resource
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 object ResourceWriter {
 	
 	/**
@@ -28,14 +26,14 @@ object ResourceWriter {
 	 *
 	 * @return `false` if some error that cannot request save res
 	 */
-	@SOSVersion(since = "0.0")
 	fun saveResource(context: Context, shopId: Int, resId: Int, path: String, data: ByteArray, sha256: String? = null): Boolean {
-		if(!checkSha256(data, sha256)) return false		// save path "file/res/<shopId>/path"
-		val df = getDirFile(shopId, path)
-		val fileDir = context.filesDir
-		val dir = File("$fileDir/${df.first}")
+		if(!checkSha256(data, sha256)) return false
+		// save path "file/res/<shopId>/path"
+		val file = ResourceIO.getFile(context, shopId, path)
+		val fileUri = file.toUri()
+		val dirPathList = fileUri.pathSegments
+		val dir = File(dirPathList.subList(0, dirPathList.lastIndex).joinToString("/"))
 		dir.mkdirs()
-		val file = File("$dir/${df.second}")
 		file.createNewFile()
 		val os = FileOutputStream(file)
 		os.write(data)
@@ -57,7 +55,6 @@ object ResourceWriter {
 	/**
 	 * Check sha256 is ok
 	 */
-	@SOSVersion(since = "0.0")
 	private fun checkSha256(data: ByteArray, sha256: String?): Boolean {
 		if(sha256 == null) return true
 		val digest = MessageDigest.getInstance("SHA-256")
@@ -65,21 +62,10 @@ object ResourceWriter {
 		
 		val sb = StringBuilder()
 		for(i in hashBytes) {
-			val hex = Integer.toHexString(i.toInt())
+			val hex = String.format("%02x", i)
 			sb.append(hex.substring(hex.length - 2))
 		}
 		return sb.toString() == sha256
-	}
-	
-	/**
-	 * Get dir and file as pair from shop id and path
-	 */
-	@SOSVersion(since = "0.0")
-	private fun getDirFile(shopId: Int, path: String): Pair<String, String> {
-		val spl = path.split("/")
-		val p = "res/$shopId/${spl.subList(0, spl.lastIndex).joinToString("/")}/"
-		val f = spl.last()
-		return Pair(p, f)
 	}
 	
 }

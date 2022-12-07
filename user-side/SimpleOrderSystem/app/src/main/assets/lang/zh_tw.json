@@ -104,6 +104,12 @@
   "filter.now": "當前選擇:",
   "filter.available": "可選擇:",
   "filter.confirm": "確認",
-  "filter.cancel": "取消"
+  "filter.cancel": "取消",
+
+  "shopSide.title": "店家端",
+  "shopStart.confirm": "確定",
+  "shopSide.order.receive": "有新訂單: %s",
+  "shopSide.order.accept": "接受",
+  "shopSide.order.deny": "拒絕"
 
 }

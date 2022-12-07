@@ -6,7 +6,6 @@ import edu.nptu.dllab.sos.data.ShopState
 import edu.nptu.dllab.sos.io.Translator
 import edu.nptu.dllab.sos.util.Exceptions
 import edu.nptu.dllab.sos.util.Position
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.NearShopKey
 import edu.nptu.dllab.sos.util.Util.asDouble
@@ -24,15 +23,12 @@ import org.msgpack.value.ValueFactory
  * The event to store near shop
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 class NearShop : Event(EVENT_KEY), EventPuller {
 	
 	/**
 	 * The [Shop]s that is near shop receive from server
 	 */
-	@SOSVersion(since = "0.0")
 	private val shops = HashMap<Int, Shop>()
 	
 	/**
@@ -40,13 +36,11 @@ class NearShop : Event(EVENT_KEY), EventPuller {
 	 * @param shopId - the shop id
 	 * @return [Shop] if has shop id, null if not exists
 	 */
-	@SOSVersion(since = "0.0")
 	fun getShop(shopId: Int) = shops[shopId]
 	
 	/**
 	 * Get amount of shops that saves here
 	 */
-	@SOSVersion(since = "0.0")
 	fun getShopCount() = shops.size
 	
 	fun getShopCopy() = HashMap<Int, Shop>(shops)
@@ -80,10 +74,7 @@ class NearShop : Event(EVENT_KEY), EventPuller {
 	}
 	
 	override fun toString(): String {
-		val map = ValueFactory.newMapBuilder()
-		map.put(Util.NET_KEY_EVENT.toStringValue(), event.toStringValue())
-		map.put(NearShopKey.SHOP.toStringValue(), ValueFactory.newArray(shops.values.map { it.toValue() }))
-		return map.build().toString()
+		return "near_shop { shops=${shops.values.joinToString(", ", "[", "]") { "${it.shopId}: (${it.position.x}, ${it.position.y})" }} }"
 	}
 	
 	/**
@@ -92,7 +83,6 @@ class NearShop : Event(EVENT_KEY), EventPuller {
 	 * @param position - shop position
 	 * @param state - [ShopState]
 	 */
-	@SOSVersion(since = "0.0")
 	data class Shop(val shopId: Int, val position: Position, val name: String,
 	                val tags: List<String>, val state: ShopState) {
 		

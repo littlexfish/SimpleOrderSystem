@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import edu.nptu.dllab.sos.util.SOSVersion
 
 private val QR_OVERLAY_COLOR = Color.RED //Color.parseColor("#FF0000")
 private val QR_STRING_OVERLAY_COLOR = Color.WHITE //Color.parseColor("#FF0000")
@@ -24,25 +23,21 @@ private val QR_STRING_S_PAINT = Paint().also {
 /**
  * The overlay use for show box on qrcode been scan
  */
-@SOSVersion(since = "0.0")
 class QrBoxOverlay : View {
 	
 	/**
 	 * The box position
 	 */
-	@SOSVersion(since = "0.0")
 	private var boxRect = RectF(0f, 0f, 0f, 0f)
 	
 	/**
 	 * The text been scan
 	 */
-	@SOSVersion(since = "0.0")
 	private var text: String? = null
 	
 	/**
 	 * The position of text
 	 */
-	@SOSVersion(since = "0.0")
 	private var position = PointF()
 	
 	constructor(context: Context?) : super(context)

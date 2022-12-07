@@ -6,19 +6,16 @@ import android.util.AttributeSet
 import androidx.core.content.res.ResourcesCompat
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
-import edu.nptu.dllab.sos.util.SOSVersion
 
 /**
  * The classic type item folder
  */
 @SuppressLint("ViewConstructor")
-@SOSVersion(since = "0.0")
 class ItemFolder : MenuItem {
 	
 	/**
 	 * The folder name
 	 */
-	@SOSVersion(since = "0.0")
 	private val name: String
 	
 	constructor(context: Context, frag: ClassicMenuFragment, n: String)

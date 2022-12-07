@@ -1,12 +1,12 @@
 package edu.nptu.dllab.sos.data.menu.classic
 
 import edu.nptu.dllab.sos.data.menu.OrderItem
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util.toFloatValue
 import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.MapValue
 import org.msgpack.value.ValueFactory
+import java.util.Collections
 
 private const val NOTE = "note"
 
@@ -22,8 +22,9 @@ private const val ITEM_ID = "id"
 
 /**
  * The order item of classic type menu
+ *
+ * @author Little Fish
  */
-@SOSVersion(since = "0.0")
 class ClassicItem(shopId: Int, val cate: String, itemId: String, name: String, val des: String?,
                   price: Double, currencyCode: String, val addition: List<ClassicAddition>,
                   val tags: Array<String>, val resId: Int) : OrderItem(shopId, itemId, name, currencyCode, price) {
@@ -31,7 +32,6 @@ class ClassicItem(shopId: Int, val cate: String, itemId: String, name: String, v
 	/**
 	 * Item note
 	 */
-	@SOSVersion(since = "0.0")
 	var note: String = ""
 	
 	override fun toValue(): MapValue {
@@ -54,6 +54,18 @@ class ClassicItem(shopId: Int, val cate: String, itemId: String, name: String, v
 		map.put(ITEM_TAGS.toStringValue(), ValueFactory.newArray(tags.map { it.toStringValue() }))
 		map.put(ITEM_ID.toStringValue(), resId.toIntegerValue())
 		return map.build()
+	}
+	
+	override fun clone(): ClassicItem {
+		return ClassicItem(shopId, cate, itemId, display, des, price, currencyCode, cloneAdditions(), tags, resId)
+	}
+	
+	private fun cloneAdditions(): List<ClassicAddition> {
+		val list = ArrayList<ClassicAddition>()
+		for(i in addition) {
+			list.add(i.clone())
+		}
+		return list
 	}
 	
 }

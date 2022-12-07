@@ -16,7 +16,7 @@ import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.data.menu.classic.ClassicItem
 import edu.nptu.dllab.sos.data.menu.classic.ClassicMenu
 import edu.nptu.dllab.sos.databinding.FragmentClassicMenuBinding
-import edu.nptu.dllab.sos.util.SOSVersion
+import edu.nptu.dllab.sos.io.ResourceReader
 import edu.nptu.dllab.sos.view.classic.CategoryView
 import edu.nptu.dllab.sos.view.classic.ItemBlock
 import edu.nptu.dllab.sos.view.classic.ItemFolder
@@ -24,7 +24,6 @@ import edu.nptu.dllab.sos.view.classic.ItemFolder
 /**
  * A fragment class of classic type menu
  */
-@SOSVersion(since = "0.0")
 class ClassicMenuFragment : MenuFragment() {
 	
 	private lateinit var binding: FragmentClassicMenuBinding
@@ -44,13 +43,11 @@ class ClassicMenuFragment : MenuFragment() {
 	/**
 	 * The category path
 	 */
-	@SOSVersion(since = "0.0")
 	private var nowCate = ArrayList<String>()
 	
 	/**
 	 * The classic menu attach from
 	 */
-	@SOSVersion(since = "0.0")
 	private var classic: ClassicMenu? = null
 	
 	/**
@@ -105,10 +102,18 @@ class ClassicMenuFragment : MenuFragment() {
 		refreshScreen()
 	}
 	
+	override fun reloadResource() {
+		val rs = ResourceReader.getResourcesAsBitmap(requireContext(), shopId)
+		resData.clear()
+		for((id, bit) in rs) {
+			resData[id] = bit
+		}
+		refreshScreen()
+	}
+	
 	/**
 	 * Refresh the screen with current category
 	 */
-	@SOSVersion(since = "0.0")
 	private fun refreshScreen() {
 		if(!::binding.isInitialized || classic == null) {
 			refresh = true
@@ -205,7 +210,6 @@ class ClassicMenuFragment : MenuFragment() {
 	/**
 	 * Use for get in folder
 	 */
-	@SOSVersion(since = "0.0")
 	fun inFolder(name: String) {
 		nowCate.add(name)
 		refreshScreen()
@@ -214,9 +218,8 @@ class ClassicMenuFragment : MenuFragment() {
 	/**
 	 * Use for click on a item
 	 */
-	@SOSVersion(since = "0.0")
 	fun clickItem(id: String) {
-		ItemOrderActivity.selectedItem = classic?.getShopItem(id)
+		ItemOrderActivity.selectedItem = classic?.getShopItem(id)?.clone()
 		requestSelectItem.launch(Intent(requireActivity(), ItemOrderActivity::class.java))
 	}
 	

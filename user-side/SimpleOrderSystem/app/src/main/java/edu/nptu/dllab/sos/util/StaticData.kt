@@ -11,13 +11,11 @@ import java.net.ConnectException
 /**
  * A util class use for hold static data
  */
-@SOSVersion(since = "0.0")
 object StaticData {
 	
 	/**
 	 * The socket handler of now processing
 	 */
-	@SOSVersion(since = "0.0")
 	var socketHandler: SocketHandler = SocketHandler()
 	
 	/**
@@ -28,6 +26,7 @@ object StaticData {
 	 */
 	var ip = "203.64.134.152"
 	var port = 25000
+	var shopPort = 25001
 	
 	private val itemList = ArrayList<OrderItem>()
 	

@@ -9,10 +9,26 @@ import edu.nptu.dllab.sos.util.Util.asString
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
 
+/**
+ * The event to get order status
+ *
+ * @author Little Fish
+ */
 class OrderStatus : Event(EVENT_KEY), EventPuller {
 	
+	/**
+	 * The order id
+	 */
 	var orderId: Int = -1
+	
+	/**
+	 * The order status
+	 */
 	var status: String = ""
+	
+	/**
+	 * The status reason
+	 */
 	var reason: String = ""
 	
 	override fun fromValue(value: Value) {
@@ -22,8 +38,12 @@ class OrderStatus : Event(EVENT_KEY), EventPuller {
 		reason = map[OrderStatusKey.REASON.toStringValue()]?.asString() ?: ""
 	}
 	
+	override fun toString(): String {
+		return "order_status { orderId=$orderId, status=$status${if(reason.isBlank()) "" else ", reason=$reason"} }"
+	}
+	
 	companion object {
-		const val EVENT_KEY = "trace"
+		const val EVENT_KEY = "order_status"
 	}
 	
 }

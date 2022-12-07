@@ -1,9 +1,10 @@
 package edu.nptu.dllab.sos.io
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.io.db.DBRes
-import edu.nptu.dllab.sos.util.SOSVersion
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -12,9 +13,7 @@ import java.io.FileInputStream
  * The class that can get resource
  *
  * @author Little Fish
- * @since 22/10/04
  */
-@SOSVersion(since = "0.0")
 object ResourceReader {
 	
 	/**
@@ -25,7 +24,6 @@ object ResourceReader {
 	 *
 	 * @return res file
 	 */
-	@SOSVersion(since = "0.0")
 	fun getResource(context: Context, shopId: Int, resId: Int): File {
 		val db = DBHelper(context)
 		val cur = db.select(DBHelper.TABLE_RES, where = "${DBColumn.RES_ID.columnName}=$resId AND ${DBColumn.RES_SHOP_ID.columnName}=$shopId", limit = 1)
@@ -33,6 +31,28 @@ object ResourceReader {
 		cur.close()
 		db.close()
 		return File(ResourceIO.getFilePath(context, shopId, res.path))
+	}
+	
+	fun getResourcesOfShop(context: Context, shopId: Int): List<DBRes> {
+		val db = DBHelper(context)
+		val cur = db.select(DBHelper.TABLE_RES, where = "${DBColumn.RES_SHOP_ID.columnName}=$shopId")
+		val rs = ArrayList<DBRes>()
+		while(cur.moveToNext()) {
+			rs.add(DBRes(cur))
+		}
+		cur.close()
+		db.close()
+		return rs
+	}
+	
+	fun getResourcesAsBitmap(context: Context, shopId: Int): List<Pair<Int, Bitmap>> {
+		val rs = getResourcesOfShop(context, shopId)
+		return rs.map {
+			val i = File(ResourceIO.getFilePath(context, it.shopId, it.path)).inputStream()
+			val b = BitmapFactory.decodeStream(i)
+			i.close()
+			Pair(it.id, b)
+		}
 	}
 	
 	/**
@@ -43,7 +63,6 @@ object ResourceReader {
 	 *
 	 * @return res bytes
 	 */
-	@SOSVersion(since = "0.0")
 	fun getResourceAsBytes(context: Context, shopId: Int, resId: Int): ByteArray {
 		val file = getResource(context, shopId, resId)
 		

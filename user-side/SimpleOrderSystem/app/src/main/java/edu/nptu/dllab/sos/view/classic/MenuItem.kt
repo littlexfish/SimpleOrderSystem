@@ -9,12 +9,10 @@ import androidx.core.graphics.drawable.toBitmap
 import edu.nptu.dllab.sos.R
 import edu.nptu.dllab.sos.databinding.ViewItemBlockBinding
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
-import edu.nptu.dllab.sos.util.SOSVersion
 
 /**
  * The classic type of item
  */
-@SOSVersion(since = "0.0")
 abstract class MenuItem : ConstraintLayout {
 	
 	private lateinit var binding: ViewItemBlockBinding
@@ -22,13 +20,11 @@ abstract class MenuItem : ConstraintLayout {
 	/**
 	 * The fragment attach to
 	 */
-	@SOSVersion(since = "0.0")
 	protected val fragment: ClassicMenuFragment
 	
 	/**
 	 * The item bitmap
 	 */
-	@SOSVersion(since = "0.0")
 	var bitmap: Bitmap
 		get() = binding.classicItemImg.drawable.toBitmap()
 		set(value) {
@@ -38,7 +34,6 @@ abstract class MenuItem : ConstraintLayout {
 	/**
 	 * The item drawable
 	 */
-	@SOSVersion(since = "0.0")
 	var drawable: Drawable?
 		get() = binding.classicItemImg.drawable
 		set(value) {
@@ -48,7 +43,6 @@ abstract class MenuItem : ConstraintLayout {
 	/**
 	 * The item name
 	 */
-	@SOSVersion(since = "0.0")
 	var text: String?
 		get() = binding.classicItemText.text.toString()
 		set(value) {
@@ -90,13 +84,11 @@ abstract class MenuItem : ConstraintLayout {
 	/**
 	 * Call on this been clicked
 	 */
-	@SOSVersion(since = "0.0")
 	protected abstract fun onItemClick()
 	
 	/**
 	 * Set image with bitmap
 	 */
-	@SOSVersion(since = "0.0")
 	protected fun setImage(bitmap: Bitmap?) {
 		binding.classicItemImg.setImageBitmap(bitmap)
 		if(bitmap == null) binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size_min)
@@ -106,7 +98,6 @@ abstract class MenuItem : ConstraintLayout {
 	/**
 	 * Set image with drawable
 	 */
-	@SOSVersion(since = "0.0")
 	protected fun setImage(drawable: Drawable?) {
 		binding.classicItemImg.setImageDrawable(drawable)
 		if(drawable == null) binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size_min)
@@ -116,7 +107,6 @@ abstract class MenuItem : ConstraintLayout {
 	/**
 	 * Set string of this
 	 */
-	@SOSVersion(since = "0.0")
 	protected fun setString(t: String) {
 		binding.classicItemText.text = t
 	}

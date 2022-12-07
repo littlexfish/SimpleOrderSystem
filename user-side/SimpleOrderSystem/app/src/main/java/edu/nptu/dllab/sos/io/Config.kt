@@ -3,18 +3,12 @@ package edu.nptu.dllab.sos.io
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import edu.nptu.dllab.sos.util.Util.asDouble
-import edu.nptu.dllab.sos.util.Util.asInt
-import edu.nptu.dllab.sos.util.Util.asMap
-import edu.nptu.dllab.sos.util.Util.asString
-import edu.nptu.dllab.sos.util.Util.toFloatValue
-import edu.nptu.dllab.sos.util.Util.toIntegerValue
-import edu.nptu.dllab.sos.util.Util.toStringValue
-import org.msgpack.core.MessagePack
-import org.msgpack.value.Value
-import org.msgpack.value.ValueFactory
-import java.io.ByteArrayOutputStream
 
+/**
+ * The config of this app
+ *
+ * @author Little Fish
+ */
 object Config {
 	
 	private const val FILE_NAME = "config"
@@ -32,16 +26,6 @@ object Config {
 	
 	fun init(context: Context) {
 		settings = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
-//		settings.edit {
-//			var change = false
-//			for(k in default.keys) {
-//				if(!settings.contains(k)) {
-//					change = true
-//					putDefault(this, k, default[k]!!)
-//				}
-//			}
-//			if(change) commit()
-//		}
 	}
 	
 	private fun putDefault(edit: SharedPreferences.Editor, key: String, value: Any) {

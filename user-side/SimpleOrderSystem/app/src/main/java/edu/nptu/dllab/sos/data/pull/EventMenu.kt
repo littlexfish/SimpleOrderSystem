@@ -8,7 +8,6 @@ import edu.nptu.dllab.sos.data.item.ItemCondition
 import edu.nptu.dllab.sos.io.DBHelper
 import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.io.db.DBRes
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.EventMenuKey
 import edu.nptu.dllab.sos.util.Util.asInt
@@ -24,11 +23,12 @@ import org.msgpack.value.ValueFactory
  * The event menu event
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 class EventMenu : Event(EVENT_KEY), EventPuller {
 	
+	/**
+	 * The items
+	 */
 	val items = ArrayList<EventItem>()
 	
 	/**
@@ -39,7 +39,6 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 	/**
 	 * Get resources that need download
 	 */
-	@SOSVersion(since = "0.0")
 	fun getNeedDownloadResources(context: Context, shopId: Int): List<Resource> {
 		val db = DBHelper(context)
 		val cur = db.readableDatabase.rawQuery("SELECT * FROM ${DBHelper.TABLE_RES} WHERE ${DBColumn.MENU_SHOP_ID.columnName}=$shopId", null)
@@ -97,17 +96,13 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 	}
 	
 	override fun toString(): String {
-		val map = ValueFactory.newMapBuilder()
-		map.put(Util.NET_KEY_EVENT.toStringValue(), event.toStringValue())
-		map.put(EventMenuKey.MENU.toStringValue(), ValueFactory.newArray(items.map { it.toValue() }))
-		map.put(EventMenuKey.RESOURCE.toStringValue(), ValueFactory.newArray(res.map { it.getValue() }))
-		return map.build().toJson()
+		return "event_menu { items=${items.joinToString(", ", "[", "]") { it.itemId }}, " +
+				"res=${res.joinToString(", ", "[", "]") { "${it.id}: ${it.path}" }} } "
 	}
 	
 	/**
 	 * The event item
 	 */
-	@SOSVersion(since = "0.0")
 	class EventItem(val category: String, val type: String, val popup: Boolean, val itemId: String, val id: Int) {
 		
 		private val conditions = ArrayList<ItemCondition>()
@@ -115,7 +110,6 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 		/**
 		 * Add condition
 		 */
-		@SOSVersion(since = "0.0")
 		fun addCondition(con: ItemCondition) {
 			conditions.add(con)
 		}
@@ -123,7 +117,6 @@ class EventMenu : Event(EVENT_KEY), EventPuller {
 		/**
 		 * Get msgpack of this item
 		 */
-		@SOSVersion(since = "0.0")
 		fun toValue(): MapValue {
 			val map = ValueFactory.newMapBuilder()
 			map.put(EventMenuKey.MENU_CATE.toStringValue(), category.toStringValue())

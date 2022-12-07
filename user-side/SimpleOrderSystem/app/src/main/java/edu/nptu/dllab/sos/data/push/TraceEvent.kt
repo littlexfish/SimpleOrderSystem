@@ -8,8 +8,16 @@ import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
 
+/**
+ * The event to get trace of order
+ *
+ * @author Little Fish
+ */
 class TraceEvent : Event(EVENT_KEY), EventPusher {
 	
+	/**
+	 * The order id
+	 */
 	var orderId = -1
 	
 	override fun toValue(): Value {
@@ -17,6 +25,10 @@ class TraceEvent : Event(EVENT_KEY), EventPusher {
 		map[Util.NET_KEY_EVENT.toStringValue()] = EVENT_KEY.toStringValue()
 		map[Util.TraceKey.ORDER_ID.toStringValue()] = orderId.toIntegerValue()
 		return ValueFactory.newMap(map)
+	}
+	
+	override fun toString(): String {
+		return "trace { orderId=$orderId } "
 	}
 	
 	companion object {

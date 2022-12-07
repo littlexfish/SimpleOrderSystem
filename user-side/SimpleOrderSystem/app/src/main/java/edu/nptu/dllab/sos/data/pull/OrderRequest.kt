@@ -7,9 +7,17 @@ import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
 
+/**
+ * The event to get order id
+ *
+ * @author Little Fish
+ */
 class OrderRequest : Event(EVENT_KEY), EventPuller {
 	
-	var orderId = -1 // TODO: check int or string
+	/**
+	 * The order id
+	 */
+	var orderId = -1
 	
 	override fun fromValue(value: Value) {
 		val map = Util.checkMapValue(value).map()
@@ -17,7 +25,7 @@ class OrderRequest : Event(EVENT_KEY), EventPuller {
 	}
 	
 	override fun toString(): String {
-		return "OrderRequest { orderId=$orderId }"
+		return "order_request { orderId=$orderId }"
 	}
 	
 	companion object {

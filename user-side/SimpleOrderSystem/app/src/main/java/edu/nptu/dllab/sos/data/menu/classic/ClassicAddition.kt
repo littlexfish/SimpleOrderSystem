@@ -1,7 +1,6 @@
 package edu.nptu.dllab.sos.data.menu.classic
 
 import androidx.annotation.CallSuper
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.OrderKey
 import edu.nptu.dllab.sos.util.Util.asDouble
@@ -34,26 +33,24 @@ private const val TYPE_RADIO = "radio"
 
 /**
  * The base addition of classic type menu
+ *
+ * @author Little Fish
  */
-@SOSVersion(since = "0.0")
 abstract class ClassicAddition(var id: String = "", var name: String = "", var des: String? = null, var type: String = "") {
 	
 	/**
 	 * Get addition clone
 	 */
-	@SOSVersion(since = "0.0")
 	abstract fun clone(): ClassicAddition
 	
 	/**
 	 * Get msgpack of this addition current value
 	 */
-	@SOSVersion(since = "0.0")
 	protected abstract fun getValue(): Value
 	
 	/**
 	 * Build addition from msgpack
 	 */
-	@SOSVersion(since = "0.0")
 	@CallSuper
 	open fun fromValue(v: Value) {
 		Util.checkMapValue(v)
@@ -66,7 +63,6 @@ abstract class ClassicAddition(var id: String = "", var name: String = "", var d
 	/**
 	 * Get msgpack of this addition use for send
 	 */
-	@SOSVersion(since = "0.0")
 	fun toValue(): MapValue {
 		val map = ValueFactory.newMapBuilder()
 		map.put(OrderKey.ITEM_ADDITION_ID.toStringValue(), id.toStringValue())
@@ -78,7 +74,6 @@ abstract class ClassicAddition(var id: String = "", var name: String = "", var d
 	/**
 	 * Get full msgpack of this addition
 	 */
-	@SOSVersion(since = "0.0")
 	@CallSuper
 	open fun toMenuData(): MapValue {
 		val map = ValueFactory.newMapBuilder()
@@ -107,7 +102,6 @@ abstract class ClassicAddition(var id: String = "", var name: String = "", var d
 		/**
 		 * Build addition by type
 		 */
-		@SOSVersion(since = "0.0")
 		fun buildByValue(value: Value): ClassicAddition {
 			Util.checkMapValue(value)
 			val map = value.asMap()
@@ -129,7 +123,6 @@ abstract class ClassicAddition(var id: String = "", var name: String = "", var d
 /**
  * Int type addition
  */
-@SOSVersion(since = "0.0")
 class IntAddition(id: String = "", name: String = "", des: String? = null, var max: Int = -1,
                   var min: Int = -1, var step: Int = 1, var value: Int = min) :
 	ClassicAddition(id, name, des, TYPE_INT) {
@@ -162,7 +155,6 @@ class IntAddition(id: String = "", name: String = "", des: String? = null, var m
 /**
  * Float type addition
  */
-@SOSVersion(since = "0.0")
 class FloatAddition(id: String = "", name: String = "", des: String? = null, var max: Double = -1.0,
                     var min: Double = -1.0, var step: Double = 1.0, var value: Double = min) :
 	ClassicAddition(id, name, des, TYPE_FLOAT) {
@@ -195,7 +187,6 @@ class FloatAddition(id: String = "", name: String = "", des: String? = null, var
 /**
  * String type addition
  */
-@SOSVersion(since = "0.0")
 class StringAddition(id: String = "", name: String = "", des: String? = null, var length: Int = 0,
                      var value: String = "") : ClassicAddition(id, name, des, TYPE_STRING) {
 	
@@ -221,7 +212,6 @@ class StringAddition(id: String = "", name: String = "", des: String? = null, va
 /**
  * Boolean type addition
  */
-@SOSVersion(since = "0.0")
 class BoolAddition(id: String = "", name: String = "", des: String? = null,
                    var value: Boolean = false) : ClassicAddition(id, name, des, TYPE_BOOL) {
 	
@@ -247,7 +237,6 @@ class BoolAddition(id: String = "", name: String = "", des: String? = null,
 /**
  * Radio(single select) type addition
  */
-@SOSVersion(since = "0.0")
 class RadioAddition(id: String = "", name: String = "", des: String? = null,
                     var items: Array<String> = emptyArray(), var value: Int = 0) : ClassicAddition(id, name, des, TYPE_RADIO) {
 	

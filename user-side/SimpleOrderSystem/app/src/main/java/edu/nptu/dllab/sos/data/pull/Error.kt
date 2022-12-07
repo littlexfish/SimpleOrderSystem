@@ -7,15 +7,25 @@ import edu.nptu.dllab.sos.util.Util.ErrorKey
 import edu.nptu.dllab.sos.util.Util.asDouble
 import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.asString
-import edu.nptu.dllab.sos.util.Util.toFloatValue
-import edu.nptu.dllab.sos.util.Util.toIntegerValue
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
 
+/**
+ * The event when got error
+ *
+ * @author Little Fish
+ */
 class Error : Event(EVENT_KEY), EventPuller {
 	
+	/**
+	 * Error reason string
+	 */
 	var reason: String = ""
+	
+	/**
+	 * The format parameter to format strings
+	 */
 	val format = ArrayList<Any?>()
 	
 	override fun fromValue(value: Value) {
@@ -35,18 +45,8 @@ class Error : Event(EVENT_KEY), EventPuller {
 	}
 	
 	override fun toString(): String {
-		val map = ValueFactory.newMapBuilder()
-		map.put(Util.NET_KEY_EVENT.toStringValue(), event.toStringValue())
-		map.put(ErrorKey.REASON.toStringValue(), reason.toStringValue())
-		map.put(ErrorKey.FORMAT.toStringValue(), ValueFactory.newArray(format.map {
-			when(it) {
-				is String -> it.toStringValue()
-				is Double -> it.toFloatValue()
-				is Int -> it.toIntegerValue()
-				else -> ValueFactory.newNil()
-			}
-		}))
-		return map.build().toJson()
+		return "error { reason=$reason\"${if(format.isEmpty()) "" else ", " +
+				"format=${format.map { it.toString() }.toTypedArray().contentToString()}"} } "
 	}
 	
 	companion object {
@@ -55,6 +55,9 @@ class Error : Event(EVENT_KEY), EventPuller {
 		const val ERR_SHOP_NOT_FOUND = "shopNotFound"
 		const val ERR_NO_RESOURCE = "noResource"
 		
+		/**
+		 * return `true` when error reason is equals
+		 */
 		fun isErrorEquals(err: Error, reason: String): Boolean {
 			return err.reason.uppercase() == reason.uppercase()
 		}

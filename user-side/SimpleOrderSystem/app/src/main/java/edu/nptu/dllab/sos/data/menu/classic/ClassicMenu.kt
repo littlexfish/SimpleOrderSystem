@@ -5,7 +5,6 @@ import edu.nptu.dllab.sos.data.menu.MenuBase
 import edu.nptu.dllab.sos.data.pull.EventMenu
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 import edu.nptu.dllab.sos.fragment.MenuFragment
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.asInt
 import edu.nptu.dllab.sos.util.Util.asMap
@@ -32,29 +31,21 @@ private const val DEFAULT_CURRENCY_CODE = "NTD"
  * The classic menu type
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId, version) {
 	
 	/**
 	 * The root of folder node
 	 */
-	@SOSVersion(since = "0.0")
 	private val root = Node("root", null)
 	
 	/**
 	 * All items of this menu
 	 */
-	@SOSVersion(since = "0.0")
 	private val items = HashMap<String, ClassicItem>()
 	
 	override fun getShopItem(itemId: String): ClassicItem {
 		return items[itemId]!!
-	}
-	
-	@Deprecated("use buildMenu(org.msgpack.value.MapValue)")
-	override fun buildMenu(data: JsonObject) {		// now do nothing
 	}
 	
 	override fun buildMenu(data: MapValue) {
@@ -84,7 +75,6 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	/**
 	 * Init node from classic item
 	 */
-	@SOSVersion(since = "0.0")
 	private fun processNode(item: ClassicItem) {
 		items[item.itemId] = item
 		val cate = item.cate
@@ -105,7 +95,6 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	 * Get folder name and item id from category
 	 * @return name and isFolder
 	 */
-	@SOSVersion(since = "0.0")
 	fun getListFromCategory(cate: String): ArrayList<Pair<Any, Boolean>> {
 		val ret = ArrayList<Pair<Any, Boolean>>()
 		val node = if(cate.isEmpty()) root
@@ -124,6 +113,9 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 		return ret
 	}
 	
+	/**
+	 * Get tags the item contains, no duplicate
+	 */
 	fun getContainTags(): List<String> {
 		val sets = HashSet<String>()
 		for(i in items.values) {
@@ -140,13 +132,11 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	}
 	
 	override fun insertEvent(item: EventMenu.EventItem) {
-		// TODO: Now do nothing
-		// FIXME: insert event data into menu
+		// TODO: insert event data into menu
 	}
 	
 	override fun getEventData(): ArrayValue {
-		// TODO: Now do nothing
-		// FIXME: get event data
+		// TODO: get event data
 		return ValueFactory.newArray()
 	}
 	
@@ -165,19 +155,16 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 	/**
 	 * A node class use for build item folder
 	 */
-	@SOSVersion(since = "0.0")
 	inner class Node(val name: String, var pre: Node?) {
 		
 		/**
 		 * Post nodes
 		 */
-		@SOSVersion(since = "0.0")
 		private val post = HashSet<Node>()
 		
 		/**
 		 * Add node to this node
 		 */
-		@SOSVersion(since = "0.0")
 		fun addNode(node: Node): Boolean {
 			node.pre = this
 			return post.add(node)
@@ -186,14 +173,12 @@ class ClassicMenu(shopId: Int, version: Int) : MenuBase(MenuType.CLASSIC, shopId
 		/**
 		 * Get post nodes of name
 		 */
-		@SOSVersion(since = "0.0")
 		fun getPosts(): List<String> = post.map { it.name }
 		
 		/**
 		 * Find post node by name
 		 * @return node by name from this node, or `null` if not found
 		 */
-		@SOSVersion(since = "0.0")
 		fun findPost(n: String): Node? {
 			return post.firstOrNull { it.name == n }
 		}

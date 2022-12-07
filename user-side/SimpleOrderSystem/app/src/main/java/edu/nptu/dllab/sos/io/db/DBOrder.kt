@@ -6,28 +6,52 @@ import androidx.core.database.getStringOrNull
 import edu.nptu.dllab.sos.io.Translator
 import edu.nptu.dllab.sos.util.Exceptions
 
+/**
+ * The info of order
+ *
+ * @author Little Fish
+ */
 class DBOrder {
 	
+	/**
+	 * Auto id to prevent id duplicate
+	 */
 	var id: Int = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.ORDER_AUTO_ID.columnName)
 			return field
 		}
+	
+	/**
+	 * The order id
+	 */
 	var orderId: Int = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.ORDER_ID.columnName)
 			return field
 		}
+	
+	/**
+	 * The order time
+	 */
 	var time: Long = -1L
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.ORDER_TIME.columnName)
 			return field
 		}
+	
+	/**
+	 * The order statue
+	 */
 	var status: Int = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.ORDER_STATUS.columnName)
 			return field
 		}
+	
+	/**
+	 * The reason of order
+	 */
 	var reason: String? = null
 		get() {
 			return field ?: ""

@@ -14,7 +14,6 @@ import org.msgpack.value.ValueFactory
  * @author Little Fish
  * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 data class Position(var x: Double = -1.0, var y: Double = -1.0) : EventPusher {
 	
 	override fun toValue(): Value {

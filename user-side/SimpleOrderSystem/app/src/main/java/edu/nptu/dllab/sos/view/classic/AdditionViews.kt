@@ -6,6 +6,10 @@ import android.graphics.drawable.StateListDrawable
 import android.text.Editable
 import android.text.InputFilter.LengthFilter
 import android.text.TextWatcher
+import android.text.method.MovementMethod
+import android.text.method.ScrollingMovementMethod
+import android.text.method.SingleLineTransformationMethod
+import android.text.method.TransformationMethod
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -364,24 +368,27 @@ class RadioAdditionView : AdditionView {
 		}
 		
 		val list = view.findViewById<LinearLayout>(R.id.addRadioList)
+		list.weightSum = vSize.toFloat()
 		
+		val param = LinearLayout.LayoutParams(-1, -2, 1f)
 		for(v in 0 until vSize) {
 			val linear = LinearLayout(context)
 			linear.orientation = LinearLayout.HORIZONTAL
-			linear.layoutParams = LinearLayout.LayoutParams(-1, -2)
+			linear.layoutParams = param
+			linear.weightSum = 2f
+			list.addView(linear)
 			for(h in 0..1) {
 				val index = v * 2 + h
 				if(index >= addition.items.size) break
 				val check = CheckBox(context)
 				check.setButtonDrawable(R.drawable.radio_button)
 				check.text = addition.items[index]
-				check.layoutParams = LinearLayout.LayoutParams(-1, -2, 1f)
+				check.layoutParams = param
 				if(index == addition.value) check.isChecked = true
 				check.setOnCheckedChangeListener(listener)
 				linear.addView(check)
 				radioMap[check] = index
 			}
-			list.addView(linear)
 		}
 	}
 	

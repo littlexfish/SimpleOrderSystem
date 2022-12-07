@@ -1,11 +1,15 @@
 package edu.nptu.dllab.sos
 
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import edu.nptu.dllab.sos.data.menu.OrderItem
 import edu.nptu.dllab.sos.data.menu.classic.ClassicItem
@@ -14,6 +18,7 @@ import edu.nptu.dllab.sos.io.Translator
 import edu.nptu.dllab.sos.util.StaticData
 import edu.nptu.dllab.sos.view.classic.AdditionView
 
+// TODO: rotate screen
 class ItemOrderActivity : AppCompatActivity() {
 	
 	private lateinit var binding: ActivityItemOrderBinding
@@ -48,7 +53,11 @@ class ItemOrderActivity : AppCompatActivity() {
 		binding = ActivityItemOrderBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 		
-		if(selectedItem == null || selectedItem !is ClassicItem) finish()
+		if(selectedItem == null || selectedItem !is ClassicItem) {
+			selectedItem = null
+			finish()
+			return
+		}
 		val selected = selectedItem as ClassicItem
 		selectedItem = null
 		
@@ -59,8 +68,10 @@ class ItemOrderActivity : AppCompatActivity() {
 		binding.orderItemName.text = selected.display
 		binding.orderItemNoteLength.text = "0/${resources.getInteger(R.integer.item_note_length)}"
 		
+		val param = LinearLayout.LayoutParams(-1, -2)
 		for(add in selected.addition) {
 			val v = AdditionView.buildByAddition(this, add)
+			v.layoutParams = param
 			binding.orderItemAddList.addView(v)
 			additionList.add(v)
 		}
@@ -80,6 +91,15 @@ class ItemOrderActivity : AppCompatActivity() {
 				binding.orderItemShowNote.visibility = View.VISIBLE
 			}
 		}
+		
+		val onClickOutside = OnClickListener {
+			val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+			imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+			binding.orderItemNote.clearFocus()
+		}
+		
+		binding.orderItemBgOver.setOnClickListener(onClickOutside)
+		binding.orderItemAddList.setOnClickListener(onClickOutside)
 		
 		binding.orderItemConfirm.setOnClickListener {
 			StaticData.addItem(selected)

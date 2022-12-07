@@ -4,21 +4,17 @@ import android.content.ContentValues
 import android.database.Cursor
 import androidx.core.database.getStringOrNull
 import edu.nptu.dllab.sos.util.Exceptions
-import edu.nptu.dllab.sos.util.SOSVersion
 
 /**
  * The info of resource that need save in db
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 class DBRes {
 	
 	/**
 	 * Resource id
 	 */
-	@SOSVersion(since = "0.0")
 	var id = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.RES_ID.columnName)
@@ -28,7 +24,6 @@ class DBRes {
 	/**
 	 * The shop id
 	 */
-	@SOSVersion(since = "0.0")
 	var shopId = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.RES_SHOP_ID.columnName)
@@ -38,7 +33,6 @@ class DBRes {
 	/**
 	 * The resource path of this resource
 	 */
-	@SOSVersion(since = "0.0")
 	var path = ""
 		get() {
 			if(field.isBlank()) throw Exceptions.DBDataNotGetException(DBColumn.RES_PATH.columnName)
@@ -48,7 +42,6 @@ class DBRes {
 	/**
 	 * The sha256 of this resource data
 	 */
-	@SOSVersion(since = "0.0")
 	var sha256 = ""
 		get() {
 			if(field.isBlank()) throw Exceptions.DBDataNotGetException(
@@ -59,7 +52,6 @@ class DBRes {
 	/**
 	 * The size of this resource data
 	 */
-	@SOSVersion(since = "0.0")
 	var size = -1
 		get() {
 			if(field < 0) throw Exceptions.DBDataNotGetException(DBColumn.RES_SIZE.columnName)
@@ -69,7 +61,6 @@ class DBRes {
 	/**
 	 * Initialize with value
 	 */
-	@SOSVersion(since = "0.0")
 	constructor(i: Int = -1, shop: Int = -1, p: String = "", sha: String = "", s: Int = -1) {
 		id = i
 		shopId = shop
@@ -81,7 +72,6 @@ class DBRes {
 	/**
 	 * Initialize from db cursor
 	 */
-	@SOSVersion(since = "0.0")
 	constructor(cursor: Cursor) {
 		if(cursor.isAfterLast) return
 		run {
@@ -109,7 +99,6 @@ class DBRes {
 	/**
 	 * Map as [ContentValues] to insert or update into db
 	 */
-	@SOSVersion(since = "0.0")
 	fun toContentValues(values: ContentValues = ContentValues()): ContentValues {
 		values.put(DBColumn.RES_ID.columnName, id)
 		values.put(DBColumn.RES_SHOP_ID.columnName, shopId)

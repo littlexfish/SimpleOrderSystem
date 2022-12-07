@@ -4,6 +4,7 @@ import android.content.Intent
 import android.icu.util.Currency
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -55,7 +56,7 @@ class OrderActivity : AppCompatActivity() {
 						it.pushEventRePush(evt)
 						runOnUiThread { loading.setMessage(Translator.getString("order.wait")) }
 						
-						it.waitEventAndRun { e ->
+						it.waitEventAndRun({ e ->
 							if(e is OrderRequest) {
 								val id = e.orderId
 								val time = System.currentTimeMillis()
@@ -67,10 +68,10 @@ class OrderActivity : AppCompatActivity() {
 								
 								runOnUiThread {
 									loading.dismiss()
+									StaticData.clearItems()
 									AlertDialog.Builder(this@OrderActivity)
 										.setMessage(Translator.getString("order.showId").format(id.toString()))
 										.setPositiveButton(Translator.getString("order.showId.confirm")) { _, _ ->
-											StaticData.clearItems()
 											finish()
 										}
 										.setNegativeButton(Translator.getString("order.showId.check")) { _, _ ->
@@ -80,6 +81,11 @@ class OrderActivity : AppCompatActivity() {
 										}
 										.create().show()
 								}
+							}
+						}) {
+							loading.dismiss()
+							runOnUiThread {
+								Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_SHORT).show()
 							}
 						}
 					})

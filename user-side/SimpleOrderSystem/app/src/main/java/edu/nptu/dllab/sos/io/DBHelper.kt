@@ -6,16 +6,13 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import edu.nptu.dllab.sos.io.db.DBColumn
-import edu.nptu.dllab.sos.util.SOSVersion
 import org.intellij.lang.annotations.Language
 
 /**
  * The helper that connect to sqlite
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 class DBHelper(context: Context?) :
 	SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 	
@@ -61,7 +58,6 @@ class DBHelper(context: Context?) :
 	 * Execute sql command, equals as `writableDatabase.execSQL(sql)`
 	 * @param sql - the sql command
 	 */
-	@SOSVersion(since = "0.0")
 	fun execSQL(sql: String) {
 		writableDatabase.execSQL(sql)
 	}
@@ -71,7 +67,6 @@ class DBHelper(context: Context?) :
 	 * @param sql - the sql command
 	 * @return [Cursor] point to first value
 	 */
-	@SOSVersion(since = "0.0")
 	fun query(sql: String): Cursor {
 		return readableDatabase.rawQuery(sql, null)
 	}
@@ -81,7 +76,6 @@ class DBHelper(context: Context?) :
 	 * @param table - the table name
 	 * @param value - the value need insert
 	 */
-	@SOSVersion(since = "0.0")
 	fun insert(table: String, value: ContentValues): Boolean {
 		return writableDatabase.insert(table, null, value) > 0
 	}
@@ -91,7 +85,6 @@ class DBHelper(context: Context?) :
 	 * @param table - the table name
 	 * @param value - the value need update
 	 */
-	@SOSVersion(since = "0.0")
 	fun updateRes(table: String, value: ContentValues, resId: Int, shopId: Int) {
 		writableDatabase.update(table, value, "${DBColumn.RES_ID.columnName}=$resId AND ${DBColumn.RES_SHOP_ID.columnName}=$shopId", null)
 	}
@@ -107,7 +100,6 @@ class DBHelper(context: Context?) :
 	 *
 	 * @return [Cursor] point to first value
 	 */
-	@SOSVersion(since = "0.0")
 	fun select(table: String, filter: String = "*", where: String? = null, limit: Int = -1, offset: Int = -1, orderBy: String? = null, asc: Boolean = true): Cursor {
 		@Language("SQL") var sql = "SELECT $filter FROM $table"
 		if(where != null) sql += " WHERE $where"
@@ -121,27 +113,27 @@ class DBHelper(context: Context?) :
 		/**
 		 * The name of this database
 		 */
-		@SOSVersion(since = "0.0")
 		const val DATABASE_NAME = "edu.nptu.dllab.sos.db"
 		
 		/**
 		 * The version of this database
 		 */
-		@SOSVersion(since = "0.0")
 		const val DATABASE_VERSION = 1
 		
 		
 		/**
 		 * The name of resource table
 		 */
-		@SOSVersion(since = "0.0")
 		const val TABLE_RES = "res"
 		
 		/**
 		 * The name of menu table
 		 */
-		@SOSVersion(since = "0.0")
 		const val TABLE_MENU = "menu"
+		
+		/**
+		 * The name of order
+		 */
 		const val TABLE_ORDER = "order_map"
 	}
 	

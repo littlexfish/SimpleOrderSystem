@@ -3,15 +3,13 @@ package edu.nptu.dllab.sos.io
 import android.content.Context
 import edu.nptu.dllab.sos.io.db.DBColumn
 import edu.nptu.dllab.sos.io.db.DBRes
-import edu.nptu.dllab.sos.util.SOSVersion
+import java.io.File
 
 /**
  * The class that can process some resource io
  *
  * @author Little Fish
- * @since 22/10/03
  */
-@SOSVersion(since = "0.0")
 object ResourceIO {
 	
 	/**
@@ -23,7 +21,6 @@ object ResourceIO {
 	 *
 	 * @return `true` if resource is exists and path is same as data store in db
 	 */
-	@SOSVersion(since = "0.0")
 	fun checkExists(context: Context, shopId: Int, resId: Int, path: String): Boolean {
 		val db = DBHelper(context)
 		val select = "${DBColumn.RES_ID.columnName}=$resId AND ${DBColumn.RES_SHOP_ID.columnName}=$shopId"
@@ -43,7 +40,6 @@ object ResourceIO {
 	 *
 	 * @return `true` if sha256 is same as data store in db
 	 */
-	@SOSVersion(since = "0.0")
 	fun checkResSha256(context: Context, shopId: Int, resId: Int, sha256: String): Boolean {
 		val db = DBHelper(context)
 		val select = "${DBColumn.RES_ID.columnName}=$resId AND ${DBColumn.RES_SHOP_ID.columnName}=$shopId"
@@ -60,7 +56,8 @@ object ResourceIO {
 	 * @param shopId - the shopId
 	 * @param path - the relative path of shop res
 	 */
-	@SOSVersion(since = "0.0")
-	fun getFilePath(context: Context, shopId: Int, path: String) = "${context.filesDir}/$shopId/$path"
+	fun getFilePath(context: Context, shopId: Int, path: String) = "${context.filesDir}/res/$shopId/$path"
+	
+	fun getFile(context: Context, shopId: Int, path: String) = File(context.filesDir, "res/$shopId/$path")
 	
 }

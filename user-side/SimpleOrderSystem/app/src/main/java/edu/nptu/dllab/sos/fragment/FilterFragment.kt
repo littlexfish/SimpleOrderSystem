@@ -17,15 +17,33 @@ import edu.nptu.dllab.sos.databinding.FragmentFilterBinding
 import edu.nptu.dllab.sos.io.Translator
 import java.util.Collections
 
+/**
+ * The fragment for filter the items
+ *
+ * @author Little Fish
+ */
 class FilterFragment : Fragment() {
 	
 	private lateinit var binding: FragmentFilterBinding
 	
+	/**
+	 * Origin filter
+	 */
 	private var filterOri = HashSet<String>()
+	
+	/**
+	 * The newest filter
+	 */
 	private var filterNow = HashSet<String>()
 	
+	/**
+	 * All of filter
+	 */
 	private val allFilter = HashSet<String>()
 	
+	/**
+	 * The close event listener
+	 */
 	private var close: ((Set<String>) -> Unit)? = null
 	
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -49,16 +67,25 @@ class FilterFragment : Fragment() {
 		}
 	}
 	
+	/**
+	 * Set on close listener
+	 */
 	fun setOnClose(func: ((Set<String>) -> Unit)?) {
 		close = func
 	}
 	
+	/**
+	 * Set the all filter
+	 */
 	fun setAllFilter(s: List<String>) {
 		allFilter.clear()
 		allFilter.addAll(s)
 		buildFilter()
 	}
 	
+	/**
+	 * Build the filter
+	 */
 	private fun buildFilter() {
 		for(f in filterNow) {
 			if(f !in allFilter) {
@@ -73,6 +100,9 @@ class FilterFragment : Fragment() {
 		}
 	}
 	
+	/**
+	 * Refresh the filter view
+	 */
 	private fun refresh() {
 		binding.filterList.removeAllViews()
 		for(f in allFilter) {
@@ -104,6 +134,9 @@ class FilterFragment : Fragment() {
 		}
 	}
 	
+	/**
+	 * The filter item
+	 */
 	@SuppressLint("ViewConstructor")
 	class FilterItem(context: Context, str: String) : FrameLayout(context) {
 		

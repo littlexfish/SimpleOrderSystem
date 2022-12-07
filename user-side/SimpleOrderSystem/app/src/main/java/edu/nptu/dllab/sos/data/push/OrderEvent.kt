@@ -3,24 +3,30 @@ package edu.nptu.dllab.sos.data.push
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPusher
 import edu.nptu.dllab.sos.data.menu.OrderItem
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util
 import edu.nptu.dllab.sos.util.Util.toStringValue
 import org.msgpack.value.Value
 import org.msgpack.value.ValueFactory
 
 /**
+ * The event to make a order
  *
+ * @author Little Fish
  */
-@SOSVersion(since = "0.0")
 class OrderEvent : Event(EVENT_KEY), EventPusher {
 	
 	private val items = ArrayList<OrderItem>()
 	
+	/**
+	 * Add an item to items
+	 */
 	fun addItem(item: OrderItem) {
 		items.add(item)
 	}
 	
+	/**
+	 * Add all items into items
+	 */
 	fun addAllItems(i: Iterable<OrderItem>) {
 		items.addAll(i)
 	}
@@ -33,7 +39,7 @@ class OrderEvent : Event(EVENT_KEY), EventPusher {
 	}
 	
 	override fun toString(): String {
-		return toValue().toJson()
+		return "order { itemCount=${items.size} }"
 	}
 	
 	companion object {

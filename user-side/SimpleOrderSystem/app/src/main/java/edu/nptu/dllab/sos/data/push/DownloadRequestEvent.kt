@@ -2,7 +2,6 @@ package edu.nptu.dllab.sos.data.push
 
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPusher
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util.DownloadKey
 import edu.nptu.dllab.sos.util.Util.NET_KEY_EVENT
 import edu.nptu.dllab.sos.util.Util.toStringValue
@@ -13,9 +12,7 @@ import org.msgpack.value.ValueFactory
  * The event to request download
  *
  * @author Little Fish
- * @since 22/10/04
  */
-@SOSVersion(since = "0.0")
 class DownloadRequestEvent : Event(EVENT_KEY), EventPusher {
 	
 	private val downloadRes = ArrayList<String>()
@@ -23,7 +20,6 @@ class DownloadRequestEvent : Event(EVENT_KEY), EventPusher {
 	/**
 	 * Add path to download
 	 */
-	@SOSVersion(since = "0.0")
 	fun addPath(path: String) {
 		downloadRes.add(path)
 	}
@@ -31,7 +27,6 @@ class DownloadRequestEvent : Event(EVENT_KEY), EventPusher {
 	/**
 	 * Add multi-path
 	 */
-	@SOSVersion(since = "0.0")
 	fun addAllPath(paths: Iterable<String>) {
 		downloadRes.addAll(paths)
 	}
@@ -46,7 +41,7 @@ class DownloadRequestEvent : Event(EVENT_KEY), EventPusher {
 	}
 	
 	override fun toString(): String {
-		return toValue().toString()
+		return "download { paths=${downloadRes.joinToString(", ", "[", "]")} }"
 	}
 	
 	companion object {

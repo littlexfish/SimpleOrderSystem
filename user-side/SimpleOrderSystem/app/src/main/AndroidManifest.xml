@@ -22,6 +22,20 @@
         android:theme="@style/Theme.SimpleOrderSystem"
         tools:targetApi="33">
         <activity
+            android:name=".ShopSideOrderActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ShopSideActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".OrderCheckActivity"
             android:exported="false">
             <meta-data

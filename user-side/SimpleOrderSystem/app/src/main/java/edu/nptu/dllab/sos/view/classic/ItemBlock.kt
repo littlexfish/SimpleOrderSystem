@@ -5,19 +5,16 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.AttributeSet
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
-import edu.nptu.dllab.sos.util.SOSVersion
 
 /**
  * Classic item block
  */
 @SuppressLint("ViewConstructor")
-@SOSVersion(since = "0.0")
 class ItemBlock : MenuItem {
 	
 	/**
 	 * The item id
 	 */
-	@SOSVersion(since = "0.0")
 	private val itemId: String
 	
 	constructor(context: Context, frag: ClassicMenuFragment, id: String, n: String, bitmap: Bitmap?, money: Double)

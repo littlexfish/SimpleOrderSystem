@@ -8,6 +8,11 @@ import android.os.Looper
 import android.widget.Toast
 import edu.nptu.dllab.sos.io.Translator
 
+/**
+ * A dialog use [ProgressDialog] to avoid user interact on screen
+ *
+ * @author Little Fish
+ */
 class LoadingDialog(private val act: Activity, private var atLeastTime: Long = 2000, private var finishOnBack: Boolean = true,
                     private var finishSecondClick: Boolean = true) : ProgressDialog(act) {
 	
@@ -21,6 +26,9 @@ class LoadingDialog(private val act: Activity, private var atLeastTime: Long = 2
 	 */
 	private var lastBackTime = 0L
 	
+	/**
+	 * The time last show dialog
+	 */
 	private var lastShowTime = 0L
 	
 	init {
@@ -50,6 +58,9 @@ class LoadingDialog(private val act: Activity, private var atLeastTime: Long = 2
 		}
 	}
 	
+	/**
+	 * Dismiss dialog, must run until times up
+	 */
 	fun dismissAtLeast() {
 		val interval = System.currentTimeMillis() - lastShowTime
 		if(interval >= atLeastTime) {

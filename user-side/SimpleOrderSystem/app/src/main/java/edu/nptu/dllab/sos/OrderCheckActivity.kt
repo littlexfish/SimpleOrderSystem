@@ -67,10 +67,10 @@ class OrderCheckActivity : AppCompatActivity() {
 		}
 		binding.checkPrePage.setOnTouchListener { _, event ->
 			if(event.action == MotionEvent.ACTION_DOWN) {
-				binding.checkNextPage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_left_pressed, null))
+				binding.checkPrePage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_left_pressed, null))
 			}
 			else if(event.action == MotionEvent.ACTION_UP) {
-				binding.checkNextPage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_left, null))
+				binding.checkPrePage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.square_left, null))
 			}
 			false
 		}

@@ -2,7 +2,6 @@ package edu.nptu.dllab.sos.data.push
 
 import edu.nptu.dllab.sos.data.Event
 import edu.nptu.dllab.sos.data.EventPusher
-import edu.nptu.dllab.sos.util.SOSVersion
 import edu.nptu.dllab.sos.util.Util.NET_KEY_EVENT
 import edu.nptu.dllab.sos.util.Util.OpenMenuKey
 import edu.nptu.dllab.sos.util.Util.toIntegerValue
@@ -12,20 +11,19 @@ import org.msgpack.value.ValueFactory
 
 /**
  * The open menu event
+ *
+ * @author Little Fish
  */
-@SOSVersion(since = "0.0")
 class OpenMenuEvent : Event(EVENT_KEY), EventPusher {
 	
 	/**
 	 * The shop id
 	 */
-	@SOSVersion(since = "0.0")
 	var shopId: Int = -1
 	
 	/**
 	 * The menu version
 	 */
-	@SOSVersion(since = "0.0")
 	var menuVersion: Int = -1
 	
 	override fun toValue(): Value {
@@ -37,7 +35,7 @@ class OpenMenuEvent : Event(EVENT_KEY), EventPusher {
 	}
 	
 	override fun toString(): String {
-		return toValue().toString()
+		return "open_menu { shopId=$shopId, version=$menuVersion }"
 	}
 	
 	companion object {

@@ -19,13 +19,10 @@ import edu.nptu.dllab.sos.fragment.ShopListFragment
 import edu.nptu.dllab.sos.io.Config
 import edu.nptu.dllab.sos.io.Translator
 import edu.nptu.dllab.sos.test.TestActivity
-import edu.nptu.dllab.sos.util.SOSVersion
-import org.intellij.lang.annotations.Language
 
 /**
  * The main activity of this app
  */
-@SOSVersion(since = "0.0")
 class MainActivity : AppCompatActivity() {
 	
 	private val tag = "Main"
@@ -194,7 +191,6 @@ class MainActivity : AppCompatActivity() {
 	/**
 	 * Process the new data from intent
 	 */
-	@SOSVersion(since = "0.0")
 	private fun parseNewData(uri: Uri): Boolean {
 		/*
 		 * FISH NOTE:
