@@ -78,6 +78,7 @@ class OrderActivity : AppCompatActivity() {
 											startActivity(Intent(this@OrderActivity, OrderCheckActivity::class.java).apply {
 												putExtra(OrderCheckActivity.EXTRA_ORDER_ID, id)
 											})
+											binding.orderList.removeAllViews()
 										}
 										.create().show()
 								}
@@ -103,8 +104,13 @@ class OrderActivity : AppCompatActivity() {
 			}
 		})
 		
-		buildOrderItems()
+//		buildOrderItems()
 		
+	}
+	
+	override fun onResume() {
+		super.onResume()
+		buildOrderItems()
 	}
 	
 	private fun buildOrderItems() {

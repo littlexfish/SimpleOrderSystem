@@ -167,9 +167,10 @@ class ShopListFragment : Fragment() {
 			requireActivity().runOnUiThread {
 				if(get is NearShop) {
 					val shops = get.getShopCopy().values
+					val sorted = shops.sortedBy { Util.getDistance(pos, it.position) }
 					binding.mainList.removeAllViews()
 					val showClose = Config.getBoolean(Config.Key.SHOW_CLOSED_SHOP)
-					for(v in shops) {
+					for(v in sorted) {
 						if(v.state == ShopState.OPEN || (v.state == ShopState.CLOSE && showClose)) {
 							Log.d(TAG, "shopId: ${v.shopId}, position: (${v.position.x}, ${v.position.y})")
 							val dist = Util.getDistance(pos, v.position)

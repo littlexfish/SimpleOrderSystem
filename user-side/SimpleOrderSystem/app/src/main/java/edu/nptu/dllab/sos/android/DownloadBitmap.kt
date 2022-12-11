@@ -1,5 +1,6 @@
 package edu.nptu.dllab.sos.android
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -42,5 +43,21 @@ object DownloadBitmap {
 	 */
 	fun getDrawable(inStream: InputStream, res: Resources?): Drawable =
 		BitmapDrawable(res, getBitmap(inStream))
+	
+	private val bitmap = HashMap<String, Bitmap>()
+	
+	fun getBitmapFromBuffer(context: Context, name: String): Bitmap? {
+		if(!bitmap.containsKey(name)) {
+			val filter = context.assets.list("res")
+			if(filter == null || !filter.contains(name)) {
+				return null
+			}
+			val ins = context.assets.open("res/$name")
+			val bit = getBitmap(ins)
+			ins.close()
+			bitmap[name] = bit
+		}
+		return bitmap[name]
+	}
 	
 }

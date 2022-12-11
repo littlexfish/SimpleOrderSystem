@@ -91,8 +91,8 @@ abstract class MenuItem : ConstraintLayout {
 	 */
 	protected fun setImage(bitmap: Bitmap?) {
 		binding.classicItemImg.setImageBitmap(bitmap)
-		if(bitmap == null) binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size_min)
-		else binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size)
+//		if(bitmap == null) binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size_min)
+//		else binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size)
 	}
 	
 	/**
@@ -100,8 +100,8 @@ abstract class MenuItem : ConstraintLayout {
 	 */
 	protected fun setImage(drawable: Drawable?) {
 		binding.classicItemImg.setImageDrawable(drawable)
-		if(drawable == null) binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size_min)
-		else binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size)
+//		if(drawable == null) binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size_min)
+//		else binding.classicItemImg.layoutParams.height = resources.getDimensionPixelSize(R.dimen.classic_item_img_size)
 	}
 	
 	/**

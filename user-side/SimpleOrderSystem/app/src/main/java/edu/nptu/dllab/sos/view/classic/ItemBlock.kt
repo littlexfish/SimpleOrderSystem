@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.AttributeSet
+import android.util.Log
+import edu.nptu.dllab.sos.android.DownloadBitmap
 import edu.nptu.dllab.sos.fragment.ClassicMenuFragment
 
 /**
@@ -22,6 +24,7 @@ class ItemBlock : MenuItem {
 		itemId = id
 		setImage(bitmap)
 		setExtra("$ %.2f".format(money))
+		autoImage(bitmap)
 	}
 	
 	constructor(context: Context, attr: AttributeSet?, frag: ClassicMenuFragment, id: String,
@@ -29,6 +32,7 @@ class ItemBlock : MenuItem {
 		itemId = id
 		setImage(bitmap)
 		setExtra("$ %.2f".format(money))
+		autoImage(bitmap)
 	}
 	
 	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int, frag: ClassicMenuFragment,
@@ -38,6 +42,18 @@ class ItemBlock : MenuItem {
 		itemId = id
 		setImage(bitmap)
 		setExtra("$ %.2f".format(money))
+		autoImage(bitmap)
+	}
+	
+	private fun autoImage(bitmap: Bitmap?) {
+		if(bitmap == null && text != null) {
+			if(text!!.endsWith("潛艇堡")) {
+				setImage(DownloadBitmap.getBitmapFromBuffer(context, "sandwich.png"))
+			}
+			else if(text!!.endsWith("堡")) {
+				setImage(DownloadBitmap.getBitmapFromBuffer(context, "burger.png"))
+			}
+		}
 	}
 	
 	override fun onItemClick() {

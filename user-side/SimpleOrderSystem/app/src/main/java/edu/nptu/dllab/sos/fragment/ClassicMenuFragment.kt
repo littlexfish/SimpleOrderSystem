@@ -90,7 +90,7 @@ class ClassicMenuFragment : MenuFragment() {
 		}
 		
 		if(refresh) {
-			refreshScreen()
+			reloadResource()
 			refresh = false
 		}
 	}
@@ -99,10 +99,14 @@ class ClassicMenuFragment : MenuFragment() {
 		super.buildMenu(menu)
 		classic = menu as ClassicMenu
 		
-		refreshScreen()
+		reloadResource()
 	}
 	
 	override fun reloadResource() {
+		if(!::binding.isInitialized || classic == null) {
+			refresh = true
+			return
+		}
 		val rs = ResourceReader.getResourcesAsBitmap(requireContext(), shopId)
 		resData.clear()
 		for((id, bit) in rs) {
