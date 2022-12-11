@@ -151,7 +151,7 @@ class QrCodeScanner : AppCompatActivity() {
 				if(value.startsWith(Util.PREFIX_SOS_URL)) {
 					display = Util.getSOSTypeUrlString(value)
 				}
-				binding.scanOverlay.setText(display/* + Translator.getString("qrcode.redirect")*/)
+				binding.scanOverlay.setText(display + Translator.getString("qrcode.redirect"))
 				binding.qrText.text = display
 			}
 			else {
@@ -177,8 +177,7 @@ class QrCodeScanner : AppCompatActivity() {
 					.create().show()
 			}
 			else {
-				permissionRequest.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
-				                                 Manifest.permission.ACCESS_FINE_LOCATION))
+				permissionRequest.launch(arrayOf(Manifest.permission.CAMERA))
 			}
 		}
 		else camera.start(binding.qrView.holder)
