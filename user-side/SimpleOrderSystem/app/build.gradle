@@ -10,8 +10,8 @@ android {
         applicationId "edu.nptu.dllab.sos"
         minSdk 24
         targetSdk 33
-        versionCode 221105
-        versionName "0.0.221105"
+        versionCode 221211
+        versionName "0.0.221211"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -38,6 +38,7 @@
         android:id="@+id/testBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/mainToolBar"
         app:layout_constraintEnd_toStartOf="@+id/mainQrScanner"
         app:layout_constraintHorizontal_bias="0.505"
