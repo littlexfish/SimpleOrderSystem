@@ -23,68 +23,68 @@
         tools:targetApi="33">
         <activity
             android:name=".ShopSideOrderActivity"
-            android:exported="false">
+            android:exported="false" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".ShopSideActivity"
-            android:exported="false">
+            android:exported="false" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".OrderCheckActivity"
-            android:exported="false">
+            android:exported="false" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:exported="false">
+            android:exported="false" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:exported="false">
+            android:exported="false" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".ItemOrderActivity"
-            android:exported="false">
+            android:exported="false" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".OrderActivity"
-            android:exported="false">
+            android:exported="false" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".QrCodeScanner"
-            android:exported="false" />
+            android:exported="false" android:screenOrientation="portrait" />
         <activity
             android:name=".MenuActivity"
-            android:exported="false" />
+            android:exported="false" android:screenOrientation="portrait" />
         <activity
             android:name=".test.TestActivity"
-            android:exported="false" />
+            android:exported="false" android:screenOrientation="portrait" />
         <activity
             android:name=".test.TestActivity$TestLinkActivity"
-            android:exported="false" />
+            android:exported="false" android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
