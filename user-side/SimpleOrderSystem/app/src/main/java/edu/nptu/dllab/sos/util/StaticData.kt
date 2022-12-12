@@ -23,8 +23,9 @@ object StaticData {
 	 * 50872(dllab): 203.64.134.152
 	 * lf(dllab-lan): 192.168.0.67
 	 * lf(dllab): 203.64.134.96
+	 * 10.0.35.52
 	 */
-	var ip = "203.64.134.152"
+	var ip = "10.0.35.52"
 	var port = 25000
 	var shopPort = 25001
 	
